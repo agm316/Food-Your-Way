@@ -6,7 +6,9 @@ A recipe database that makes looking up recipes by filters simple and easy for e
 TODO:
 - make database
 - make recipe scraper
-- 
+- make recipe search bar
+
+FUTURE IMPROVEMENTS (not currently working on):
 
 Authors:
 - Roman Negri
