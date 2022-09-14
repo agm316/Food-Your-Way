@@ -16,3 +16,4 @@ Authors:
 - Roman Negri
 - Brad Yuan
 - Ara Mangoyan
+- Ricky Chu
