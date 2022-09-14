@@ -13,3 +13,4 @@ FUTURE IMPROVEMENTS (not currently working on):
 Authors:
 - Roman Negri
 - Brad Yuan
+- Ara Mangoyan
