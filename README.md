@@ -3,6 +3,10 @@
 Description:
 A recipe database that makes looking up recipes by filters simple and easy for everyone. Enabling search by lifestyle, diet, or even ingredients (to either include or exclude specific ingredients). 
 
+ROUGH USER FLOW:
+- able to request recipe search using specific filters and receive back list of matching recipes
+- once a recipe is chosen, user is able to receive the specific details of that recipe and instructions
+
 TO DO:
 - make database
 - make recipe scraper (script to populate database)
