@@ -1,0 +1,16 @@
+SETUP GUIDE
+
+Make sure to install the requirements in the root (topmost) folder:
+
+pip3 install flask==2.1.3
+pip3 install flask-restx
+pip3 install werkzeug==2.1.2
+
+Then run:
+./local.sh
+
+or
+
+sh local.sh
+
+From the root folder.  If it runs, the setup is working.
