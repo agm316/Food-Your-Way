@@ -4,18 +4,8 @@ At first, it will just contain stubs that return fake data.
 Gradually, we will fill in actual calls to our datastore.
 """
 
-from flask import Flask
-from pymongo import MongoClient
-
-app = Flask(__name__)
-
-client = MongoClient('localhost', 27017)
-
-db = client.flask_db
-todos = db.todos
-
-# def fetch_pets():
-#     """
-#     A function to return all pets in the data store.
-#     """
-#     return {"tigers": 2, "lions": 3, "zebras": 1}
+def fetch_pets():
+    """
+    A function to return all pets in the data store.
+    """
+    return {"tigers": 2, "lions": 3, "zebras": 1}

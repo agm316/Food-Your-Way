@@ -6,15 +6,21 @@ The endpoint called `endpoints` will return all available endpoints.
 from http import HTTPStatus
 # import time
 import requests
+import werkzeug.exceptions as wz
 from flask import Flask
 from flask_restx import Resource, Api
-import werkzeug.exceptions as wz
+from pymongo import MongoClient
 from bs4 import BeautifulSoup
 # import urllib3
 # import db.db as db
 
 app = Flask(__name__)
 api = Api(app)
+
+client = MongoClient('localhost', 27017)
+
+db = client.flask_db
+todos = db.todos
 
 SCRAPE_WEBSITE = '/scrape'
 
@@ -68,3 +74,15 @@ class ScrapeWebsite(Resource):
             raise wz.NotFound(f'{website} not found')
         recipe_to_return = {"recipe_name": recipe_name}
         return recipe_to_return
+
+
+# @api.route('/', methods=('GET', 'POST'))
+# def index():
+#     if request.method == 'POST':
+#         content = request.form['content']
+#         degree = request.form['degree']
+#         todos.insert_one({'content': content, 'degree': degree})
+#         return redirect(url_for('index'))
+#
+#     all_todos = todos.find()
+#     return render_template('index.html', todos=all_todos)
