@@ -4,6 +4,7 @@ At first, it will just contain stubs that return fake data.
 Gradually, we will fill in actual calls to our datastore.
 """
 
+
 def fetch_pets():
     """
     A function to return all pets in the data store.
