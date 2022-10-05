@@ -4,9 +4,10 @@ At first, it will just contain stubs that return fake data.
 Gradually, we will fill in actual calls to our database.
 """
 
-recipes = {'Pizza': 'American', 'Fried Rice': 'Chinese', 'Sushi': 'Japanese', 'Kimchi': 'Korean', 'Paella': 'Spanish',
-           'Pita': 'Mediterranean', 'Pad Thai': 'Thai', 'Chicken Tikka Masala': 'Indian', 'Nasi Lemak': 'Malaysian',
-           'Risotto': 'Italian', 'Souffle': 'French'}
+recipes = {'Pizza': 'American', 'Fried Rice': 'Chinese', 'Sushi': 'Japanese', 'Kimchi':
+           'Korean', 'Paella': 'Spanish', 'Pita': 'Mediterranean', 'Pad Thai': 'Thai',
+           'Chicken Tikka Masala': 'Indian', 'Nasi Lemak': 'Malaysian', 'Risotto': 'Italian',
+           'Souffle': 'French'}
 
 
 def get_recipe_names():
