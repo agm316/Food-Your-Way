@@ -3,16 +3,17 @@ This is the file containing all of the endpoints for our flask app.
 The endpoint called `endpoints` will return all available endpoints.
 """
 
-from http import HTTPStatus
 # import time
-import requests
-import werkzeug.exceptions as wz
-from flask import Flask
-from flask_restx import Resource, Api
-from pymongo import MongoClient
-from bs4 import BeautifulSoup
 # import urllib3
 # import db.db as db
+import requests
+import werkzeug.exceptions as wz
+from bs4 import BeautifulSoup
+from flask import Flask, render_template, request, url_for, redirect
+from flask_restx import Resource, Api
+from http import HTTPStatus
+from pymongo import MongoClient
+
 
 app = Flask(__name__)
 api = Api(app)
@@ -76,13 +77,22 @@ class ScrapeWebsite(Resource):
         return recipe_to_return
 
 
-# @api.route('/', methods=('GET', 'POST'))
-# def index():
-#     if request.method == 'POST':
-#         content = request.form['content']
-#         degree = request.form['degree']
-#         todos.insert_one({'content': content, 'degree': degree})
-#         return redirect(url_for('index'))
-#
-#     all_todos = todos.find()
-#     return render_template('index.html', todos=all_todos)
+@api.route('/database')
+class Database(Resource):
+    """
+    An endpoint to see the requests being sent to the MongoDB database.
+    """
+    def get(self):
+        return "This is the database endpoint.", 200
+
+
+@app.route('/database', methods=('GET', 'POST'))
+def index():
+    if request.method == 'POST':
+        content = request.form['content']
+        degree = request.form['degree']
+        todos.insert_one({'content': content, 'degree': degree})
+        return redirect(url_for('index'))
+
+    all_todos = todos.find()
+    return render_template('index.html', todos=all_todos)
