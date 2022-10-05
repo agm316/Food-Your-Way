@@ -77,7 +77,7 @@ class ScrapeWebsite(Resource):
         return recipe_to_return
 
 
-@api.route('/database')
+@api.route('/recipes')
 class Database(Resource):
     """
     An endpoint to see the requests being sent to the MongoDB database.
@@ -86,7 +86,7 @@ class Database(Resource):
         return "This is the database endpoint.", 200
 
 
-@app.route('/database', methods=('GET', 'POST'))
+@app.route('/recipes', methods=('GET', 'POST'))
 def index():
     if request.method == 'POST':
         content = request.form['content']
