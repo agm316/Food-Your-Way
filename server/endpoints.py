@@ -76,7 +76,13 @@ class ScrapeWebsite(Resource):
         recipe_name = soup.find(id="article-heading_1-0").get_text().strip()
         if recipe_name == '':
             raise wz.NotFound(f'{website} not found')
-        recipe_to_return = {"recipe_name": recipe_name}
+        ingr = ""
+        ing_list_soup = soup.find(class_="mntl-structured-ingredients__list")
+        for li in ing_list_soup.find_all("li"):
+            if (li.text != ""):
+                ingr += (li.text[1:(len(li.text)-1)] + ", ")
+        ingr = ingr[:(len(ingr)-2)]
+        recipe_to_return = {"recipe_name": recipe_name, "ingredients": ingr}
         return recipe_to_return
 
 
