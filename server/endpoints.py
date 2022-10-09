@@ -23,6 +23,8 @@ client = MongoClient('localhost', 27017)
 db = client.flask_db
 todos = db.todos
 
+HELLO = '/hello'
+MESSAGE = 'message'
 SCRAPE_WEBSITE = '/scrape'
 
 
@@ -37,7 +39,7 @@ class HelloWorld(Resource):
         A trivial endpoint to see if the server is running.
         It just answers with "hello world."
         """
-        return {'hello': 'world'}
+        return {MESSAGE: 'hello world'}
 
 
 @api.route('/endpoints')
@@ -59,7 +61,8 @@ class Endpoints(Resource):
 class ScrapeWebsite(Resource):
     """
     This class will scrape a given webpage with a recipe and returns the recipe
-    information in a list
+    information in a list.
+    This class is meant to work with recipes from www.allrecipes.com
     """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
