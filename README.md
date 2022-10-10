@@ -15,7 +15,6 @@ TO DO:
 - will add specific filters (certain amount of calories, allergies, vegeterian/vegan options)
 
 FUTURE IMPROVEMENTS (not currently working on):
-- Fix "make prod" issue with not detecting server.endpoints (macOS)
 - Frontend (GUI)
 
 Authors:
