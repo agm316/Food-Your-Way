@@ -26,6 +26,7 @@ todos = db.todos
 HELLO = '/hello'
 MESSAGE = 'message'
 SCRAPE_WEBSITE = '/scrape'
+SEARCH_QUERY = 'Pizza'
 
 
 @api.route('/hello')
@@ -55,6 +56,21 @@ class Endpoints(Resource):
         endpoints = ''
         # sorted(rule.rule for rule in api.app.url_map.iter_rules())
         return {"Available endpoints": endpoints}
+
+
+@api.route(f'/search={SEARCH_QUERY}')
+class SearchQuery(Resource):
+    """
+    This class will return a search query of recipes in the database.
+    """
+    def get(self):
+        """
+        The `get()` method will return a list of recipes.
+        Later, this will be updated to
+        return the HTML page of such a list
+        (when React Front-End is being developed)
+        """
+        return {"Available recipes: CONNECT TO DB!"}
 
 
 @api.route(f'{SCRAPE_WEBSITE}/<path:website>')
