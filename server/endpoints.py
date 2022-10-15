@@ -27,6 +27,7 @@ HELLO = '/hello'
 MESSAGE = 'message'
 SCRAPE_WEBSITE = '/scrape'
 SEARCH_QUERY = 'Pizza'
+RATING_ID = "mntl-recipe-review-bar__rating_1-0"
 
 
 @api.route('/hello')
@@ -89,23 +90,37 @@ class ScrapeWebsite(Resource):
         """
         html_doc = requests.get(website).content
         soup = BeautifulSoup(html_doc, 'html.parser')
+        # Get Recipe Name
         recipe_name = soup.find(id="article-heading_1-0").get_text().strip()
         if recipe_name == '':
             raise wz.NotFound(f'{website} not found')
         ingr = ""
         directions = ""
+        # Get Ingredients
         ing_list_soup = soup.find(class_="mntl-structured-ingredients__list")
         for li in ing_list_soup.find_all("li"):
             if (li.text != ""):
                 ingr += (li.text[1:(len(li.text)-1)] + ", ")
+        if ingr == '':
+            raise wz.NotFound("Ingredients Not Found")
         ingr = ingr[:(len(ingr)-2)]
+        # Get Directions
         directions_soup = soup.find(id="mntl-sc-block_2-0")
         for li in directions_soup.find_all("li"):
             if (li.text != ""):
                 directions += (li.text[1:(len(li.text)-3)])
+        if directions == '':
+            raise wz.NotFound("Directions Not Found")
         directions = directions[1:]
+        # Get Rating (out of 5 stars)
+        rating = ''
+        try:
+            rating = soup.find(id=RATING_ID).get_text()
+        except Warning:
+            pass
+        rating = rating.strip()
         recipe_to_return = {"recipe_name": recipe_name, "ingredients": ingr,
-                            "directions": directions}
+                            "directions": directions, "rating": rating}
         return recipe_to_return
 
 
