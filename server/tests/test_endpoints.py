@@ -25,4 +25,5 @@ def test_scrape_website():
     assert ((resp_json["recipe_name"]) == (TEST_WEBSITE_TITLE))
     assert isinstance(resp_json["ingredients"], str)
     assert isinstance(resp_json["directions"], str)
+    assert isinstance(resp_json["rating"], str)
     assert isinstance(resp_json, dict)
