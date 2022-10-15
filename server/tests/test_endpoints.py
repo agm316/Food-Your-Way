@@ -24,4 +24,5 @@ def test_scrape_website():
     resp_json = TEST_CLIENT.get(f'{ep.SCRAPE_WEBSITE}/{TEST_WEBSITE}').get_json()
     assert ((resp_json["recipe_name"]) == (TEST_WEBSITE_TITLE))
     assert isinstance(resp_json["ingredients"], str)
+    assert isinstance(resp_json["directions"], str)
     assert isinstance(resp_json, dict)
