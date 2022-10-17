@@ -42,16 +42,16 @@ def test_format_endpoint():
     assert isinstance(dbformat, dict)
     assert isinstance(dbformat["name"], str)
 
-# Database is currently not working, trying to get a resolution
-# def test_get_database():
-#
-#     """
-#     Test to see if data is being stored in the database the right
-#     way and if the get data from the database works.
-#     """
-#     dbentry = TEST_CLIENT.get(ep.DBGETTEST).get_json()
-#     assert ((dbentry["recipe_name"]) == (TEST_WEBSITE_TITLE))
-#     assert isinstance(dbentry["ingredients"], str)
-#     assert isinstance(dbentry["directions"], str)
-#     assert isinstance(dbentry["rating"], str)
-#     assert isinstance(dbentry, dict)
+def test_get_database():
+
+    """
+    Test to see if data is being stored in the database the right
+    way and if the get data from the database works.
+    """
+    dbentry = TEST_CLIENT.get(ep.DBGETTEST).get_json()
+    print(dbentry)
+    assert ((dbentry["recipe_name"]) == (TEST_WEBSITE_TITLE))
+    assert isinstance(dbentry["ingredients"], str)
+    assert isinstance(dbentry["directions"], str)
+    assert isinstance(dbentry["rating"], str)
+    assert isinstance(dbentry, dict)

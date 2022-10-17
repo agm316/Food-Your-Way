@@ -5,7 +5,7 @@ The endpoint called `endpoints` will return all available endpoints.
 
 # import time
 # import urllib3
-# import db.db as recdb
+import db.db as recdb
 import requests
 import werkzeug.exceptions as wz
 from bs4 import BeautifulSoup
@@ -29,6 +29,7 @@ SCRAPE_WEBSITE = '/scrape'
 SEARCH_QUERY = 'Pizza'
 RATING_ID = "mntl-recipe-review-bar__rating_1-0"
 FORMAT = '/format'
+DBGETTEST = '/dbtest'
 
 
 @api.route('/hello')
@@ -140,7 +141,19 @@ class ScrapeWebsite(Resource):
         rating = rating.strip()
         recipe_to_return = {"recipe_name": recipe_name, "ingredients": ingr,
                             "directions": directions, "rating": rating}
+        # Recipe gets added to the database for later retrival
+        recdb.add_recipe(recipe_to_return)
         return recipe_to_return
+
+
+@api.route('/dbtest')
+class dbtest(Resource):
+    """
+    Endpoint to test the data getting from the database
+    in the /db/db.py file
+    """
+    def get(self):
+        return recdb.get_recipe("Armenian Pizzas (Lahmahjoon)")
 
 
 @api.route('/recipes')
