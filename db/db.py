@@ -30,3 +30,13 @@ def get_recipe(recipe):
     A function that returns one recipe and their respective cuisine type.
     """
     return recipes.get(recipe)
+
+from flask import Flask
+from pymongo import MongoClient
+
+app = Flask(__name__)
+
+client = MongoClient('localhost', 27017)
+
+db = client.flask_db
+todos = db.todos
