@@ -5,7 +5,7 @@ The endpoint called `endpoints` will return all available endpoints.
 
 # import time
 # import urllib3
-# import db.db as db
+# import db.db as recdb
 import requests
 import werkzeug.exceptions as wz
 from bs4 import BeautifulSoup
@@ -28,6 +28,7 @@ MESSAGE = 'message'
 SCRAPE_WEBSITE = '/scrape'
 SEARCH_QUERY = 'Pizza'
 RATING_ID = "mntl-recipe-review-bar__rating_1-0"
+FORMAT = '/format'
 
 
 @api.route('/hello')
@@ -57,6 +58,24 @@ class Endpoints(Resource):
         endpoints = ''
         # sorted(rule.rule for rule in api.app.url_map.iter_rules())
         return {"Available endpoints": endpoints}
+
+
+@api.route('/format')
+class DataFormat(Resource):
+    """
+    This class serves to inform the user on the format of the db
+    entries and also servers to assert that the entires are
+    of the right form
+    """
+
+    def get(self):
+        """
+        Trivial endpoint at the moment, will update with asserting
+        right db entry format later.
+        The 'get()' method returns an object holding the formula
+        in the form of an array that has every type of entry.
+        """
+        return {"name": "string", "ingredients": "array"}
 
 
 @api.route(f'/search={SEARCH_QUERY}')
