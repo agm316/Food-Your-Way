@@ -76,7 +76,7 @@ class DataFormat(Resource):
         The 'get()' method returns an object holding the formula
         in the form of an array that has every type of entry.
         """
-        return {"name": "string", "ingredients": "array"}
+        return {"name": "string", "ingredients": []}
 
 
 @api.route(f'/search={SEARCH_QUERY}')
