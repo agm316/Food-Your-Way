@@ -31,6 +31,9 @@ RATING_ID = "mntl-recipe-review-bar__rating_1-0"
 FORMAT = '/format'
 DBGETTEST = '/dbtest'
 NUTRITION_CLASS = 'mntl-nutrition-facts-label__table-body type--cat'
+TIMING_CLASS = "mntl-recipe-details__content"
+TIMING_LABEL = "mntl-recipe-details__label"
+TIMING_VALUE = "mntl-recipe-details__value"
 
 
 @api.route('/hello')
@@ -152,9 +155,29 @@ class ScrapeWebsite(Resource):
         if ((len(nutr) > 1)):
             if (nutr[-2:] == ', '):
                 nutr = nutr[:(len(nutr)-2)]
+        timing = ""
+        tm_label = ''
+        tm_val = ''
+        time_lb_soup = soup.find_all(class_=TIMING_LABEL)
+        time_val_soup = soup.find_all(class_=TIMING_VALUE)
+        for div in time_lb_soup:
+            tm_label += (div.text.strip() + ',')
+        tm_label = (tm_label[:len(tm_label)-1])
+        for div in time_val_soup:
+            tm_val += (div.text.strip() + ',')
+        tm_val = (tm_val[:len(tm_val)-1])
+        tm_l_lst = tm_label.split(',')
+        tm_v_lst = tm_val.split(',')
+        for i in range(len(tm_l_lst)):
+            timing += tm_l_lst[i].strip()
+            timing += ' '
+            timing += tm_v_lst[i].strip()
+            timing += ', '
+        timing = timing[:(len(timing)-2)]
         recipe_to_return = {"recipe_name": recipe_name, "ingredients": ingr,
                             "directions": directions, "rating": rating,
-                            "nutrition": nutr}
+                            "nutrition": nutr,
+                            "timing": timing}
         # Recipe gets added to the database for later retrival
         recdb.add_recipe(recipe_to_return)
         return recipe_to_return
