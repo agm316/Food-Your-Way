@@ -30,6 +30,7 @@ SEARCH_QUERY = 'Pizza'
 RATING_ID = "mntl-recipe-review-bar__rating_1-0"
 FORMAT = '/format'
 DBGETTEST = '/dbtest'
+NUTRITION_CLASS = 'mntl-nutrition-facts-label__table-body type--cat'
 
 
 @api.route('/hello')
@@ -116,6 +117,7 @@ class ScrapeWebsite(Resource):
             raise wz.NotFound(f'{website} not found')
         ingr = ""
         directions = ""
+        nutr = ""
         # Get Ingredients
         ing_list_soup = soup.find(class_="mntl-structured-ingredients__list")
         for li in ing_list_soup.find_all("li"):
@@ -139,8 +141,20 @@ class ScrapeWebsite(Resource):
         except Warning:
             pass
         rating = rating.strip()
+        nutr_soup = soup.find(class_=NUTRITION_CLASS)
+        for tr in nutr_soup.find_all("tr"):
+            if ((tr.text != "") and (tr.text.strip() != "% Daily Value *")):
+                tr_list = tr.text.split()
+                for i in tr_list:
+                    nutr += i + ' '
+                nutr = nutr[:(len(nutr)-1)]
+                nutr += ', '
+        if ((len(nutr) > 1)):
+            if (nutr[-2:] == ', '):
+                nutr = nutr[:(len(nutr)-2)]
         recipe_to_return = {"recipe_name": recipe_name, "ingredients": ingr,
-                            "directions": directions, "rating": rating}
+                            "directions": directions, "rating": rating,
+                            "nutrition": nutr}
         # Recipe gets added to the database for later retrival
         recdb.add_recipe(recipe_to_return)
         return recipe_to_return
