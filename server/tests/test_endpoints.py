@@ -6,6 +6,8 @@ TEST_CLIENT = ep.app.test_client()
 TEST_WEBSITE = "https://www.allrecipes.com/recipe/154315/armenian-pizzas-lahmahjoon/"
 TEST_WEBSITE_TITLE = "Armenian Pizzas (Lahmahjoon)"
 
+TEST_SEARCH_QUERY = "Pizza"
+
 def test_hello():
     """
     See if Hello works
@@ -26,8 +28,6 @@ def test_scrape_website():
     assert isinstance(resp_json["ingredients"], str)
     assert isinstance(resp_json["directions"], str)
     assert isinstance(resp_json["rating"], str)
-    assert isinstance(resp_json["nutrition"], str)
-    assert isinstance(resp_json["timing"], str)
     assert isinstance(resp_json, dict)
 
 def test_format_endpoint():
@@ -58,3 +58,12 @@ def test_get_database():
     assert isinstance(dbentry["directions"], str)
     assert isinstance(dbentry["rating"], str)
     assert isinstance(dbentry, dict)
+
+
+def test_search_query():
+    """
+    See if Search Query works (NOT YET CONNECTED TO DB, update later when it is)
+    """
+    #assert True
+    resp_json = TEST_CLIENT.get(f'/search={TEST_SEARCH_QUERY}').get_json()
+    assert isinstance(resp_json[ep.MESSAGE], str)
