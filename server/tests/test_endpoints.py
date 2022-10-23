@@ -26,6 +26,7 @@ def test_scrape_website():
     assert isinstance(resp_json["ingredients"], str)
     assert isinstance(resp_json["directions"], str)
     assert isinstance(resp_json["rating"], str)
+    assert isinstance(resp_json["nutrition"], str)
     assert isinstance(resp_json, dict)
 
 def test_format_endpoint():
