@@ -48,3 +48,44 @@ def get_cuisine_types():
     A function to return all the cuisine types in the database.
     """
     return list(recipes.values())
+
+# import csv
+# from pymongo import MongoClient
+#
+#
+# mongoClient = MongoClient('localhost', 27017)
+# print(mongoClient)
+# db = mongoClient.october_mug_talk
+# db.segment.drop()
+# print(db)
+#
+# header = ["Row", "Name", "Prep Time", "Cook Time", "Total Time", "Servings",
+#           "Yield", "Ingredients", "Directions", "url", "Additional Time"]
+# csvfile = open('test_recipes.csv', 'r')
+# reader = csv.DictReader(csvfile)
+#
+# for each in reader:
+#     row = {}
+#     for field in header:
+#         row[field] = each[field]
+#
+#     print(row)
+#     db.segment.insert(row)
+
+# import pandas as pd
+# from pymongo import MongoClient
+#
+# client = MongoClient('localhost', 27017)
+# database = client['Recipes']
+# collection = database['test_recipes']
+#
+#
+# def csv_to_json(filename, header=None):
+#      header = ["Row", "Name", "Prep Time", "Cook Time", "Total Time",
+#                "Servings", "Yield", "Ingredients", "Directions", "url",
+#                "Additional Time"]
+#     data = pd.read_csv(filename, header=header)
+#     return data.to_dict('records')
+#
+#
+# collection.insert_many(csv_to_json('db/test_recipes.csv'))
