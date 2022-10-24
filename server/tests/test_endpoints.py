@@ -44,23 +44,16 @@ def test_format_endpoint():
 
     dbformat = TEST_CLIENT.get(ep.FORMAT).get_json()
     assert isinstance(dbformat, dict)
-<<<<<<< HEAD
     assert isinstance(dbformat["row"], str)
-    assert isinstance(dbformat["name"], list)
-    assert isinstance(dbformat["prep time"], list)
-    assert isinstance(dbformat["cook time"], list)
-    assert isinstance(dbformat["total time"], list)
-    assert isinstance(dbformat["servings"], list)
-    assert isinstance(dbformat["yield"], list)
-=======
     assert isinstance(dbformat["name"], str)
+    assert isinstance(dbformat["prep time"], str)
+    assert isinstance(dbformat["cook time"], str)
+    assert isinstance(dbformat["total time"], str)
     assert isinstance(dbformat["servings"], str)
-    assert isinstance(dbformat["cook time"], str)    
->>>>>>> 721e91fb8a8fda7a315127085374c7ff5dc91004
+    assert isinstance(dbformat["yield"], str)
     assert isinstance(dbformat["ingredients"], list)
     assert isinstance(dbformat["directions"], list)
-    assert isinstance(dbformat["url"], list)
-    assert isinstance(dbformat["additional time"], list)
+    assert isinstance(dbformat["url"], str)
 
 
 def test_get_database():
