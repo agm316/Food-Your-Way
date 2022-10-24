@@ -72,6 +72,7 @@ def get_cuisine_types():
 #     print(row)
 #     db.segment.insert(row)
 
+
 # import pandas as pd
 # from pymongo import MongoClient
 #

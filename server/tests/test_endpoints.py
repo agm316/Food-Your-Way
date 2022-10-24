@@ -15,7 +15,8 @@ def test_hello():
     #assert True
     resp_json = TEST_CLIENT.get(ep.HELLO).get_json()
     assert isinstance(resp_json[ep.MESSAGE], str)
-    
+
+
 def test_scrape_website():
     """
     Test the web scraping endpoint
@@ -30,6 +31,7 @@ def test_scrape_website():
     assert isinstance(resp_json["rating"], str)
     assert isinstance(resp_json, dict)
 
+
 def test_format_endpoint():
 
     """
@@ -42,8 +44,18 @@ def test_format_endpoint():
 
     dbformat = TEST_CLIENT.get(ep.FORMAT).get_json()
     assert isinstance(dbformat, dict)
-    assert isinstance(dbformat["name"], str)
+    assert isinstance(dbformat["row"], str)
+    assert isinstance(dbformat["name"], list)
+    assert isinstance(dbformat["prep time"], list)
+    assert isinstance(dbformat["cook time"], list)
+    assert isinstance(dbformat["total time"], list)
+    assert isinstance(dbformat["servings"], list)
+    assert isinstance(dbformat["yield"], list)
     assert isinstance(dbformat["ingredients"], list)
+    assert isinstance(dbformat["directions"], list)
+    assert isinstance(dbformat["url"], list)
+    assert isinstance(dbformat["additional time"], list)
+
 
 def test_get_database():
 
