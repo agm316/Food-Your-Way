@@ -54,12 +54,21 @@ def test_get_database():
     way and if the get data from the database works.
     """
     dbentry = TEST_CLIENT.get(ep.DBGETTEST).get_json()
-    print(dbentry)
     assert ((dbentry["recipe_name"]) == (TEST_WEBSITE_TITLE))
     assert isinstance(dbentry["ingredients"], str)
     assert isinstance(dbentry["directions"], str)
     assert isinstance(dbentry["rating"], str)
     assert isinstance(dbentry, dict)
+
+
+def test_get_all():
+    """
+    This test servers to test the getall() endpoint and asserts
+    that it matches the format of a list of recipes.
+    """
+    alldb = TEST_CLIENT.get(ep.GETALL).get_json()
+    assert isinstance(alldb, list)
+
 
 
 def test_search_query():

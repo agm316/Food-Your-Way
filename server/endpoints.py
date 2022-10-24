@@ -31,6 +31,7 @@ SEARCH_QUERY = 'Pizza'
 RATING_ID = "mntl-recipe-review-bar__rating_1-0"
 FORMAT = '/format'
 DBGETTEST = '/dbtest'
+GETALL = '/getallrecipes'
 
 
 @api.route('/hello')
@@ -146,6 +147,16 @@ class ScrapeWebsite(Resource):
         # Recipe gets added to the database for later retrival
         recdb.add_recipe(recipe_to_return)
         return recipe_to_return
+
+
+@api.route('/getallrecipes')
+class getall(Resource):
+    """
+    This endpoint servers to return all recipes in the
+    database and return them as a list of JSONs.
+    """
+    def get(self):
+        return recdb.get_all()
 
 
 @api.route('/dbtest')
