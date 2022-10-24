@@ -49,27 +49,28 @@ def get_cuisine_types():
     """
     return list(recipes.values())
 
-import csv
-from pymongo import MongoClient
-
-mongoClient = MongoClient('localhost', 27017)
-print(mongoClient)
-db = mongoClient.october_mug_talk
-db.segment.drop()
-print(db)
-
-header = ["Row", "Name", "Prep Time", "Cook Time", "Total Time", "Servings",
-          "Yield", "Ingredients", "Directions", "url", "Additional Time"]
-csvfile = open('test_recipes.csv', 'r')
-reader = csv.DictReader(csvfile)
-
-for each in reader:
-    row = {}
-    for field in header:
-        row[field] = each[field]
-
-    print(row)
-    db.segment.insert(row)
+# import csv
+# from pymongo import MongoClient
+#
+#
+# mongoClient = MongoClient('localhost', 27017)
+# print(mongoClient)
+# db = mongoClient.october_mug_talk
+# db.segment.drop()
+# print(db)
+#
+# header = ["Row", "Name", "Prep Time", "Cook Time", "Total Time", "Servings",
+#           "Yield", "Ingredients", "Directions", "url", "Additional Time"]
+# csvfile = open('test_recipes.csv', 'r')
+# reader = csv.DictReader(csvfile)
+#
+# for each in reader:
+#     row = {}
+#     for field in header:
+#         row[field] = each[field]
+#
+#     print(row)
+#     db.segment.insert(row)
 
 # import pandas as pd
 # from pymongo import MongoClient
