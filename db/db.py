@@ -17,6 +17,16 @@ recipes = {'Pizza': 'American', 'Fried Rice': 'Chinese', 'Sushi': 'Japanese',
 recipes = {}
 
 
+def get_all():
+    """
+    Returns all recipes in the database.
+    """
+    allrecipes = []
+    for name in list(recipes.keys()):
+        allrecipes.append(recipes[name])
+    return allrecipes
+
+
 def get_recipe_names():
     """
     A function to return all the recipe names in the database.

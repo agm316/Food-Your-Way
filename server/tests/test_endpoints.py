@@ -44,6 +44,7 @@ def test_format_endpoint():
 
     dbformat = TEST_CLIENT.get(ep.FORMAT).get_json()
     assert isinstance(dbformat, dict)
+<<<<<<< HEAD
     assert isinstance(dbformat["row"], str)
     assert isinstance(dbformat["name"], list)
     assert isinstance(dbformat["prep time"], list)
@@ -51,6 +52,11 @@ def test_format_endpoint():
     assert isinstance(dbformat["total time"], list)
     assert isinstance(dbformat["servings"], list)
     assert isinstance(dbformat["yield"], list)
+=======
+    assert isinstance(dbformat["name"], str)
+    assert isinstance(dbformat["servings"], str)
+    assert isinstance(dbformat["cook time"], str)    
+>>>>>>> 721e91fb8a8fda7a315127085374c7ff5dc91004
     assert isinstance(dbformat["ingredients"], list)
     assert isinstance(dbformat["directions"], list)
     assert isinstance(dbformat["url"], list)
@@ -64,12 +70,21 @@ def test_get_database():
     way and if the get data from the database works.
     """
     dbentry = TEST_CLIENT.get(ep.DBGETTEST).get_json()
-    print(dbentry)
     assert ((dbentry["recipe_name"]) == (TEST_WEBSITE_TITLE))
     assert isinstance(dbentry["ingredients"], str)
     assert isinstance(dbentry["directions"], str)
     assert isinstance(dbentry["rating"], str)
     assert isinstance(dbentry, dict)
+
+
+def test_get_all():
+    """
+    This test servers to test the getall() endpoint and asserts
+    that it matches the format of a list of recipes.
+    """
+    alldb = TEST_CLIENT.get(ep.GETALL).get_json()
+    assert isinstance(alldb, list)
+
 
 
 def test_search_query():
