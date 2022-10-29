@@ -92,3 +92,10 @@ def test_search_query():
     #assert True
     resp_json = TEST_CLIENT.get(f'/search={TEST_SEARCH_QUERY}').get_json()
     assert isinstance(resp_json[ep.MESSAGE], str)
+
+def test_get_recipe_cuisines_list():
+    """
+    This test will test the recipe cuisines namespace endpoint.
+    """
+    resp_json = TEST_CLIENT.get(ep.RECIPE_CUISINES_LIST_W_NS).get_json()
+    assert isinstance(resp_json[ep.RECIPE_CUISINES_LIST_NM], list)

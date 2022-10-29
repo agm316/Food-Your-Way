@@ -10,7 +10,7 @@ import requests
 import werkzeug.exceptions as wz
 from bs4 import BeautifulSoup
 from flask import Flask, render_template, request, url_for, redirect
-from flask_restx import Resource, Api
+from flask_restx import Resource, Api, Namespace
 from http import HTTPStatus
 from pymongo import MongoClient
 
@@ -23,6 +23,7 @@ client = MongoClient('localhost', 27017)
 db = client.flask_db
 todos = db.todos
 
+LIST = 'list'
 HELLO = '/hello'
 MESSAGE = 'message'
 SCRAPE_WEBSITE = '/scrape'
@@ -32,6 +33,13 @@ RATING_ID = "mntl-recipe-review-bar__rating_1-0"
 FORMAT = '/format'
 DBGETTEST = '/dbtest'
 GETALL = '/getallrecipes'
+RECIPE_CUISINES_NS = 'recipe_cuisines'
+RECIPE_CUISINES_LIST = f'/{LIST}'
+RECIPE_CUISINES_LIST_W_NS = f'{RECIPE_CUISINES_NS}/{LIST}'
+RECIPE_CUISINES_LIST_NM = f'{RECIPE_CUISINES_NS}_list'
+
+recipe_cuisines = Namespace(RECIPE_CUISINES_NS, 'Recipe Cuisines')
+api.add_namespace(recipe_cuisines)
 
 
 @api.route('/hello')
@@ -182,6 +190,15 @@ class dbtest(Resource):
     """
     def get(self):
         return recdb.get_recipe("Armenian Pizzas (Lahmahjoon)")
+
+
+@recipe_cuisines.route(RECIPE_CUISINES_LIST)
+class RecipeCuisinesList(Resource):
+    """
+    This will get a list of recipe cuisines.
+    """
+    def get(self):
+        return {RECIPE_CUISINES_LIST_NM: recdb.get_all()}
 
 
 @api.route('/recipes')

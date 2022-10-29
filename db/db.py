@@ -15,6 +15,7 @@ recipes = {'Pizza': 'American', 'Fried Rice': 'Chinese', 'Sushi': 'Japanese',
 """
 
 recipes = {}
+recipe_cuisines = []
 
 
 def get_all():
