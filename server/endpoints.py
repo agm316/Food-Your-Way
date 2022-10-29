@@ -115,12 +115,20 @@ class ScrapeWebsite(Resource):
         """
         html_doc = requests.get(website).content
         soup = BeautifulSoup(html_doc, 'html.parser')
+
         # Get Recipe Name
         recipe_name = soup.find(id="article-heading_1-0").get_text().strip()
         if recipe_name == '':
             raise wz.NotFound(f'{website} not found')
+        prep_time = " "
+        cook_time = " "
+        total_time = " "
+        servings = " "
         ingr = ""
         directions = ""
+        rating = " "
+        url = " "
+
         # Get Ingredients
         ing_list_soup = soup.find(class_="mntl-structured-ingredients__list")
         for li in ing_list_soup.find_all("li"):
@@ -129,6 +137,7 @@ class ScrapeWebsite(Resource):
         if ingr == '':
             raise wz.NotFound("Ingredients Not Found")
         ingr = ingr[:(len(ingr)-2)]
+
         # Get Directions
         directions_soup = soup.find(id="mntl-sc-block_2-0")
         for li in directions_soup.find_all("li"):
@@ -137,15 +146,19 @@ class ScrapeWebsite(Resource):
         if directions == '':
             raise wz.NotFound("Directions Not Found")
         directions = directions[1:]
+
         # Get Rating (out of 5 stars)
-        rating = ''
         try:
             rating = soup.find(id=RATING_ID).get_text()
         except Warning:
             pass
         rating = rating.strip()
-        recipe_to_return = {"recipe_name": recipe_name, "ingredients": ingr,
-                            "directions": directions, "rating": rating}
+        recipe_to_return = {"recipe_name": recipe_name, "prep time": prep_time,
+                            "cook time": cook_time, "total time": total_time,
+                            "servings": servings, "ingredients": ingr,
+                            "directions": directions, "rating": rating,
+                            "url": url}
+
         # Recipe gets added to the database for later retrival
         recdb.add_recipe(recipe_to_return)
         return recipe_to_return

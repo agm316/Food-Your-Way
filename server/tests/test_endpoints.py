@@ -64,9 +64,14 @@ def test_get_database():
     """
     dbentry = TEST_CLIENT.get(ep.DBGETTEST).get_json()
     assert ((dbentry["recipe_name"]) == (TEST_WEBSITE_TITLE))
+    assert isinstance(dbentry["prep time"], str)
+    assert isinstance(dbentry["cook time"], str)
+    assert isinstance(dbentry["total time"], str)
+    assert isinstance(dbentry["servings"], str)
     assert isinstance(dbentry["ingredients"], str)
     assert isinstance(dbentry["directions"], str)
     assert isinstance(dbentry["rating"], str)
+    assert isinstance(dbentry["url"], str)
     assert isinstance(dbentry, dict)
 
 

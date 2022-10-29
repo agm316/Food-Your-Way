@@ -31,6 +31,8 @@ def get_recipe_names():
     """
     A function to return all the recipe names in the database.
     """
+    if len(recipes) == 0:
+        return "There are no recipes in the database!"
     return list(recipes.keys())
 
 
