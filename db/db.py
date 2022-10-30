@@ -22,10 +22,7 @@ def get_all():
     """
     Returns all recipes in the database.
     """
-    allrecipes = []
-    for name in list(recipes.keys()):
-        allrecipes.append(recipes[name])
-    return allrecipes
+    return list(recipes.values())
 
 
 def get_recipe_names():
@@ -60,7 +57,7 @@ def get_cuisine_types():
     """
     A function to return all the cuisine types in the database.
     """
-    return list(recipes.values())
+    return list(recipe_cuisines.values())
 
 # import csv
 # from pymongo import MongoClient
