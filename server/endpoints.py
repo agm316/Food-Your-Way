@@ -168,7 +168,9 @@ class ScrapeWebsite(Resource):
                             "url": url}
 
         # Recipe gets added to the database for later retrival
-        recdb.add_recipe(recipe_to_return)
+        if not recdb.add_recipe(recipe_to_return):
+            raise TypeError("Unable to add recipe to the database")
+            return False
         return recipe_to_return
 
 

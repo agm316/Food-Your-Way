@@ -30,7 +30,7 @@ def get_recipe_names():
     A function to return all the recipe names in the database.
     """
     if len(recipes) == 0:
-        return "There are no recipes in the database!"
+        return IndexError("There are no recipes in the database!")
     return list(recipes.keys())
 
 
@@ -40,7 +40,7 @@ def get_recipe(name):
     """
     print(recipes)
     if not recipes[name]:
-        raise IndexError(f'No database entry matches the name: {name}')
+        raise NameError(f'No database entry matches the name: {name}')
     return recipes[name]
 
 
@@ -51,6 +51,7 @@ def add_recipe(recipe):
     if not isinstance(recipe, dict):
         raise TypeError(f'Wrong type for recipe: {type(recipe)=}')
     recipes[recipe["recipe_name"]] = recipe
+    return True
 
 
 def get_cuisine_types():
