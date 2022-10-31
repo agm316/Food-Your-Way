@@ -26,14 +26,18 @@ def test_scrape_website():
     """
     resp_json = TEST_CLIENT.get(f'{ep.SCRAPE_WEBSITE}/{TEST_WEBSITE}').get_json()
     assert ((resp_json["recipe_name"]) == (TEST_WEBSITE_TITLE))
+    assert isinstance(resp_json["prep_time"], str)
+    assert isinstance(resp_json["cook_time"], str)
+    assert isinstance(resp_json["total_time"], str)
+    assert isinstance(resp_json["servings"], str)
     assert isinstance(resp_json["ingredients"], str)
     assert isinstance(resp_json["directions"], str)
     assert isinstance(resp_json["rating"], str)
+    assert isinstance(resp_json["url"], str)
     assert isinstance(resp_json["nutrition"], str)
     assert isinstance(resp_json["timing"], str)
     assert isinstance(resp_json["cuisine_path"], str)
     assert isinstance(resp_json, dict)
-
 
 def test_format_endpoint():
 
