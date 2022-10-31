@@ -38,6 +38,10 @@ RECIPE_CUISINES_LIST = f'/{LIST}'
 RECIPE_CUISINES_LIST_W_NS = f'{RECIPE_CUISINES_NS}/{LIST}'
 RECIPE_CUISINES_LIST_NM = f'{RECIPE_CUISINES_NS}_list'
 CUISINE_CLASS = "comp mntl-breadcrumbs__item mntl-block"
+NUTRITION_CLASS = 'mntl-nutrition-facts-label__table-body type--cat'
+TIMING_CLASS = "mntl-recipe-details__content"
+TIMING_LABEL = "mntl-recipe-details__label"
+TIMING_VALUE = "mntl-recipe-details__value"
 
 recipe_cuisines = Namespace(RECIPE_CUISINES_NS, 'Recipe Cuisines')
 api.add_namespace(recipe_cuisines)
@@ -87,8 +91,8 @@ class DataFormat(Resource):
         The 'get()' method returns an object holding the formula
         in the form of an array that has every type of entry.
         """
-        return {"row": "row", "name": "name", "prep time": "prep time",
-                "cook time": "cook time", "total time": "total time",
+        return {"row": "row", "name": "name", "prep_time": "prep_time",
+                "cook_time": "cook_time", "total_time": "total_time",
                 "servings": "servings", "yield": "yield", "ingredients": [],
                 "directions": [], "url": "url"}
 
@@ -137,6 +141,7 @@ class ScrapeWebsite(Resource):
         directions = ""
         rating = ""
         cuisine_path = "/"
+        nutr = ""
 
         # Get Ingredients
         ing_list_soup = soup.find(class_="mntl-structured-ingredients__list")
@@ -167,12 +172,46 @@ class ScrapeWebsite(Resource):
         for div in cuisine_soup:
             if (div.text.strip() != "Recipes"):
                 cuisine_path = (cuisine_path + div.text.strip() + "/")
-        recipe_to_return = {"recipe_name": recipe_name, "prep time": prep_time,
-                            "cook time": cook_time, "total time": total_time,
+        # Get Nutrition Information
+        nutr_soup = soup.find(class_=NUTRITION_CLASS)
+        for tr in nutr_soup.find_all("tr"):
+            if ((tr.text != "") and (tr.text.strip() != "% Daily Value *")):
+                tr_list = tr.text.split()
+                for i in tr_list:
+                    nutr += i + ' '
+                nutr = nutr[:(len(nutr)-1)]
+                nutr += ', '
+        if ((len(nutr) > 1)):
+            if (nutr[-2:] == ', '):
+                nutr = nutr[:(len(nutr)-2)]
+        # Get Timing
+        timing = ""
+        tm_label = ''
+        tm_val = ''
+        time_lb_soup = soup.find_all(class_=TIMING_LABEL)
+        time_val_soup = soup.find_all(class_=TIMING_VALUE)
+        for div in time_lb_soup:
+            tm_label += (div.text.strip() + ',')
+        tm_label = (tm_label[:len(tm_label)-1])
+        for div in time_val_soup:
+            tm_val += (div.text.strip() + ',')
+        tm_val = (tm_val[:len(tm_val)-1])
+        tm_l_lst = tm_label.split(',')
+        tm_v_lst = tm_val.split(',')
+        for i in range(len(tm_l_lst)):
+            timing += tm_l_lst[i].strip()
+            timing += ' '
+            timing += tm_v_lst[i].strip()
+            timing += ', '
+        timing = timing[:(len(timing)-2)]
+        recipe_to_return = {"recipe_name": recipe_name, "prep_time": prep_time,
+                            "cook_time": cook_time, "total_time": total_time,
                             "servings": servings, "ingredients": ingr,
                             "directions": directions, "rating": rating,
                             "url": website,
-                            "cuisine path": cuisine_path}
+                            "cuisine_path": cuisine_path,
+                            "nutrition": nutr,
+                            "timing": timing}
 
         # Recipe gets added to the database for later retrival
         if not recdb.add_recipe(recipe_to_return):
