@@ -5,7 +5,7 @@ The endpoint called `endpoints` will return all available endpoints.
 
 # import time
 # import urllib3
-import db.db as recdb
+from ..db import db as recdb # need to fix issue with make prod
 import requests
 import werkzeug.exceptions as wz
 from bs4 import BeautifulSoup
