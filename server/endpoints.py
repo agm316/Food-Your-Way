@@ -5,7 +5,7 @@ The endpoint called `endpoints` will return all available endpoints.
 
 # import time
 # import urllib3
-from ..db import db as recdb # need to fix issue with make prod
+from db import db as recdb  # need to fix issue with make prod
 import requests
 import werkzeug.exceptions as wz
 from bs4 import BeautifulSoup
@@ -128,14 +128,13 @@ class ScrapeWebsite(Resource):
         recipe_name = soup.find(id="article-heading_1-0").get_text().strip()
         if recipe_name == '':
             raise wz.NotFound(f'{website} not found')
-        prep_time = " "
-        cook_time = " "
-        total_time = " "
-        servings = " "
+        prep_time = ""
+        cook_time = ""
+        total_time = ""
+        servings = ""
         ingr = ""
         directions = ""
-        rating = " "
-        url = " "
+        rating = ""
 
         # Get Ingredients
         ing_list_soup = soup.find(class_="mntl-structured-ingredients__list")
@@ -161,11 +160,17 @@ class ScrapeWebsite(Resource):
         except Warning:
             pass
         rating = rating.strip()
+        cuisine_class = "comp mntl-breadcrumbs__item mntl-block"
+        cuisine_path = "/"
+        cuisine_soup = soup.find_all(class_=cuisine_class)
+        for div in cuisine_soup:
+            if (div.text.strip() != "Recipes"):
+                cuisine_path = (cuisine_path + div.text.strip() + "/")
         recipe_to_return = {"recipe_name": recipe_name, "prep time": prep_time,
                             "cook time": cook_time, "total time": total_time,
                             "servings": servings, "ingredients": ingr,
                             "directions": directions, "rating": rating,
-                            "url": url}
+                            "url": website}
 
         # Recipe gets added to the database for later retrival
         if not recdb.add_recipe(recipe_to_return):
