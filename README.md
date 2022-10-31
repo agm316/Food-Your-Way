@@ -10,7 +10,7 @@ ROUGH USER FLOW:
 TO DO:
 - make database
 - make recipe scraper (script to populate database)
-- make recipe search bar
+- make recipe search bar (setup react for UI after this works)
 - create automated testing of API
 - will add specific filters (certain amount of calories, allergies, vegeterian/vegan options)
 
