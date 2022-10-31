@@ -37,6 +37,7 @@ RECIPE_CUISINES_NS = 'recipe_cuisines'
 RECIPE_CUISINES_LIST = f'/{LIST}'
 RECIPE_CUISINES_LIST_W_NS = f'{RECIPE_CUISINES_NS}/{LIST}'
 RECIPE_CUISINES_LIST_NM = f'{RECIPE_CUISINES_NS}_list'
+CUISINE_CLASS = "comp mntl-breadcrumbs__item mntl-block"
 
 recipe_cuisines = Namespace(RECIPE_CUISINES_NS, 'Recipe Cuisines')
 api.add_namespace(recipe_cuisines)
@@ -135,6 +136,7 @@ class ScrapeWebsite(Resource):
         ingr = ""
         directions = ""
         rating = ""
+        cuisine_path = "/"
 
         # Get Ingredients
         ing_list_soup = soup.find(class_="mntl-structured-ingredients__list")
@@ -160,9 +162,8 @@ class ScrapeWebsite(Resource):
         except Warning:
             pass
         rating = rating.strip()
-        cuisine_class = "comp mntl-breadcrumbs__item mntl-block"
-        cuisine_path = "/"
-        cuisine_soup = soup.find_all(class_=cuisine_class)
+        # Get Cuisine Path
+        cuisine_soup = soup.find_all(class_=CUISINE_CLASS)
         for div in cuisine_soup:
             if (div.text.strip() != "Recipes"):
                 cuisine_path = (cuisine_path + div.text.strip() + "/")
@@ -170,7 +171,8 @@ class ScrapeWebsite(Resource):
                             "cook time": cook_time, "total time": total_time,
                             "servings": servings, "ingredients": ingr,
                             "directions": directions, "rating": rating,
-                            "url": website}
+                            "url": website,
+                            "cuisine path": cuisine_path}
 
         # Recipe gets added to the database for later retrival
         if not recdb.add_recipe(recipe_to_return):
