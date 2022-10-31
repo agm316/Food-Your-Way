@@ -42,6 +42,7 @@ NUTRITION_CLASS = 'mntl-nutrition-facts-label__table-body type--cat'
 TIMING_CLASS = "mntl-recipe-details__content"
 TIMING_LABEL = "mntl-recipe-details__label"
 TIMING_VALUE = "mntl-recipe-details__value"
+IMG_CLASS = ['primary-image__image', 'mntl-primary-image--blurry']
 
 recipe_cuisines = Namespace(RECIPE_CUISINES_NS, 'Recipe Cuisines')
 api.add_namespace(recipe_cuisines)
@@ -142,6 +143,10 @@ class ScrapeWebsite(Resource):
         rating = ""
         cuisine_path = "/"
         nutr = ""
+        timing = ""
+        tm_label = ''
+        tm_val = ''
+        img_src = ""
 
         # Get Ingredients
         ing_list_soup = soup.find(class_="mntl-structured-ingredients__list")
@@ -185,9 +190,6 @@ class ScrapeWebsite(Resource):
             if (nutr[-2:] == ', '):
                 nutr = nutr[:(len(nutr)-2)]
         # Get Timing
-        timing = ""
-        tm_label = ''
-        tm_val = ''
         time_lb_soup = soup.find_all(class_=TIMING_LABEL)
         time_val_soup = soup.find_all(class_=TIMING_VALUE)
         for div in time_lb_soup:
@@ -204,6 +206,15 @@ class ScrapeWebsite(Resource):
             timing += tm_v_lst[i].strip()
             timing += ', '
         timing = timing[:(len(timing)-2)]
+        # Split timing into its individual components
+        # tm_split = timing.split(',')
+        # not finished will work on later
+        # Get Image URL
+        img_soup = soup.find_all("img", class_=IMG_CLASS)
+        try:
+            img_src = img_soup[0]['src'].strip()
+        except Warning:
+            pass
         recipe_to_return = {"recipe_name": recipe_name, "prep_time": prep_time,
                             "cook_time": cook_time, "total_time": total_time,
                             "servings": servings, "ingredients": ingr,
@@ -211,7 +222,8 @@ class ScrapeWebsite(Resource):
                             "url": website,
                             "cuisine_path": cuisine_path,
                             "nutrition": nutr,
-                            "timing": timing}
+                            "timing": timing,
+                            "img_src": img_src}
 
         # Recipe gets added to the database for later retrival
         if not recdb.add_recipe(recipe_to_return):
