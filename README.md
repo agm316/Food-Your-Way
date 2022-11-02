@@ -9,6 +9,7 @@ ROUGH USER FLOW:
 
 TO DO:
 - make database
+- add HATEOAS / react setup
 - make recipe scraper (script to populate database)
 - make recipe search bar (setup react for UI after this works)
 - create automated testing of API
