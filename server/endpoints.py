@@ -48,6 +48,7 @@ TIMING_CLASS = "mntl-recipe-details__content"
 TIMING_LABEL = "mntl-recipe-details__label"
 TIMING_VALUE = "mntl-recipe-details__value"
 IMG_CLASS = ['primary-image__image', 'mntl-primary-image--blurry']
+IMG_ID2 = "mntl-sc-block-image_1-0-1"
 
 recipe_cuisines = Namespace(RECIPE_CUISINES_NS, 'Recipe Cuisines')
 api.add_namespace(recipe_cuisines)
@@ -226,13 +227,14 @@ class ScrapeWebsite(Resource):
                 servings = split_indiv[1].strip()
             elif (split_indiv[0].strip() == "Yield"):
                 yield_val = split_indiv[1].strip()
-        # not finished will work on later
         # Get Image URL
         img_soup = soup.find_all("img", class_=IMG_CLASS)
-        try:
+        img2_soup = soup.find("img", id=IMG_ID2)
+        if (len(img_soup) > 0):
             img_src = img_soup[0]['src'].strip()
-        except Warning:
-            pass
+        elif (img2_soup != ""):
+            img_src = img2_soup['data-src'].strip()
+        # Return
         recipe_to_return = {"recipe_name": recipe_name, "prep_time": prep_time,
                             "cook_time": cook_time, "total_time": total_time,
                             "servings": servings, "yield": yield_val,
