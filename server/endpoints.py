@@ -143,6 +143,7 @@ class ScrapeWebsite(Resource):
         cook_time = ""
         total_time = ""
         servings = ""
+        yield_val = ""
         ingr = ""
         directions = ""
         rating = ""
@@ -212,7 +213,19 @@ class ScrapeWebsite(Resource):
             timing += ', '
         timing = timing[:(len(timing)-2)]
         # Split timing into its individual components
-        # tm_split = timing.split(',')
+        tm_split = timing.split(',')
+        for x in range(len(tm_split)):
+            split_indiv = tm_split[x].split(':')
+            if (split_indiv[0].strip() == "Prep Time"):
+                prep_time = split_indiv[1].strip()
+            elif (split_indiv[0].strip() == "Cook Time"):
+                cook_time = split_indiv[1].strip()
+            elif (split_indiv[0].strip() == "Total Time"):
+                total_time = split_indiv[1].strip()
+            elif (split_indiv[0].strip() == "Servings"):
+                servings = split_indiv[1].strip()
+            elif (split_indiv[0].strip() == "Yield"):
+                yield_val = split_indiv[1].strip()
         # not finished will work on later
         # Get Image URL
         img_soup = soup.find_all("img", class_=IMG_CLASS)
@@ -222,7 +235,8 @@ class ScrapeWebsite(Resource):
             pass
         recipe_to_return = {"recipe_name": recipe_name, "prep_time": prep_time,
                             "cook_time": cook_time, "total_time": total_time,
-                            "servings": servings, "ingredients": ingr,
+                            "servings": servings, "yield": yield_val,
+                            "ingredients": ingr,
                             "directions": directions, "rating": rating,
                             "url": website,
                             "cuisine_path": cuisine_path,
