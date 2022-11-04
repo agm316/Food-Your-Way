@@ -13,11 +13,12 @@ from flask import Flask, render_template, request, url_for, redirect
 from flask_restx import Resource, Api, Namespace
 from http import HTTPStatus
 from pymongo import MongoClient
+from db import db as recdb  # need to fix issue with make prod
 
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from db import db as recdb  # need to fix issue with make prod
+
 
 app = Flask(__name__)
 api = Api(app)
