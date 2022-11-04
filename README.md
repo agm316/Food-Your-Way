@@ -1,5 +1,10 @@
 # FOOD YOUR WAY
 
+
+HATEOAS BRANCH:
+Currently using this branch to test HATEOAS integration.  A more polished version will be added to the final product.
+
+
 Description:
 A recipe database that makes looking up recipes by filters simple and easy for everyone. Enabling search by lifestyle, diet, or even ingredients (to either include or exclude specific ingredients). 
 
