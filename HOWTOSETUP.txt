@@ -4,8 +4,9 @@ Make sure to install the requirements in the root (topmost) folder:
 
 pip3 install -r requirements-dev.txt
 
-Sometimes you need to run:
+Sometimes you need to run this as ./local.sh misses it:
 export PYTHONPATH=$(pwd):$PYTHONPATH
+
 
 Then run:
 ./local.sh
