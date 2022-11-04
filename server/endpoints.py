@@ -5,7 +5,7 @@ The endpoint called `endpoints` will return all available endpoints.
 
 # import time
 # import urllib3
-import db.db as recdb
+
 import requests
 import werkzeug.exceptions as wz
 from bs4 import BeautifulSoup
@@ -13,6 +13,11 @@ from flask import Flask, render_template, request, url_for, redirect
 from flask_restx import Resource, Api, Namespace
 from http import HTTPStatus
 from pymongo import MongoClient
+from db import db as recdb  # need to fix issue with make prod
+
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 
 app = Flask(__name__)
@@ -37,6 +42,13 @@ RECIPE_CUISINES_NS = 'recipe_cuisines'
 RECIPE_CUISINES_LIST = f'/{LIST}'
 RECIPE_CUISINES_LIST_W_NS = f'{RECIPE_CUISINES_NS}/{LIST}'
 RECIPE_CUISINES_LIST_NM = f'{RECIPE_CUISINES_NS}_list'
+CUISINE_CLASS = "comp mntl-breadcrumbs__item mntl-block"
+NUTRITION_CLASS = 'mntl-nutrition-facts-label__table-body type--cat'
+TIMING_CLASS = "mntl-recipe-details__content"
+TIMING_LABEL = "mntl-recipe-details__label"
+TIMING_VALUE = "mntl-recipe-details__value"
+IMG_CLASS = ['primary-image__image', 'mntl-primary-image--blurry']
+IMG_ID2 = "mntl-sc-block-image_1-0-1"
 
 recipe_cuisines = Namespace(RECIPE_CUISINES_NS, 'Recipe Cuisines')
 api.add_namespace(recipe_cuisines)
@@ -86,8 +98,8 @@ class DataFormat(Resource):
         The 'get()' method returns an object holding the formula
         in the form of an array that has every type of entry.
         """
-        return {"row": "row", "name": "name", "prep time": "prep time",
-                "cook time": "cook time", "total time": "total time",
+        return {"row": "row", "name": "name", "prep_time": "prep_time",
+                "cook_time": "cook_time", "total_time": "total_time",
                 "servings": "servings", "yield": "yield", "ingredients": [],
                 "directions": [], "url": "url"}
 
@@ -128,14 +140,20 @@ class ScrapeWebsite(Resource):
         recipe_name = soup.find(id="article-heading_1-0").get_text().strip()
         if recipe_name == '':
             raise wz.NotFound(f'{website} not found')
-        prep_time = " "
-        cook_time = " "
-        total_time = " "
-        servings = " "
-        ingr = " "
+        prep_time = ""
+        cook_time = ""
+        total_time = ""
+        servings = ""
+        yield_val = ""
+        ingr = ""
         directions = ""
-        rating = " "
-        url = " "
+        rating = ""
+        cuisine_path = "/"
+        nutr = ""
+        timing = ""
+        tm_label = ""
+        tm_val = ""
+        img_src = ""
 
         # Get Ingredients
         ing_list_soup = soup.find(class_="mntl-structured-ingredients__list")
@@ -161,19 +179,82 @@ class ScrapeWebsite(Resource):
         except Warning:
             pass
         rating = rating.strip()
-        recipe_to_return = {"recipe_name": recipe_name, "prep time": prep_time,
-                            "cook time": cook_time, "total time": total_time,
-                            "servings": servings, "ingredients": ingr,
+        # Get Cuisine Path
+        cuisine_soup = soup.find_all(class_=CUISINE_CLASS)
+        for div in cuisine_soup:
+            if div.text.strip() != "Recipes":
+                cuisine_path = (cuisine_path + div.text.strip() + "/")
+        # Get Nutrition Information
+        nutr_soup = soup.find(class_=NUTRITION_CLASS)
+        for tr in nutr_soup.find_all("tr"):
+            if (tr.text != "") and (tr.text.strip() != "% Daily Value *"):
+                tr_list = tr.text.split()
+                for i in tr_list:
+                    nutr += i + ' '
+                nutr = nutr[:(len(nutr)-1)]
+                nutr += ', '
+        if len(nutr) > 1:
+            if nutr[-2:] == ', ':
+                nutr = nutr[:(len(nutr)-2)]
+        # Get Timing
+        time_lb_soup = soup.find_all(class_=TIMING_LABEL)
+        time_val_soup = soup.find_all(class_=TIMING_VALUE)
+        for div in time_lb_soup:
+            tm_label += (div.text.strip() + ',')
+        tm_label = (tm_label[:len(tm_label)-1])
+        for div in time_val_soup:
+            tm_val += (div.text.strip() + ',')
+        tm_val = (tm_val[:len(tm_val)-1])
+        tm_l_lst = tm_label.split(',')
+        tm_v_lst = tm_val.split(',')
+        for i in range(len(tm_l_lst)):
+            timing += tm_l_lst[i].strip()
+            timing += ' '
+            timing += tm_v_lst[i].strip()
+            timing += ', '
+        timing = timing[:(len(timing)-2)]
+        # Split timing into its individual components
+        tm_split = timing.split(',')
+        for x in range(len(tm_split)):
+            split_indiv = tm_split[x].split(':')
+            if split_indiv[0].strip() == "Prep Time":
+                prep_time = split_indiv[1].strip()
+            elif split_indiv[0].strip() == "Cook Time":
+                cook_time = split_indiv[1].strip()
+            elif split_indiv[0].strip() == "Total Time":
+                total_time = split_indiv[1].strip()
+            elif split_indiv[0].strip() == "Servings":
+                servings = split_indiv[1].strip()
+            elif split_indiv[0].strip() == "Yield":
+                yield_val = split_indiv[1].strip()
+        # Get Image URL
+        img_soup = soup.find_all("img", class_=IMG_CLASS)
+        img2_soup = soup.find("img", id=IMG_ID2)
+        if len(img_soup) > 0:
+            img_src = img_soup[0]['src'].strip()
+        elif img2_soup != "":
+            img_src = img2_soup['data-src'].strip()
+        # Return
+        recipe_to_return = {"recipe_name": recipe_name, "prep_time": prep_time,
+                            "cook_time": cook_time, "total_time": total_time,
+                            "servings": servings, "yield": yield_val,
+                            "ingredients": ingr,
                             "directions": directions, "rating": rating,
-                            "url": url}
+                            "url": website,
+                            "cuisine_path": cuisine_path,
+                            "nutrition": nutr,
+                            "timing": timing,
+                            "img_src": img_src}
 
         # Recipe gets added to the database for later retrieval
-        recdb.add_recipe(recipe_to_return)
+        if not recdb.add_recipe(recipe_to_return):
+            raise TypeError("Unable to add recipe to the database")
+            return False
         return recipe_to_return
 
 
 @api.route('/getallrecipes')
-class getall(Resource):
+class getAll(Resource):
     """
     This endpoint servers to return all recipes in the
     database and return them as a list of JSONs.
