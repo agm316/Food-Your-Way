@@ -87,9 +87,7 @@ def get_cuisine_types():
 # from pymongo import MongoClient
 #
 # client = MongoClient('localhost', 27017)
-# print(client)
 # database = client['Recipes']
-# print(database)
 # collection = database['test_recipes']
 #
 #
