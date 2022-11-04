@@ -30,6 +30,7 @@ def test_scrape_website():
     assert isinstance(resp_json["cook_time"], str)
     assert isinstance(resp_json["total_time"], str)
     assert isinstance(resp_json["servings"], str)
+    assert isinstance(resp_json["yield"], str)
     assert isinstance(resp_json["ingredients"], str)
     assert isinstance(resp_json["directions"], str)
     assert isinstance(resp_json["rating"], str)
