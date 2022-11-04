@@ -132,7 +132,7 @@ class ScrapeWebsite(Resource):
         cook_time = " "
         total_time = " "
         servings = " "
-        ingr = ""
+        ingr = " "
         directions = ""
         rating = " "
         url = " "
@@ -140,7 +140,7 @@ class ScrapeWebsite(Resource):
         # Get Ingredients
         ing_list_soup = soup.find(class_="mntl-structured-ingredients__list")
         for li in ing_list_soup.find_all("li"):
-            if (li.text != ""):
+            if li.text != "":
                 ingr += (li.text[1:(len(li.text)-1)] + ", ")
         if ingr == '':
             raise wz.NotFound("Ingredients Not Found")
@@ -149,7 +149,7 @@ class ScrapeWebsite(Resource):
         # Get Directions
         directions_soup = soup.find(id="mntl-sc-block_2-0")
         for li in directions_soup.find_all("li"):
-            if (li.text != ""):
+            if li.text != "":
                 directions += (li.text[1:(len(li.text)-3)])
         if directions == '':
             raise wz.NotFound("Directions Not Found")
@@ -167,7 +167,7 @@ class ScrapeWebsite(Resource):
                             "directions": directions, "rating": rating,
                             "url": url}
 
-        # Recipe gets added to the database for later retrival
+        # Recipe gets added to the database for later retrieval
         recdb.add_recipe(recipe_to_return)
         return recipe_to_return
 
@@ -183,7 +183,7 @@ class getall(Resource):
 
 
 @api.route('/dbtest')
-class dbtest(Resource):
+class dbTest(Resource):
     """
     Endpoint to test the data getting from the database
     in the /db/db.py file
