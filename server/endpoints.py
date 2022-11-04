@@ -5,7 +5,7 @@ The endpoint called `endpoints` will return all available endpoints.
 
 # import time
 # import urllib3
-from db import db as recdb  # need to fix issue with make prod
+
 import requests
 import werkzeug.exceptions as wz
 from bs4 import BeautifulSoup
@@ -14,6 +14,10 @@ from flask_restx import Resource, Api, Namespace
 from http import HTTPStatus
 from pymongo import MongoClient
 
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from db import db as recdb  # need to fix issue with make prod
 
 app = Flask(__name__)
 api = Api(app)
