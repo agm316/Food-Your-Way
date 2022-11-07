@@ -12,7 +12,7 @@ def test_hello():
     """
     See if Hello works
     """
-    #assert True
+    # assert True
     resp_json = TEST_CLIENT.get(ep.HELLO).get_json()
     assert isinstance(resp_json[ep.MESSAGE], str)
 
@@ -40,6 +40,7 @@ def test_scrape_website():
     assert isinstance(resp_json["cuisine_path"], str)
     assert isinstance(resp_json["img_src"], str)
     assert isinstance(resp_json, dict)
+
 
 def test_format_endpoint():
 
@@ -72,7 +73,7 @@ def test_get_database():
     way and if the get data from the database works.
     """
     dbentry = TEST_CLIENT.get(ep.DBGETTEST).get_json()
-    assert ((dbentry["recipe_name"]) == (TEST_WEBSITE_TITLE))
+    assert dbentry["recipe_name"] == TEST_WEBSITE_TITLE
     assert isinstance(dbentry["prep_time"], str)
     assert isinstance(dbentry["cook_time"], str)
     assert isinstance(dbentry["total_time"], str)
@@ -93,7 +94,6 @@ def test_get_all():
     assert isinstance(alldb, list)
 
 
-
 def test_search_query():
     """
     See if Search Query works (NOT YET CONNECTED TO DB, update later when it is)
@@ -102,9 +102,18 @@ def test_search_query():
     resp_json = TEST_CLIENT.get(f'/search={TEST_SEARCH_QUERY}').get_json()
     assert isinstance(resp_json[ep.MESSAGE], str)
 
+
 def test_get_recipe_cuisines_list():
     """
     This test will test the recipe cuisines namespace endpoint.
     """
     resp_json = TEST_CLIENT.get(ep.RECIPE_CUISINES_LIST_W_NS).get_json()
     assert isinstance(resp_json[ep.RECIPE_CUISINES_LIST_NM], list)
+
+
+def test_get_recipe_suggestions_list():
+    """
+    This test will test the recipe suggestions namespace endpoint.
+    """
+    resp_json = TEST_CLIENT.get(ep.RECIPE_SUGGESTIONS_LIST_W_NS).get_json()
+    assert isinstance(resp_json[ep.RECIPE_SUGGESTIONS_LIST_NM], list)

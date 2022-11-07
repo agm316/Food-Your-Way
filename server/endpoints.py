@@ -1,11 +1,10 @@
 """
-This is the file containing all of the endpoints for our flask app.
+This is the file containing all the endpoints for our flask app.
 The endpoint called `endpoints` will return all available endpoints.
 """
 
 # import time
 # import urllib3
-
 import requests
 import werkzeug.exceptions as wz
 from bs4 import BeautifulSoup
@@ -42,6 +41,10 @@ RECIPE_CUISINES_NS = 'recipe_cuisines'
 RECIPE_CUISINES_LIST = f'/{LIST}'
 RECIPE_CUISINES_LIST_W_NS = f'{RECIPE_CUISINES_NS}/{LIST}'
 RECIPE_CUISINES_LIST_NM = f'{RECIPE_CUISINES_NS}_list'
+RECIPE_SUGGESTIONS_NS = 'recipe_suggestions'
+RECIPE_SUGGESTIONS_LIST = f'/{LIST}'
+RECIPE_SUGGESTIONS_LIST_W_NS = f'{RECIPE_SUGGESTIONS_NS}/{LIST}'
+RECIPE_SUGGESTIONS_LIST_NM = f'{RECIPE_SUGGESTIONS_NS}_list'
 CUISINE_CLASS = "comp mntl-breadcrumbs__item mntl-block"
 NUTRITION_CLASS = 'mntl-nutrition-facts-label__table-body type--cat'
 TIMING_CLASS = "mntl-recipe-details__content"
@@ -52,6 +55,9 @@ IMG_ID2 = "mntl-sc-block-image_1-0-1"
 
 recipe_cuisines = Namespace(RECIPE_CUISINES_NS, 'Recipe Cuisines')
 api.add_namespace(recipe_cuisines)
+
+recipe_suggestions = Namespace(RECIPE_SUGGESTIONS_NS, 'Recipe Suggestions')
+api.add_namespace(recipe_suggestions)
 
 
 @api.route('/hello')
@@ -280,6 +286,15 @@ class RecipeCuisinesList(Resource):
     """
     def get(self):
         return {RECIPE_CUISINES_LIST_NM: recdb.get_all()}
+
+
+@recipe_suggestions.route(RECIPE_SUGGESTIONS_LIST)
+class RecipeSuggestionsList(Resource):
+    """
+    This will get a list of recipe suggestions.
+    """
+    def get(self):
+        return {RECIPE_SUGGESTIONS_LIST_NM: recdb.get_all()}
 
 
 @api.route('/recipes')
