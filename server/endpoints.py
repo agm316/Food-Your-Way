@@ -54,6 +54,7 @@ IMG_CLASS = ['primary-image__image', 'mntl-primary-image--blurry']
 IMG_ID2 = "mntl-sc-block-image_1-0-1"
 MAIN_MENU_NM = 'Main Menu'
 MAIN_MENU = '/main_menu'
+GET_ALL_RECIPES = 'getallrecipes'
 
 recipe_cuisines = Namespace(RECIPE_CUISINES_NS, 'Recipe Cuisines')
 api.add_namespace(recipe_cuisines)
@@ -271,7 +272,11 @@ class MainMenu(Resource):
         Gets the main menu.
         """
         return {'Title': MAIN_MENU_NM,
-                'the': 'menu'}
+                'Default': 1,
+                'Choices': {
+                    '1': {'url': f'/{GET_ALL_RECIPES}', 'method': 'get',
+                          'text': 'Get All Recipes'},
+                }}
 
 
 @api.route('/getallrecipes')
