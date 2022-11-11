@@ -52,6 +52,8 @@ TIMING_LABEL = "mntl-recipe-details__label"
 TIMING_VALUE = "mntl-recipe-details__value"
 IMG_CLASS = ['primary-image__image', 'mntl-primary-image--blurry']
 IMG_ID2 = "mntl-sc-block-image_1-0-1"
+MAIN_MENU_NM = 'Main Menu'
+MAIN_MENU = '/main_menu'
 
 recipe_cuisines = Namespace(RECIPE_CUISINES_NS, 'Recipe Cuisines')
 api.add_namespace(recipe_cuisines)
@@ -257,6 +259,19 @@ class ScrapeWebsite(Resource):
             raise TypeError("Unable to add recipe to the database")
             return False
         return recipe_to_return
+
+
+@api.route(MAIN_MENU)
+class MainMenu(Resource):
+    """
+    This Will Deliver Our Main Menu
+    """
+    def get(self):
+        """
+        Gets the main menu.
+        """
+        return {'Title': MAIN_MENU_NM,
+                'the': 'menu'}
 
 
 @api.route('/getallrecipes')
