@@ -52,7 +52,7 @@ TIMING_LABEL = "mntl-recipe-details__label"
 TIMING_VALUE = "mntl-recipe-details__value"
 IMG_CLASS = ['primary-image__image', 'mntl-primary-image--blurry']
 IMG_ID2 = "mntl-sc-block-image_1-0-1"
-MAIN_MENU_NM = 'Main Menu'
+MAIN_MENU_NM = 'Food Your Way Main Menu'
 MAIN_MENU = '/main_menu'
 GET_ALL_RECIPES = 'getallrecipes'
 
