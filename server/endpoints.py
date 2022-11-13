@@ -267,7 +267,7 @@ class ScrapeWebsite(Resource):
 @api.route(MAIN_MENU)
 class MainMenu(Resource):
     """
-    This Will Deliver Our Main Menu
+    This Will Deliver Our Main Menu.  If variable doesn't have / you don't need to add it for formatting.
     """
     def get(self):
         """
@@ -276,13 +276,13 @@ class MainMenu(Resource):
         return {'Title': MAIN_MENU_NM,
                 'Default': 1,
                 'Choices': {
-                    '1': {'url': f'/{GET_ALL_RECIPES}', 'method': 'get',
+                    '1': {'url': f'{GET_ALL_RECIPES}', 'method': 'get',
                           'text': 'Get All Recipes'},
-                    '2': {'url': f'/{GET_RECIPE_SUGGESTIONS}', 'method': 'get',
+                    '2': {'url': f'{GET_RECIPE_SUGGESTIONS}', 'method': 'get',
                           'text': 'Get Recipe Suggestions'},
                     '3': {'url': f'/{FORMAT}', 'method': 'get',
                           'text': 'Get the recipe format'},
-                    '4': {'url': f'/{SETTINGS}', 'method': 'get',
+                    '4': {'url': f'{SETTINGS}', 'method': 'get',
                           'text': 'Change search and UI settings'},
                 }}
 
