@@ -281,6 +281,8 @@ class MainMenu(Resource):
                           'text': 'Get Recipe Suggestions'},
                     '3': {'url': f'{FORMAT}', 'method': 'get',
                           'text': 'Get the recipe format'}
+                    '4': {'url': f'{SETTINGS}', 'method': 'get',
+                          'text': 'Change search and UI settings'}
                 }}
 
 
