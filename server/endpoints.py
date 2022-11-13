@@ -318,14 +318,17 @@ class MainMenu(Resource):
 @api.route('/getrecipesuggestions')
 class getRecipeSuggestions(Resource):
     """
-    This endpoint gets current
-    recipe suggestions from db.
-    Currently returns placeholder.
+    This endpoint serves to return a dictionary of
+    recipe suggestions from the database.
     """
+
     def get(self):
-        return {'Data': {'DATA': 'DATA', 'TITLE': 'TITLE'},
-                'Type': {'Data': 2},
-                'Title': {'SUGGESTION1': 'Example Suggestion'}}
+        return {'Data': {"Cuisine": "Chinese",
+                         "Food": "Roasted Pork",
+                         "Drink": "Ginger Lime Ice Green Tea"},
+                'Type': {'Data': 12},
+                'Title': {'Suggestion': 'Chinese Food'}
+                }
 
 
 @api.route('/searchUIsettings')
@@ -350,7 +353,7 @@ class getAll(Resource):
         # return recdb.get_all()
         return {'Data': {'DATA': 'DATA', 'TITLE': 'TITLE'},
                 'Type': {'Data': 2},
-                'Title': {'FOOD ITEM': 'Food ITem'}}
+                'Title': {'FOOD ITEM': 'Food Item'}}
 
 
 @api.route('/dbtest')
