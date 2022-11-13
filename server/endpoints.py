@@ -56,6 +56,7 @@ MAIN_MENU_NM = 'Food Your Way Main Menu'
 MAIN_MENU = '/main_menu'
 GET_ALL_RECIPES = 'getallrecipes'
 GET_RECIPE_SUGGESTIONS = 'getrecipesuggestions'
+SETTINGS = 'searchUIsettings'
 
 recipe_cuisines = Namespace(RECIPE_CUISINES_NS, 'Recipe Cuisines')
 api.add_namespace(recipe_cuisines)
@@ -282,7 +283,7 @@ class MainMenu(Resource):
                     '3': {'url': f'/{FORMAT}', 'method': 'get',
                           'text': 'Get the recipe format'},
                     '4': {'url': f'/{SETTINGS}', 'method': 'get',
-                          'text': 'Change search and UI settings'}
+                          'text': 'Change search and UI settings'},
                 }}
 
 
