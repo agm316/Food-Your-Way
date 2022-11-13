@@ -318,13 +318,13 @@ class MainMenu(Resource):
 @api.route('/searchUIsettings')
 class getSettings(Resource):
     """
-    This endpoint gets current 
+    This endpoint gets current
     search and UI settings.
     """
     def get(self):
-        return {'Data': {'DATA': 'DATA', 'TITLE': 'TITLE'}} #dummy data
-    
-    
+        return {'Data': {'DATA': 'DATA', 'TITLE': 'TITLE'}}
+
+
 @api.route('/getallrecipes')
 class getAll(Resource):
     """
