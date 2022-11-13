@@ -278,7 +278,9 @@ class MainMenu(Resource):
                     '1': {'url': f'/{GET_ALL_RECIPES}', 'method': 'get',
                           'text': 'Get All Recipes'},
                     '2': {'url': f'/{GET_RECIPE_SUGGESTIONS}', 'method': 'get',
-                          'text': 'Get Recipe Suggestions'}
+                          'text': 'Get Recipe Suggestions'},
+                    '3': {'url': f'{FORMAT}', 'method': 'get',
+                          'text': 'Get the recipe format'}
                 }}
 
 
