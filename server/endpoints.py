@@ -311,10 +311,20 @@ class MainMenu(Resource):
                     '3': {'url': f'/{FORMATTEXTGAME}', 'method': 'get',
                           'text': 'Get the recipe format'},
                     '4': {'url': f'/{SETTINGS}', 'method': 'get',
-                          'text': 'Change search and UI settings'},
+                          'text': 'Get search and UI settings'},
                 }}
 
 
+@api.route('/searchUIsettings')
+class getSettings(Resource):
+    """
+    This endpoint gets current 
+    search and UI settings.
+    """
+    def get(self):
+        return {'Data': {'DATA': 'DATA', 'TITLE': 'TITLE'}} #dummy data
+    
+    
 @api.route('/getallrecipes')
 class getAll(Resource):
     """
