@@ -35,6 +35,7 @@ SEARCH = '/search'
 SEARCH_QUERY = 'Pizza'
 RATING_ID = "mntl-recipe-review-bar__rating_1-0"
 FORMAT = '/format'
+FORMATTEXTGAME = '/formatTextGame'
 DBGETTEST = '/dbtest'
 GETALL = '/getallrecipes'
 RECIPE_CUISINES_NS = 'recipe_cuisines'
@@ -113,6 +114,33 @@ class DataFormat(Resource):
                 "cook_time": "cook_time", "total_time": "total_time",
                 "servings": "servings", "yield": "yield", "ingredients": [],
                 "directions": [], "url": "url"}
+
+
+@api.route('/formatTextGame')
+class DataFormatTextGame(Resource):
+    """
+    This class serves to inform the user on the format of the db
+    entries and also servers to assert that the entires are
+    of the right form
+    """
+
+    def get(self):
+        """
+        Trivial endpoint at the moment, will update with asserting
+        right db entry format later.
+        The 'get()' method returns an object holding the formula
+        in the form of an array that has every type of entry.
+        """
+        return {'Data': {"row": "row", "name": "name",
+                         "prep_time": "prep_time",
+                         "cook_time": "cook_time",
+                         "total_time": "total_time",
+                         "servings": "servings",
+                         "yield": "yield", "ingredients": [],
+                         "directions": [], "url": "url"},
+                'Type': {'Data': 10},
+                'Title': {'Title': 'RecipeFormat'}
+                }
 
 
 @api.route(f'/search={SEARCH_QUERY}')
@@ -267,9 +295,7 @@ class ScrapeWebsite(Resource):
 @api.route(MAIN_MENU)
 class MainMenu(Resource):
     """
-    This Will Deliver Our Main Menu.  If variable doesn't
-     have / you don't need to add
-     it for formatting.
+    This Will Deliver Our Main Menu.
     """
     def get(self):
         """
@@ -278,13 +304,13 @@ class MainMenu(Resource):
         return {'Title': MAIN_MENU_NM,
                 'Default': 1,
                 'Choices': {
-                    '1': {'url': f'{GET_ALL_RECIPES}', 'method': 'get',
+                    '1': {'url': f'/{GET_ALL_RECIPES}', 'method': 'get',
                           'text': 'Get All Recipes'},
-                    '2': {'url': f'{GET_RECIPE_SUGGESTIONS}', 'method': 'get',
+                    '2': {'url': f'/{GET_RECIPE_SUGGESTIONS}', 'method': 'get',
                           'text': 'Get Recipe Suggestions'},
-                    '3': {'url': f'/{FORMAT}', 'method': 'get',
+                    '3': {'url': f'/{FORMATTEXTGAME}', 'method': 'get',
                           'text': 'Get the recipe format'},
-                    '4': {'url': f'{SETTINGS}', 'method': 'get',
+                    '4': {'url': f'/{SETTINGS}', 'method': 'get',
                           'text': 'Change search and UI settings'},
                 }}
 
