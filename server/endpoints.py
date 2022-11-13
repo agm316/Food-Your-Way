@@ -267,7 +267,9 @@ class ScrapeWebsite(Resource):
 @api.route(MAIN_MENU)
 class MainMenu(Resource):
     """
-    This Will Deliver Our Main Menu.  If variable doesn't have / you don't need to add it for formatting.
+    This Will Deliver Our Main Menu.  If variable doesn't
+     have / you don't need to add
+     it for formatting.
     """
     def get(self):
         """
@@ -294,7 +296,10 @@ class getAll(Resource):
     database and return them as a list of JSONs.
     """
     def get(self):
-        return recdb.get_all()
+        # return recdb.get_all()
+        return {'Data': {'DATA': 'DATA', 'TITLE': 'TITLE'},
+                'Type': {'Data': 2},
+                'Title': {'FOOD ITEM': 'Food ITem'}}
 
 
 @api.route('/dbtest')

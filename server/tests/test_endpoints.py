@@ -91,7 +91,7 @@ def test_get_all():
     that it matches the format of a list of recipes.
     """
     alldb = TEST_CLIENT.get(ep.GETALL).get_json()
-    assert isinstance(alldb, list)
+    assert isinstance(alldb, dict)
 
 
 def test_search_query():
