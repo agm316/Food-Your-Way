@@ -322,7 +322,9 @@ class getSettings(Resource):
     search and UI settings.
     """
     def get(self):
-        return {'Data': {'DATA': 'DATA', 'TITLE': 'TITLE'}}
+        return {'Data': {'DATA': 'DATA', 'TITLE': 'TITLE'},
+                'Type': {'Data': 2},
+                'Title': {'SETTINGS1': 'Example Setting'}}
 
 
 @api.route('/getallrecipes')
