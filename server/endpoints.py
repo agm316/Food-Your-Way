@@ -315,6 +315,19 @@ class MainMenu(Resource):
                 }}
 
 
+@api.route('/getrecipesuggestions')
+class getRecipeSuggestions(Resource):
+    """
+    This endpoint gets current
+    recipe suggestions from db.
+    Currently returns placeholder.
+    """
+    def get(self):
+        return {'Data': {'DATA': 'DATA', 'TITLE': 'TITLE'},
+                'Type': {'Data': 2},
+                'Title': {'SUGGESTION1': 'Example Suggestion'}}
+
+
 @api.route('/searchUIsettings')
 class getSettings(Resource):
     """
