@@ -280,7 +280,7 @@ class MainMenu(Resource):
                     '2': {'url': f'/{GET_RECIPE_SUGGESTIONS}', 'method': 'get',
                           'text': 'Get Recipe Suggestions'},
                     '3': {'url': f'{FORMAT}', 'method': 'get',
-                          'text': 'Get the recipe format'}
+                          'text': 'Get the recipe format'},
                     '4': {'url': f'{SETTINGS}', 'method': 'get',
                           'text': 'Change search and UI settings'}
                 }}
