@@ -330,7 +330,8 @@ class getRecipeSuggestions(Resource):
                 'Title': {'Suggestion': 'Chinese Food'}
                 }
 
-#reconfigure for react
+
+# reconfigure for react
 @api.route('/searchUIsettings')
 class getSettings(Resource):
     """
