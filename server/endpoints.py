@@ -330,7 +330,7 @@ class getRecipeSuggestions(Resource):
                 'Title': {'Suggestion': 'Chinese Food'}
                 }
 
-
+#reconfigure for react
 @api.route('/searchUIsettings')
 class getSettings(Resource):
     """
@@ -338,9 +338,9 @@ class getSettings(Resource):
     search and UI settings.
     """
     def get(self):
-        return {'Data': {'DATA': 'DATA', 'TITLE': 'TITLE'},
+        return {'Data': {'BACKGROUND': 'DARK/LIGHT', 'Font': 'Standard'},
                 'Type': {'Data': 2},
-                'Title': {'SETTINGS1': 'Example Setting'}}
+                'Title': {'UI Settings': 'Example Setting'}}
 
 
 @api.route('/getallrecipes')
