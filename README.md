@@ -8,8 +8,8 @@ ROUGH USER FLOW:
 - once a recipe is chosen, user is able to receive the specific details of that recipe and instructions
 
 TO DO:
-- make database
-- add HATEOAS / react setup
+- finish db and connect it to "front-end" (also WIP)
+- migrate HATEOAS setup to fancier testing or react
 - make recipe scraper (script to populate database)
 - make recipe search bar (setup react for UI after this works)
 - create automated testing of API
