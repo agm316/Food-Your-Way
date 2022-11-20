@@ -16,7 +16,7 @@ def test_hello():
     resp_json = TEST_CLIENT.get(ep.HELLO).get_json()
     assert isinstance(resp_json[ep.MESSAGE], str)
 
-
+#NOTE: Currently fails.  Can test author take a look?
 def test_scrape_website():
     """
     Test the web scraping endpoint
@@ -65,7 +65,7 @@ def test_format_endpoint():
     assert isinstance(dbformat["directions"], list)
     assert isinstance(dbformat["url"], str)
 
-
+#NOTE: Currently fails.  Can test author take a look?
 def test_get_database():
 
     """
