@@ -169,6 +169,16 @@ class ScrapeWebsite(Resource):
     This class will scrape a given webpage with a recipe and returns the recipe
     information in a list.
     This class is meant to work with recipes from www.allrecipes.com
+    NOTE: On occasion, allrecipes will change the id tags
+          they use for their site.
+          This means that when that happens, code will
+          need to modified to reflect that.
+          In order to maximize compatibility,
+          this function keeps checking with
+          old tags as well as new ones in case
+          some recipes don't get transitioned
+          over while other ones do (we don't know
+          the inner workings/decisions of allrecipes!!!!!).
     """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
