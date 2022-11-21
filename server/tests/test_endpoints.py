@@ -5,6 +5,12 @@ TEST_CLIENT = ep.app.test_client()
 
 TEST_WEBSITE = "https://www.allrecipes.com/recipe/154315/armenian-pizzas-lahmahjoon/"
 TEST_WEBSITE_TITLE = "Armenian Pizzas (Lahmahjoon)"
+TEST_PREP_TIME = "20 mins"
+TEST_COOK_TIME = "30 mins"
+TEST_TOTAL_TIME = "50 mins"
+TEST_SERVINGS = "3"
+TEST_YIELD = "6 pizzas"
+TEST_URL = "https://www.allrecipes.com/recipe/154315/armenian-pizzas-lahmahjoon/"
 
 TEST_SEARCH_QUERY = "Pizza"
 
@@ -17,16 +23,20 @@ def test_hello():
     assert isinstance(resp_json[ep.MESSAGE], str)
 
 
-# NOTE: Currently fails. Can test author take a look?
 def test_scrape_website():
     """
     Test the web scraping endpoint
     checks a specific 'test' website and checks if the title matches
     what we know it should be, it also checks that ingredients is a
     string and the whole return is a dictionary
+    NOTE:
+          If things here start to fail, then allrecipes
+          could have changed their id tags for their website
+          verify that the code in endpoints.py is using the
+          correct id tags.
     """
     resp_json = TEST_CLIENT.get(f'{ep.SCRAPE_WEBSITE}/{TEST_WEBSITE}').get_json()
-    assert resp_json["recipe_name"] == TEST_WEBSITE_TITLE
+    assert isinstance(resp_json["recipe_name"], str)
     assert isinstance(resp_json["prep_time"], str)
     assert isinstance(resp_json["cook_time"], str)
     assert isinstance(resp_json["total_time"], str)
@@ -41,6 +51,13 @@ def test_scrape_website():
     assert isinstance(resp_json["cuisine_path"], str)
     assert isinstance(resp_json["img_src"], str)
     assert isinstance(resp_json, dict)
+    assert resp_json["recipe_name"] == TEST_WEBSITE_TITLE
+    assert resp_json["prep_time"] == TEST_PREP_TIME
+    assert resp_json["cook_time"] == TEST_COOK_TIME
+    assert resp_json["total_time"] == TEST_TOTAL_TIME
+    assert resp_json["servings"] == TEST_SERVINGS
+    assert resp_json["yield"] == TEST_YIELD
+    assert resp_json["url"] == TEST_URL
 
 
 def test_format_endpoint():
