@@ -39,6 +39,8 @@ FORMAT = '/format'
 FORMATTEXTGAME = '/formatTextGame'
 DBGETTEST = '/dbtest'
 GETALL = '/getallrecipes'
+RECIPE_NAME_ID_1 = "article-heading_1-0"
+RECIPE_NAME_ID_2 = "article-heading_2-0"
 RECIPE_CUISINES_NS = 'recipe_cuisines'
 RECIPE_CUISINES_LIST = f'/{LIST}'
 RECIPE_CUISINES_LIST_W_NS = f'{RECIPE_CUISINES_NS}/{LIST}'
@@ -48,6 +50,8 @@ RECIPE_SUGGESTIONS_LIST = f'/{LIST}'
 RECIPE_SUGGESTIONS_LIST_W_NS = f'{RECIPE_SUGGESTIONS_NS}/{LIST}'
 RECIPE_SUGGESTIONS_LIST_NM = f'{RECIPE_SUGGESTIONS_NS}_list'
 CUISINE_CLASS = "comp mntl-breadcrumbs__item mntl-block"
+INGREDIENTS_ID = "mntl-structured-ingredients__list"
+DIRECTIONS_ID = "mntl-sc-block_2-0"
 NUTRITION_CLASS = 'mntl-nutrition-facts-label__table-body type--cat'
 TIMING_CLASS = "mntl-recipe-details__content"
 TIMING_LABEL = "mntl-recipe-details__label"
@@ -179,7 +183,7 @@ class ScrapeWebsite(Resource):
         # Get Recipe Name
         recipe_name = ''
         try:
-            recipe_name_test = soup.find(id="article-heading_1-0")
+            recipe_name_test = soup.find(id=RECIPE_NAME_ID_1)
             if (isinstance(recipe_name_test, type(None))):
                 pass
             else:
@@ -188,7 +192,7 @@ class ScrapeWebsite(Resource):
             pass
         if (recipe_name == ''):
             try:
-                recipe_name_test = soup.find(id="article-heading_2-0")
+                recipe_name_test = soup.find(id=RECIPE_NAME_ID_2)
                 if (isinstance(recipe_name_test, type(None))):
                     pass
                 else:
@@ -213,7 +217,7 @@ class ScrapeWebsite(Resource):
         img_src = ""
 
         # Get Ingredients
-        ing_list_soup = soup.find(class_="mntl-structured-ingredients__list")
+        ing_list_soup = soup.find(class_=INGREDIENTS_ID)
         for li in ing_list_soup.find_all("li"):
             if li.text != "":
                 ingr += (li.text[1:(len(li.text)-1)] + ", ")
@@ -222,7 +226,7 @@ class ScrapeWebsite(Resource):
         ingr = ingr[:(len(ingr)-2)]
 
         # Get Directions
-        directions_soup = soup.find(id="mntl-sc-block_2-0")
+        directions_soup = soup.find(id=DIRECTIONS_ID)
         for li in directions_soup.find_all("li"):
             if li.text != "":
                 directions += (li.text[1:(len(li.text)-3)])
