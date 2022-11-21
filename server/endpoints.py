@@ -34,6 +34,7 @@ SCRAPE_WEBSITE = '/scrape'
 SEARCH = '/search'
 SEARCH_QUERY = 'Pizza'
 RATING_ID = "mntl-recipe-review-bar__rating_1-0"
+RATING_ID_2 = "mntl-recipe-review-bar__rating_2-0"
 FORMAT = '/format'
 FORMATTEXTGAME = '/formatTextGame'
 DBGETTEST = '/dbtest'
@@ -176,7 +177,24 @@ class ScrapeWebsite(Resource):
         soup = BeautifulSoup(html_doc, 'html.parser')
 
         # Get Recipe Name
-        recipe_name = soup.find(id="article-heading_1-0").get_text().strip()
+        recipe_name = ''
+        try:
+            recipe_name_test = soup.find(id="article-heading_1-0")
+            if (isinstance(recipe_name_test, type(None))):
+                pass
+            else:
+                recipe_name = recipe_name_test.get_text().strip()
+        except Warning:
+            pass
+        if (recipe_name == ''):
+            try:
+                recipe_name_test = soup.find(id="article-heading_2-0")
+                if (isinstance(recipe_name_test, type(None))):
+                    pass
+                else:
+                    recipe_name = recipe_name_test.get_text().strip()
+            except Warning:
+                pass
         if recipe_name == '':
             raise wz.NotFound(f'{website} not found')
         prep_time = ""
@@ -213,11 +231,17 @@ class ScrapeWebsite(Resource):
         directions = directions[1:]
 
         # Get Rating (out of 5 stars)
-        try:
-            rating = soup.find(id=RATING_ID).get_text()
-        except Warning:
+        rating_sp = soup.find(id=RATING_ID)
+        if (isinstance(rating_sp, type(None))):
             pass
-        rating = rating.strip()
+        else:
+            rating = rating_sp.get_text().strip()
+        if (rating == ""):
+            rating_sp = soup.find(id=RATING_ID_2)
+            if (isinstance(rating_sp, type(None))):
+                pass
+            else:
+                rating = rating_sp.get_text().strip()
         # Get Cuisine Path
         cuisine_soup = soup.find_all(class_=CUISINE_CLASS)
         for div in cuisine_soup:
