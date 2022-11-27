@@ -7,9 +7,13 @@ ROUGH USER FLOW:
 - able to request recipe search using specific filters and receive back list of matching recipes
 - once a recipe is chosen, user is able to receive the specific details of that recipe and instructions
 
+
+NOTE (Brad): I cannot find the fancier testing original assignment so will start by setting up pytest fixtures.
+
 TO DO:
+- ADD fancier testings (pytest fixture)
 - finish db and connect it to "front-end" (also WIP)
-- migrate HATEOAS setup to fancier testing or react
+- migrate HATEOAS setup to react
 - make recipe scraper (script to populate database)
 - make recipe search bar (setup react for UI after this works)
 - create automated testing of API
