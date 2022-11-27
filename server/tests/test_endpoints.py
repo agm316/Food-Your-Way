@@ -12,7 +12,17 @@ TEST_SERVINGS = "3"
 TEST_YIELD = "6 pizzas"
 TEST_URL = "https://www.allrecipes.com/recipe/154315/armenian-pizzas-lahmahjoon/"
 
-TEST_SEARCH_QUERY = "Pizza"
+#TEST_SEARCH_QUERY = "Pizza"
+
+#example pytest fixture
+#input_search_query
+#replaces TEST_SEARCH_QUERY
+#check test_search_query
+#for full example
+@pytest.fixture
+def input_search_query():
+    ret = "Pizza"
+    return ret
 
 def test_hello():
     """
@@ -113,12 +123,12 @@ def test_get_all():
     assert isinstance(alldb, dict)
 
 
-def test_search_query():
+def test_search_query(input_search_query):
     """
     See if Search Query works (NOT YET CONNECTED TO DB, update later when it is)
     """
     #assert True
-    resp_json = TEST_CLIENT.get(f'/search={TEST_SEARCH_QUERY}').get_json()
+    resp_json = TEST_CLIENT.get(f'/search={input_search_query}').get_json()
     assert isinstance(resp_json[ep.MESSAGE], str)
 
 
