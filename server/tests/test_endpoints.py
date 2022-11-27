@@ -24,12 +24,18 @@ def input_search_query():
     ret = "Pizza"
     return ret
 
-def test_hello():
+#replaces TEST_CLIENT
+@pytest.fixture
+def input_test_client():
+    ret = ep.app.test_client()
+    return ret
+
+def test_hello(input_test_client):
     """
     See if Hello works
     """
     # assert True
-    resp_json = TEST_CLIENT.get(ep.HELLO).get_json()
+    resp_json = input_test_client.get(ep.HELLO).get_json()
     assert isinstance(resp_json[ep.MESSAGE], str)
 
 
