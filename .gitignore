@@ -130,3 +130,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#Directories
+/db/mongodb_data_container/
+
