@@ -1,10 +1,12 @@
 import os
 import pymongo as pm
 
+
 REMOTE = "0"
 LOCAL = "1"
 
-RECIPE_DB = 'recipedb'
+RECIPE_DB = 'api_dev_db'
+CONNECT_STR = "mongodb://root:foodPasswrd177@127.0.0.1:27017"
 
 client = None
 
@@ -22,7 +24,7 @@ def connect_db():
         print("Setting client because it is None.")
         if os.environ.get("LOCAL_MONGO", LOCAL) == LOCAL:
             print("Connecting to Mongo locally.")
-            client = pm.MongoClient()
+            client = pm.MongoClient(CONNECT_STR)
 
 
 def insert_one(collection, doc, db=RECIPE_DB):
