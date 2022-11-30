@@ -78,7 +78,7 @@ def test_scrape_website():
     assert resp_json["url"] == TEST_URL
 
 
-def test_format_endpoint():
+def test_format_endpoint(input_test_client):
 
     """
     This endpoint is used to test the format that we 
@@ -88,7 +88,7 @@ def test_format_endpoint():
     will update with more rigorous test later on.
     """
 
-    dbformat = TEST_CLIENT.get(ep.FORMAT).get_json()
+    dbformat = input_test_client.get(ep.FORMAT).get_json()
     assert isinstance(dbformat, dict)
     assert isinstance(dbformat["row"], str)
     assert isinstance(dbformat["name"], str)
