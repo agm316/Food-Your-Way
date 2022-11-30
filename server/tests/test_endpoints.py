@@ -154,3 +154,8 @@ def test_get_recipe_suggestions_list():
     """
     resp_json = TEST_CLIENT.get(ep.RECIPE_SUGGESTIONS_LIST_W_NS).get_json()
     assert isinstance(resp_json[ep.RECIPE_SUGGESTIONS_LIST_NM], list)
+
+
+@pytest.mark.skip("Can't run this test until a recipe gets deleted from the database.")
+def test_del_recipe():
+    assert False
