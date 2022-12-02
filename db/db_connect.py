@@ -5,6 +5,10 @@ import pymongo as pm
 REMOTE = "0"
 LOCAL = "1"
 
+# Run "docker-compose up -d" to start the docker container
+# Run "docker-compose down" to stop the docker container
+# Open Mongo Compass and connect to the database using Username/Password
+# authentication method under Advanced Connection Options
 RECIPE_DB = 'api_dev_db'
 CONNECT_STR = "mongodb://root:foodPasswrd177@127.0.0.1:27017"
 
