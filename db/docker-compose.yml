@@ -1,0 +1,18 @@
+version: '3.7'
+services:
+  mongodb_container:
+    image: mongo:latest
+    container_name: 'fyw-mongo-container'
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: foodPasswrd177
+      MONGO_INITDB_DATABASE: root-db
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongodb_data_container:/data/db
+      - ./docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+
+volumes:
+  mongodb_data_container:
