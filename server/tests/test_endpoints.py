@@ -11,14 +11,9 @@ TEST_TOTAL_TIME = "50 mins"
 TEST_SERVINGS = "3"
 TEST_YIELD = "6 pizzas"
 TEST_URL = "https://www.allrecipes.com/recipe/154315/armenian-pizzas-lahmahjoon/"
-# TEST_SEARCH_QUERY = "Pizza"
 
 
-# example pytest fixture
-# input_search_query
 # replaces TEST_SEARCH_QUERY
-# check test_search_query
-# for full example
 @pytest.fixture
 def input_search_query():
     ret = "Pizza"
