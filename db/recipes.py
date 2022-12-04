@@ -3,6 +3,7 @@ This module encapsulates details about recipes
 """
 import db.db_connect as dbc
 
+TEST_RECIPE_NAME = 'Test Recipe'
 RECIPE_NAME = 'recipe_name'
 PREP_TIME = 'prep_time'
 COOK_TIME = 'cook_time'
