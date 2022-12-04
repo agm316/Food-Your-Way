@@ -32,6 +32,10 @@ jobs:
       
       - name: Install MongoDB
         uses: supercharge/mongodb-github-action@1.8.0
+        with:
+          mongodb-username: root
+          mongodb-password: foodPasswrd177
+          mongodb-db: api_dev_db
 
       - name: Install Python packages.
         run: make dev_env
