@@ -12,7 +12,10 @@ from flask import Flask, render_template, request, url_for, redirect
 from flask_restx import Resource, Api, Namespace
 from http import HTTPStatus
 from pymongo import MongoClient
+import json
+import bson.json_util as json_util
 from db import db as recdb  # need to fix issue with make prod
+from db import recipes as recmongo
 
 import sys
 import os
@@ -324,9 +327,8 @@ class ScrapeWebsite(Resource):
                             "img_src": img_src}
 
         # Recipe gets added to the database for later retrieval
-        if not recdb.add_recipe(recipe_to_return):
-            raise TypeError("Unable to add recipe to the database")
-            return False
+        rec_to_ret_json = json.loads(json_util.dumps(recipe_to_return))
+        recmongo.add_recipe(recipe_name, rec_to_ret_json)
         return recipe_to_return
 
 
