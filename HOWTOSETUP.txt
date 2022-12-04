@@ -1,4 +1,4 @@
-SETUP GUIDE
+SETUP GUIDE (local.sh and make prod)
 
 Make sure to install the requirements in the root (topmost) folder:
 
@@ -16,3 +16,7 @@ or
 sh local.sh
 
 From the root folder.  If it runs, the setup is working.
+
+
+
+HOW TO RUN DB INSTRUCTIONS (To Be Done)
