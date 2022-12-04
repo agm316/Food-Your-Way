@@ -19,4 +19,4 @@ From the root folder.  If it runs, the setup is working.
 
 
 
-HOW TO RUN DB INSTRUCTIONS (To Be Done)
+HOW TO RUN DB INSTRUCTIONS (To Be Done, Will Address in Friday Meeting)
