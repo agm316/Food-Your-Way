@@ -402,7 +402,7 @@ class dbTest(Resource):
     in the /db/db.py file
     """
     def get(self):
-        return recdb.get_recipe("Armenian Pizzas (Lahmahjoon)")
+        return recmongo.get_recipe_details("Armenian Pizzas (Lahmahjoon)")
 
 
 @recipe_cuisines.route(RECIPE_CUISINES_LIST)
