@@ -392,9 +392,7 @@ class getAll(Resource):
     """
     def get(self):
         # return recdb.get_all()
-        return {'Data': {'DATA': 'DATA', 'TITLE': 'TITLE'},
-                'Type': {'Data': 2},
-                'Title': {'FOOD ITEM': 'Food Item'}}
+        return recmongo.get_recipe_dict()
 
 
 @api.route('/dbtest')
