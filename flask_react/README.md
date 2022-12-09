@@ -13,16 +13,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 
 
-
-
-
-
-
-
-
-
-
-Below is boilerplate facebook readmd:
+## Below is boilerplate facebook readmd:
 
 ## Available Scripts
 
