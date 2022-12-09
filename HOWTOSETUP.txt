@@ -21,3 +21,6 @@ From the root folder.  If it runs, the setup is working.
 HOW TO RUN FRONT END INSTRUCTIONS:
 cd flask_react
 npm start
+
+It should automatically open after npm start, but if not go to:
+http://localhost:3000/
