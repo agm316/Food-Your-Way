@@ -1,10 +1,28 @@
-# Getting Started with Create React App
+# React Front End
 
 The Front End of the Project.
 
 We will need to connect to the database next semester, for now let's set up something as per Dec 8 class (React).
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Below is boilerplate facebook readmd:
 
 ## Available Scripts
 
