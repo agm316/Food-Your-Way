@@ -1,16 +1,16 @@
 import os
 import pymongo as pm
+import certifi
 
 
-REMOTE = "0"
-LOCAL = "1"
+LOCAL = "0"
+CLOUD = "1"
 
 # Run "docker-compose up -d" to start the docker container
 # Run "docker-compose down" to stop the docker container
 # Open Mongo Compass and connect to the database using Username/Password
 # authentication method under Advanced Connection Options
 RECIPE_DB = 'api_dev_db'
-CONNECT_STR = "mongodb://root:foodPasswrd177@127.0.0.1:27017"
 
 client = None
 
@@ -26,9 +26,24 @@ def connect_db():
     global client
     if client is None:  # not connected yet!
         print("Setting client because it is None.")
-        if os.environ.get("LOCAL_MONGO", LOCAL) == LOCAL:
-            print("Connecting to Mongo locally.")
-            client = pm.MongoClient(CONNECT_STR)
+        if os.environ.get("CLOUD_MONGO", LOCAL) == CLOUD:
+            password = os.environ.get("MONGO_CLOUD_PSWRD")
+            user = os.environ.get("MONGO_CLOUD_USER")
+            if not password:
+                raise ValueError('Cloud Password Not Set in Env Varia'
+                                 + 'bles. Please Set and Try Again.')
+            print("Connecting to Mongo in the CLOUD.")
+            client = pm.MongoClient(f'mongodb+srv://{user}:{password}'
+                                    + '@cluster0.catgdge.mongodb.net/'
+                                    + '?retryWrites=true&w=majority',
+                                    tlsCAFile=certifi.where())
+        else:
+            print("Connecting to Mongo Locally.")
+            local_user = os.environ.get("MONGO_USER")
+            local_passwrd = os.environ.get("MONGO_PASSWORD")
+            client = pm.MongoClient(f'mongodb://{local_user}:'
+                                    + f'{local_passwrd}@'
+                                    + '127.0.0.1:27017')
 
 
 def insert_one(collection, doc, db=RECIPE_DB):
