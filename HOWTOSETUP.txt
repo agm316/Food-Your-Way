@@ -17,6 +17,11 @@ sh local.sh
 
 From the root folder.  If it runs, the setup is working.
 
+HOW TO START DOCKER INSTANCE OF MONGODB (COMPLETELY CONFIGURED FOR THIS API):
+
+cd db
+docker-compose up -d
+
 
 HOW TO RUN FRONT END INSTRUCTIONS:
 cd flask_react
