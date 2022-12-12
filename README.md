@@ -1,7 +1,7 @@
 # FOOD YOUR WAY
 
 Description:
-A recipe database that makes looking up recipes by filters simple and easy for everyone. Enabling search by lifestyle, diet, or even ingredients (to either include or exclude specific ingredients). 
+A recipe database that makes looking up recipes by filters simple and easy for everyone. Enabling search by lifestyle, diet, or even ingredients (to either include or exclude specific ingredients). Utilizes MongoDB utilizing either MongoDB atlas or a local server running in a docker container.
 
 ROUGH USER FLOW:
 - able to request recipe search using specific filters and receive back list of matching recipes
@@ -10,9 +10,7 @@ ROUGH USER FLOW:
 TO DO:
 - update HOWTOSETUP.txt to account for new MongoDB
 - finish db and connect it to "front-end" (also WIP)
-- make recipe scraper (script to populate database)
 - make recipe search bar (setup react for UI after this works)
-- create automated testing of API
 - migrate HATEOAS setup to react
 - will add specific filters (certain amount of calories, allergies, vegetarian/vegan options)
 
