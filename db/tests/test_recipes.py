@@ -9,6 +9,7 @@ RUNNING_ON_CICD_SERVER = os.environ.get('CI', False)
 
 TEST_DEL_NAME = 'Recipe to be deleted'
 
+
 def create_recipe_details():
     details = {}
     for field in rec.REQUIRED_FLDS:

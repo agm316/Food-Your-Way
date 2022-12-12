@@ -10,6 +10,11 @@ CLOUD = "1"
 # Run "docker-compose down" to stop the docker container
 # Open Mongo Compass and connect to the database using Username/Password
 # authentication method under Advanced Connection Options
+# or if Mongo is running on the cloud you must connect to Mongo Compass from
+# the Mongo Atlas page
+# the Username is "root" and the Password is "foodPasswrd177" if Mongo is running locally
+# and the Username is "mongo_cloud" and the Password is "MPasswrdC177" if Mongo is running
+# on the cloud
 RECIPE_DB = 'api_dev_db'
 
 client = None
@@ -27,8 +32,8 @@ def connect_db():
     if client is None:  # not connected yet!
         print("Setting client because it is None.")
         if os.environ.get("CLOUD_MONGO", LOCAL) == CLOUD:
-            password = os.environ.get("MONGO_CLOUD_PSWRD")
             user = os.environ.get("MONGO_CLOUD_USER")
+            password = os.environ.get("MONGO_CLOUD_PSWRD")
             if not password:
                 raise ValueError('Cloud Password Not Set in Env Varia'
                                  + 'bles. Please Set and Try Again.')
