@@ -34,6 +34,17 @@ def get_recipe_details(recipe):
     return dbc.fetch_one(RECIPE_COLLECT, {RECIPE_KEY: recipe})
 
 
+def get_time_filter(time):
+    dbc.connect_db()
+    returns = {}
+    ind = 0
+    for recipe in dbc.find():
+        if recipe["total_time"] <= time:
+            returns[ind] = recipe
+            ind += 1
+    return returns
+
+
 def recipe_exists(recipe_name):
     """
     Returns whether or not a recipe exists.
