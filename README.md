@@ -16,7 +16,7 @@ TO DO:
 - migrate HATEOAS setup to react
 - will add specific filters (certain amount of calories, allergies, vegetarian/vegan options)
 
-FUTURE IMPROVEMENTS (not currently working on):
+FUTURE IMPROVEMENTS (will be added in Spring 2023):
 - Frontend (GUI)
 
 Authors:

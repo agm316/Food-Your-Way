@@ -54,50 +54,18 @@ def add_recipe(recipe):
     return True
 
 
+def del_recipe(recipe):
+    """
+    A function to remove a recipe from the db
+    """
+    if not isinstance(recipe, dict):
+        raise TypeError(f'Wrong type for recipe: {type(recipe)=}')
+    del recipes[recipe["recipe_name"]]
+    return True
+
+
 def get_cuisine_types():
     """
     A function to return all the cuisine types in the database.
     """
     return list(recipe_cuisines.values())
-
-# import csv
-# from pymongo import MongoClient
-#
-#
-# mongo_client = MongoClient('localhost', 27017)
-# print(mongo_client)
-# db = mongo_client.october_mug_talk
-# db.segment.drop()
-# print(db)
-#
-# header = ["Row", "Name", "Prep Time", "Cook Time", "Total Time", "Servings",
-#           "Yield", "Ingredients", "Directions", "url", "Additional Time"]
-# csvfile = open('test_recipes.csv', 'r')
-# reader = csv.DictReader(csvfile)
-#
-# for each in reader:
-#     row = {}
-#     for field in header:
-#         row[field] = each[field]
-#
-#     print(row)
-#     db.segment.insert(row)
-
-
-# import pandas as pd
-# from pymongo import MongoClient
-#
-# client = MongoClient('localhost', 27017)
-# database = client['Recipes']
-# collection = database['test_recipes']
-#
-#
-# def csv_to_json(filename, header=None):
-#     header = ["Row", "Name", "Prep Time", "Cook Time", "Total Time",
-#               "Servings", "Yield", "Ingredients", "Directions", "url",
-#               "Additional Time"]
-#     data = pd.read_csv(filename, header=header)
-#     return data.to_dict('records')
-#
-#
-# collection.insert_many(csv_to_json('db/test_recipes.csv'))
