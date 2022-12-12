@@ -12,9 +12,10 @@ CLOUD = "1"
 # authentication method under Advanced Connection Options
 # or if Mongo is running on the cloud you must connect to Mongo Compass from
 # the Mongo Atlas page
-# the Username is "root" and the Password is "foodPasswrd177" if Mongo is running locally
-# and the Username is "mongo_cloud" and the Password is "MPasswrdC177" if Mongo is running
-# on the cloud
+# the Username is "root" and the Password is "foodPasswrd177"
+# if Mongo is running locally and
+# the Username is "mongo_cloud" and the Password is "MPasswrdC177"
+# if Mongo is running on the cloud
 RECIPE_DB = 'api_dev_db'
 
 client = None
