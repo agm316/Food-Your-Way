@@ -50,6 +50,7 @@ def insert_one(collection, doc, db=RECIPE_DB):
     """
     Insert a single doc into collection.
     """
+    print(f'{db=}')
     client[db][collection].insert_one(doc)
 
 
@@ -59,6 +60,13 @@ def fetch_one(collection, filt, db=RECIPE_DB):
     """
     for doc in client[db][collection].find(filt):
         return doc
+
+
+def del_one(collection, filt, db=RECIPE_DB):
+    """
+    Find with a filter and return on the first doc found.
+    """
+    client[db][collection].delete_one(filt)
 
 
 def fetch_all(collection, db=RECIPE_DB):
