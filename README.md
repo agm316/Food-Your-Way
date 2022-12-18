@@ -11,7 +11,6 @@ TO DO:
 - update HOWTOSETUP.txt to account for new MongoDB
 - finish db and connect it to "front-end" (also WIP)
 - make recipe search bar (setup react for UI after this works)
-- migrate HATEOAS setup to react
 - will add specific filters (certain amount of calories, allergies, vegetarian/vegan options)
 
 FUTURE IMPROVEMENTS (will be added in Spring 2023):
