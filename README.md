@@ -8,13 +8,11 @@ ROUGH USER FLOW:
 - once a recipe is chosen, user is able to receive the specific details of that recipe and instructions
 
 TO DO:
+- connect react native to endpoints and database
 - update HOWTOSETUP.txt to account for new MongoDB
 - finish db and connect it to "front-end" (also WIP)
 - make recipe search bar (setup react for UI after this works)
 - will add specific filters (certain amount of calories, allergies, vegetarian/vegan options)
-
-FUTURE IMPROVEMENTS (will be added in Spring 2023):
-- Frontend (GUI)
 
 Authors:
 - Roman Negri
