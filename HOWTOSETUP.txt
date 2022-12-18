@@ -29,6 +29,3 @@ HOW TO RUN FRONT END INSTRUCTIONS:
 cd flask_react
 npm install
 npm start
-
-Tip: When adding new js libraries to react, try to figure them out all beforehand and see if they work together.
-Saves a HUGE amount of headache in my experience.
