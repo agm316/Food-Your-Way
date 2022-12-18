@@ -7,6 +7,9 @@ ROUGH USER FLOW:
 - able to request recipe search using specific filters and receive back list of matching recipes
 - once a recipe is chosen, user is able to receive the specific details of that recipe and instructions
 
+Tip: When adding new js libraries to react native, try to figure them out all beforehand and see if they work together.
+Saves a HUGE amount of headache in my experience.
+
 TO DO:
 - connect react native to endpoints and database
 - update HOWTOSETUP.txt to account for new MongoDB
