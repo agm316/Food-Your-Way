@@ -17,6 +17,10 @@ TO DO:
 - make recipe search bar (setup react for UI after this works)
 - will add specific filters (certain amount of calories, allergies, vegetarian/vegan options)
 
+RN Guide:
+https://dev.to/nagatodev/how-to-connect-flask-to-reactjs-1k8i
+
+
 Authors:
 - Roman Negri
 - Brad Yuan
