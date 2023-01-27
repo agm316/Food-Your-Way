@@ -1,6 +1,6 @@
 # What we have completed in the past semester:
 * Connected MongoDB to hmtl interface using python API\
-  We did this by using the MongoDB library and using flask to create a server that can interact with the database.
+  We did this by using the MongoDB library and using flask to create a server that can interact with the database through a simple react setup.
 * Used Docker to spin up instance of MongoDB locally on program run\
   Created Docker config file to specify the connection of the database to our program.
 * AND connected mongoDB to the cloud to have options in database hosting\
