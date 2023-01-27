@@ -10,6 +10,15 @@ ROUGH USER FLOW:
 Tip: When adding new js libraries to react native, try to figure them out all beforehand and see if they work together.
 Saves a HUGE amount of headache in my experience.
 
+------------------------------------------------------------------------------------------------------------------
+What we have completed so far:
+
+[Past Completions](PastCompletion.md)
+
+Future goals:
+
+[Future TO DOs](FurtherGoals.md)
+
 TO DO:
 - connect react native to endpoints and database
 - update HOWTOSETUP.txt to account for new MongoDB
