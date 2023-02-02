@@ -29,3 +29,4 @@ HOW TO RUN FRONT END INSTRUCTIONS:
 cd flask_react
 npm install
 npm start
+npm install react-native-web
