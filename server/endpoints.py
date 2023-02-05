@@ -396,10 +396,25 @@ class getAll(Resource):
 
 
 @api.route('/searchExclusions')
-class searchFilter(Resource):
+class searchExclusions(Resource):
     """
     This endpoint will allow you to search for something while
     excluding specific ingredients
+    """
+    def get(self):
+        return {'Data': {"Cuisine": "Chinese",
+                         "Food": "Roasted Pork",
+                         "Drink": "Ginger Lime Ice Green Tea"},
+                'Type': {'Data': 12},
+                'Title': {'Suggestion': 'Chinese Food'}
+                }
+
+
+@api.route('/searchIncluding')
+class searchIncluding(Resource):
+    """
+    This endpoint will allow you to search for recipes
+    making sure to include for the specified ingredients
     """
     def get(self):
         return {'Data': {"Cuisine": "Chinese",
