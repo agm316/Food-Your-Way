@@ -395,6 +395,21 @@ class getAll(Resource):
         return recmongo.get_recipe_dict()
 
 
+@api.route('/searchExclusions')
+class searchFilter(Resource):
+    """
+    This endpoint will allow you to search for something while
+    excluding specific ingredients
+    """
+    def get(self):
+        return {'Data': {"Cuisine": "Chinese",
+                         "Food": "Roasted Pork",
+                         "Drink": "Ginger Lime Ice Green Tea"},
+                'Type': {'Data': 12},
+                'Title': {'Suggestion': 'Chinese Food'}
+                }
+
+
 @api.route('/dbtest')
 class dbTest(Resource):
     """
