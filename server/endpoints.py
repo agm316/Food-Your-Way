@@ -356,7 +356,7 @@ class MainMenu(Resource):
 
 
 @api.route('/getrecipesuggestions')
-class getRecipeSuggestions(Resource):
+class GetRecipeSuggestions(Resource):
     """
     This endpoint serves to return a dictionary of
     recipe suggestions from the database.
@@ -373,7 +373,7 @@ class getRecipeSuggestions(Resource):
 
 # reconfigure for react
 @api.route('/searchUIsettings')
-class getSettings(Resource):
+class GetSettings(Resource):
     """
     This endpoint gets current
     search and UI settings.
@@ -385,7 +385,7 @@ class getSettings(Resource):
 
 
 @api.route('/getallrecipes')
-class getAll(Resource):
+class GetAll(Resource):
     """
     This endpoint servers to return all recipes in the
     database and return them as a list of JSONs.
@@ -396,7 +396,7 @@ class getAll(Resource):
 
 
 @api.route('/searchExclusions')
-class searchExclusions(Resource):
+class SearchExclusions(Resource):
     """
     This endpoint will allow you to search for something while
     excluding specific ingredients
@@ -411,7 +411,7 @@ class searchExclusions(Resource):
 
 
 @api.route('/searchIncluding')
-class searchIncluding(Resource):
+class SearchIncluding(Resource):
     """
     This endpoint will allow you to search for recipes
     making sure to include for the specified ingredients
@@ -425,8 +425,24 @@ class searchIncluding(Resource):
                 }
 
 
+@api.route('/filterByCalories')
+class FilterByCalories(Resource):
+    """
+    This endpoint will allow you to filter by calories for all
+    the recipes.
+    """
+    def get(self):
+        return {'Data': {"Cuisine": "Chinese",
+                         "Food": "Roasted Pork",
+                         "Drink": "Ginger Lime Ice Green Tea",
+                         "Calories": "1003"},
+                'Type': {'Data': 12},
+                'Title': {'Suggestion': 'Chinese Food'}
+                }
+
+
 @api.route('/dbtest')
-class dbTest(Resource):
+class DbTest(Resource):
     """
     Endpoint to test the data getting from the database
     in the /db/db.py file
