@@ -372,7 +372,7 @@ class GetRecipeSuggestions(Resource):
 
 
 # reconfigure for react
-@api.route('/searchUIsettings')
+@api.route('/searchUISettings')
 class GetSettings(Resource):
     """
     This endpoint gets current
@@ -438,6 +438,17 @@ class FilterByCalories(Resource):
                          "Calories": "1003"},
                 'Type': {'Data': 12},
                 'Title': {'Suggestion': 'Chinese Food'}
+                }
+
+
+@api.route('/filterByDietType')
+class FilterByDietType(Resource):
+    """
+    This endpoint will allow you to filter by specific diet types
+    that people might fall under.
+    """
+    def get(self):
+        return {'Type': {'Vegetarian', 'Vegan', 'Pescatarian'}
                 }
 
 
