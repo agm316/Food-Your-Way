@@ -29,5 +29,23 @@ db.createUser(
   },
 );
 db.createCollection('recipes');
+db = db.getSiblingDB('user_info');
+db.createUser(
+  {
+    user: 'api_user',
+    pwd: 'foodPasswrd177',
+    roles: [{ role: 'readWrite', db: 'user_info' }],
+  },
+);
+db.createCollection('user_info');
+db = db.getSiblingDB('user_security');
+db.createUser(
+  {
+    user: 'api_admin',
+    pwd: 'foodPasswrd177SUPERSECURE',
+    roles: [{ role: 'readWrite', db: 'user_security' }],
+  },
+);
+db.createCollection('user_security');
 
 print('END #################################################################');
