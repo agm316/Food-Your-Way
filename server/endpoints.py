@@ -400,6 +400,8 @@ class SearchExclusions(Resource):
     """
     This endpoint will allow you to search for something while
     excluding specific ingredients
+    Format for search will be as follows:
+    'search term;:;exclusion1,exclusion2,exclusion3'
     """
     def get(self):
         return {'Data': {"Cuisine": "Chinese",
@@ -415,6 +417,8 @@ class SearchIncluding(Resource):
     """
     This endpoint will allow you to search for recipes
     making sure to include for the specified ingredients
+    Format for search will be as follows:
+    'search term;:;inclusion1,inclusion2,inclusion3'
     """
     def get(self):
         return {'Data': {"Cuisine": "Chinese",
