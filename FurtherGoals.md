@@ -6,4 +6,6 @@ Going back through our endpoints and changing any deprecated functions.
 * Adding further options for API calls Ie. filtering, searching, etc...
 Creating new endpoints that allow for further *customizations* of searches into the database through our API.
 * Working on the deployment features of the API to allow for smooth connections.
-Going through the resources provided in the course to optimize our depoloyment.
+Going through the resources provided in the course to optimize our deployment.
+
+Note: As of Feb 10 the group decided to deploy with Heroku.
