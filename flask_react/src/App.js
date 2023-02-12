@@ -23,26 +23,29 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+
         <img src={logo} className="App-logo" alt="logo" />
+
         <p>
-          Food Your Way (Edit <code>src/App.js</code> and save to reload.) 
+          Food Your Way
         </p>
 	
-	<Button
-  	onPress={goSearchRecipes}
-  	title="Search Recipes"
-  	color="#841584"
-  	accessibilityLabel="Search for recipes"/>
 
-         <p>
+	<View style={[{ width: "40%", margin: 20 }]}>
+		<Button
+  		onPress={goSearchRecipes}
+  		title="Search Recipes"
+  		color="#44a444"
+  		accessibilityLabel="Search for recipes"/>
+	</View> 
 
-        </p>
-
-	<Button
-  	onPress={goAddRecipes}
-  	title="Add Recipes"
-  	color="#841584"
-  	accessibilityLabel="Add new recipes"/>
+	<View style={[{ width: "40%", margin: 20 }]}>
+		<Button
+  		onPress={goAddRecipes}
+  		title="Add Recipes"
+  		color="#44a444"
+  		accessibilityLabel="Add new recipes"/>
+	</View>
 
       </header>
     </div>
