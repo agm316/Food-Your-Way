@@ -427,7 +427,7 @@ class SearchExclusions(Resource):
                 }
 
 
-@api.route('/searchIncluding')
+@api.route(f'/searchIncluding={SEARCH_QUERY}')
 class SearchIncluding(Resource):
     """
     This endpoint will allow you to search for recipes

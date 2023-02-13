@@ -45,8 +45,8 @@ jobs:
         run: make all_tests
         
       # Deploy to Heroku
-      #  - uses: akhileshns/heroku-deploy@v3.12.12
-      #    with:
-      #        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-      #        heroku_app_name: "Food Your Way"
-      #        heroku_email: "ejc369@nyu.edu"
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+            heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+            heroku_app_name: "food-your-way"
+            heroku_email: "agm316@nyu.edu"
