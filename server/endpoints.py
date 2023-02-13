@@ -37,6 +37,7 @@ MESSAGE = 'message'
 SCRAPE_WEBSITE = '/scrape'
 SEARCH = '/search'
 SEARCH_QUERY = 'Pizza'
+EXCLUSION_QUERY = 'carrots'
 RATING_ID = "mntl-recipe-review-bar__rating_1-0"
 RATING_ID_2 = "mntl-recipe-review-bar__rating_2-0"
 FORMAT = '/format'
@@ -117,10 +118,10 @@ class Login(Resource):
     def get(self, username):
         '''
         The get() method
-        Until we have a better system, the pwd will stay
+        Until we have a better system, the password will stay
         commented I guess :(
         '''
-        return {"username": username}  # , "pwd": password}
+        return {"username": username}  # , "password": password}
 
 
 @api.route('/format')
@@ -223,7 +224,7 @@ class ScrapeWebsite(Resource):
                 recipe_name = recipe_name_test.get_text().strip()
         except Warning:
             pass
-        if (recipe_name == ''):
+        if recipe_name == '':
             try:
                 recipe_name_test = soup.find(id=RECIPE_NAME_ID_2)
                 if (isinstance(recipe_name_test, type(None))):
@@ -375,7 +376,7 @@ class MainMenu(Resource):
                 }}
 
 
-@api.route('/getrecipesuggestions')
+@api.route('/getRecipeSuggestions')
 class GetRecipeSuggestions(Resource):
     """
     This endpoint serves to return a dictionary of
@@ -404,7 +405,7 @@ class GetSettings(Resource):
                 'Title': {'UI Settings': 'Example Setting'}}
 
 
-@api.route('/getallrecipes')
+@api.route('/getAllRecipes')
 class GetAll(Resource):
     """
     This endpoint servers to return all recipes in the
@@ -415,7 +416,7 @@ class GetAll(Resource):
         return recmongo.get_recipe_dict()
 
 
-@api.route('/searchExclusions')
+@api.route(f'/searchExclusions={EXCLUSION_QUERY}')
 class SearchExclusions(Resource):
     """
     This endpoint will allow you to search for something while
@@ -527,6 +528,6 @@ def index():
 
 # adding in a basic hashing algorithm for a user's password
 # will add to this when working with the login system
-def md5(password):
-    result = hashlib.md5(password.encode())
+def md5(user_password):
+    result = hashlib.md5(user_password.encode())
     return result.hexdigest()

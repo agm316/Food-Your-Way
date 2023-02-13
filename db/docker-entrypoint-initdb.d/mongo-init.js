@@ -29,6 +29,7 @@ db.createUser(
   },
 );
 db.createCollection('recipes');
+
 db = db.getSiblingDB('user_info');
 db.createUser(
   {
