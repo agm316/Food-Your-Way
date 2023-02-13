@@ -66,6 +66,7 @@ MAIN_MENU = '/main_menu'
 GET_ALL_RECIPES = 'getallrecipes'
 GET_RECIPE_SUGGESTIONS = 'getrecipesuggestions'
 SETTINGS = 'searchUIsettings'
+password = ''
 
 recipe_cuisines = Namespace(RECIPE_CUISINES_NS, 'Recipe Cuisines')
 api.add_namespace(recipe_cuisines)
@@ -103,7 +104,9 @@ class Endpoints(Resource):
         return {"Available endpoints": endpoints}
 
 
-@api.route('/login/<path:username>')
+# VERY VERY rudementary system put in place to allow us to test
+# login before a working UI, this works with Swagger
+@api.route('/login/<path:username>')  # /<path:password>')
 class Login(Resource):
     '''
     This is used as the login endpoint.
@@ -113,9 +116,10 @@ class Login(Resource):
     def get(self, username):
         '''
         The get() method
+        Until we have a better system, the pwd will stay
+        commented I guess :(
         '''
-        user = requests.get(username).content
-        return user
+        return {"username": username}  # , "pwd": password}
 
 
 @api.route('/format')

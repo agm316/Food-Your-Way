@@ -12,6 +12,8 @@ TEST_SERVINGS = "3"
 TEST_YIELD = "6 pizzas"
 TEST_URL = "https://www.allrecipes.com/recipe/154315/armenian-pizzas-lahmahjoon/"
 
+TEST_USER = "username/password"
+
 
 # replaces TEST_SEARCH_QUERY
 @pytest.fixture
@@ -156,7 +158,9 @@ def test_get_recipe_suggestions_list():
 def test_del_recipe():
     assert False
 
-@pytest.mark.skip("Unable to test this fully without UI")
+# @pytest.mark.skip("Unable to test this fully without UI")
 def test_user_name():
-    username = TEST_CLIENT.get("/login/username").get_json()
-    assert isinstance(username, str)
+    user = TEST_CLIENT.get(f"/login/{TEST_USER}").get_json()
+    assert isinstance(user, dict)
+    assert isinstance(user["username"], str)
+    # assert isinstance(user["pwd"], str)
