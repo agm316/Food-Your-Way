@@ -103,6 +103,21 @@ class Endpoints(Resource):
         return {"Available endpoints": endpoints}
 
 
+@api.route('/login/<path:username>')
+class Login(Resource):
+    '''
+    This is used as the login endpoint.
+    '''
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self, username):
+        '''
+        The get() method
+        '''
+        user = requests.get(username).content
+        return user
+
+
 @api.route('/format')
 class DataFormat(Resource):
     """

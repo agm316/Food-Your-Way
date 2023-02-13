@@ -155,3 +155,8 @@ def test_get_recipe_suggestions_list():
 @pytest.mark.skip("Can't run this test until a recipe gets deleted from the database.")
 def test_del_recipe():
     assert False
+
+@pytest.mark.skip("Unable to test this fully without UI")
+def test_user_name():
+    username = TEST_CLIENT.get("/login/username").get_json()
+    assert isinstance(username, str)
