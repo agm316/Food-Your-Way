@@ -5,17 +5,18 @@ The endpoint called `endpoints` will return all available endpoints.
 
 # import time
 # import urllib3
-import requests
-import werkzeug.exceptions as wz
 from bs4 import BeautifulSoup
 from flask import Flask, render_template, request, url_for, redirect
 from flask_restx import Resource, Api, Namespace
 from http import HTTPStatus
 from pymongo import MongoClient
-import json
-import bson.json_util as json_util
 from db import db as recdb  # need to fix issue with make prod
 from db import recipes as recmongo
+import requests
+import werkzeug.exceptions as wz
+import json
+import bson.json_util as json_util
+import hashlib
 
 import sys
 import os
@@ -522,3 +523,10 @@ def index():
 
     all_todos = todos.find()
     return render_template('index.html', todos=all_todos)
+
+
+# adding in a basic hashing algorithm for a user's password
+# will add to this when working with the login system
+def md5(password):
+    result = hashlib.md5(password.encode())
+    return result.hexdigest()

@@ -158,6 +158,7 @@ def test_get_recipe_suggestions_list():
 def test_del_recipe():
     assert False
 
+
 # @pytest.mark.skip("Unable to test this fully without UI")
 def test_user_name():
     user = TEST_CLIENT.get(f"/login/{TEST_USER}").get_json()
