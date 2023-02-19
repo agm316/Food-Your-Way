@@ -420,7 +420,11 @@ class GetAll(Resource):
 class SearchIncExc(Resource):
     """
     This endpoint will allow you to search for something while
-    excluding specific ingredients
+    excluding specific ingredients,
+    or including specific ingredients,
+    or both, depending on what you want to do
+    note that you can search to include specific ingredients
+    and exclude ones as well.
     Format for search will be as follows:
     'search term;:;inclusion1,inclusion2,
     inclusion3;:;exclusion1,exclusion2,exclusion3'
@@ -431,7 +435,33 @@ class SearchIncExc(Resource):
     """
     def get(self):
         query = requests.get(SEARCH_QUERY).content
-        print(query.split(';:;'))
+        search_split = query.split(';:;')
+        search_term = ''
+        inclusions = ''
+        exclusions = ''
+        inclusions_list = []
+        exclusions_list = []
+        try:
+            search_term = search_split[0]
+        except Warning:
+            print("No Search Term")
+        try:
+            inclusions = search_split[1]
+        except Warning:
+            print("No Inclusions")
+        try:
+            exclusions = search_split[2]
+        except Warning:
+            print("No Exclusions")
+        if (inclusions != ''):
+            inclusions_list = inclusions.split(',')
+        if (exclusions != ''):
+            exclusions_list = exclusions.split(',')
+        print(search_term)
+        for x in range(len(inclusions_list)):
+            print(inclusions_list[x])
+        for y in range(len(exclusions_list)):
+            print(exclusions_list[y])
         return {'Data': {"Cuisine": "Chinese",
                          "Food": "Roasted Pork",
                          "Drink": "Ginger Lime Ice Green Tea"},
