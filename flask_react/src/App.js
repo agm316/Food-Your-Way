@@ -35,7 +35,7 @@ function App() {
 		<Button
   		onPress={goSearchRecipes}
   		title="Search Recipes"
-  		color="#44a444"
+  		color="#50afff"
   		accessibilityLabel="Search for recipes"/>
 	</View> 
 
@@ -43,7 +43,7 @@ function App() {
 		<Button
   		onPress={goAddRecipes}
   		title="Add Recipes"
-  		color="#44a444"
+  		color="#50afff"
   		accessibilityLabel="Add new recipes"/>
 	</View>
 
