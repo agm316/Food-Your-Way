@@ -29,5 +29,6 @@ HOW TO RUN FRONT END INSTRUCTIONS:
 cd flask_react
 npm install
 npm install react-native-web
+npm install @react-navigation/native @react-navigation/native-stack
 npm start
 
