@@ -416,32 +416,22 @@ class GetAll(Resource):
         return recmongo.get_recipe_dict()
 
 
-@api.route(f'/searchExclusions={EXCLUSION_QUERY}')
-class SearchExclusions(Resource):
+@api.route(f'/searchIncExc={SEARCH_QUERY}')
+class SearchIncExc(Resource):
     """
     This endpoint will allow you to search for something while
     excluding specific ingredients
     Format for search will be as follows:
-    'search term;:;exclusion1,exclusion2,exclusion3'
+    'search term;:;inclusion1,inclusion2,
+    inclusion3;:;exclusion1,exclusion2,exclusion3'
+    search with only inclusion:
+    'search term;:;inclusion1,inclusion2,inclusion3;:;'
+    search with only exclusion:
+    'search term;:;;:;exclusion1,exclusion2,exclusion3'
     """
     def get(self):
-        return {'Data': {"Cuisine": "Chinese",
-                         "Food": "Roasted Pork",
-                         "Drink": "Ginger Lime Ice Green Tea"},
-                'Type': {'Data': 12},
-                'Title': {'Suggestion': 'Chinese Food'}
-                }
-
-
-@api.route(f'/searchIncluding={SEARCH_QUERY}')
-class SearchIncluding(Resource):
-    """
-    This endpoint will allow you to search for recipes
-    making sure to include for the specified ingredients
-    Format for search will be as follows:
-    'search term;:;inclusion1,inclusion2,inclusion3'
-    """
-    def get(self):
+        query = requests.get(SEARCH_QUERY).content
+        print(query.split(';:;'))
         return {'Data': {"Cuisine": "Chinese",
                          "Food": "Roasted Pork",
                          "Drink": "Ginger Lime Ice Green Tea"},
