@@ -1,1 +1,1 @@
-web: ./local.sh
+web: gunicorn server.endpoints:app
