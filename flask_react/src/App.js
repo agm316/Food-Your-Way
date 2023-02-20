@@ -1,5 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import Dashboard from './Dashboard'
+import Preferences from './Preferences'
 
 import React from 'react';
 import {
@@ -29,7 +32,6 @@ function App() {
         <p>
           Food Your Way
         </p>
-	
 
 	<View style={[{ width: "40%", margin: 20 }]}>
 		<Button
