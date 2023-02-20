@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Dashboard from './Dashboard'
 import Preferences from './Preferences'
 
@@ -20,6 +20,24 @@ function goSearchRecipes()
 
 function goAddRecipes()
 {
+}
+
+function Page() {
+  return (
+    <div className="wrapper">
+      <h1>Application</h1>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/dashboard">
+            <Dashboard />
+          </Route>
+          <Route path="/preferences">
+            <Preferences />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </div>
+  );
 }
 
 function App() {
@@ -47,6 +65,14 @@ function App() {
   		title="Add Recipes"
   		color="#50afff"
   		accessibilityLabel="Add new recipes"/>
+	</View>
+
+    <View style={[{ width: "40%", margin: 20 }]}>
+		<Button
+  		onPress={Page}
+  		title="Dashboard"
+  		color="#50afff"
+  		accessibilityLabel="Dashboard"/>
 	</View>
 
       </header>
