@@ -11,6 +11,7 @@ Tip: When adding new js libraries to react native, try to figure them out all be
 Saves a HUGE amount of headache in my experience.
 
 
+
 Heroku Deployment Link: https://food-your-way.herokuapp.com/
 
 PythonAnywhere Deployment Link: http://agm316.pythonanywhere.com/
