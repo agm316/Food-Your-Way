@@ -10,8 +10,6 @@ ROUGH USER FLOW:
 Tip: When adding new js libraries to react native, try to figure them out all beforehand and see if they work together.
 Saves a HUGE amount of headache in my experience.
 
-
-
 Heroku Deployment Link: https://food-your-way.herokuapp.com/
 
 PythonAnywhere Deployment Link: http://agm316.pythonanywhere.com/
