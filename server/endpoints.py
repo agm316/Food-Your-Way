@@ -416,7 +416,7 @@ class GetAll(Resource):
         return recmongo.get_recipe_dict()
 
 
-@api.route(f'/searchIncExc={SEARCH_QUERY}')
+@api.route('/searchIncExc/<search_query>')
 class SearchIncExc(Resource):
     """
     This endpoint will allow you to search for something while
@@ -433,9 +433,11 @@ class SearchIncExc(Resource):
     search with only exclusion:
     'search term;:;;:;exclusion1,exclusion2,exclusion3'
     """
-    def get(self):
-        query = requests.get(SEARCH_QUERY).content
-        search_split = query.split(';:;')
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self, search_query):
+        print(search_query)
+        search_split = search_query.split(';:;')
         search_term = ''
         inclusions = ''
         exclusions = ''
