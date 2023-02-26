@@ -15,7 +15,7 @@ on:
 env:
   DEMO_HOME: /home/runner/work/Food-Your-Way/Food-Your-Way/
   PYTHONPATH: /home/runner/work/Food-Your-Way/Food-Your-Way/
-  MONGO_PASSWD: ${{secrets.MONGO_PASSWD}}
+  MONGO_PASSWORD: ${{secrets.MONGO_PASSWORD}}
   MONGO_USER: ${{secrets.MONGO_USER}}
   CLOUD_MONGO: ${{secrets.CLOUD_MONGO}}
 
