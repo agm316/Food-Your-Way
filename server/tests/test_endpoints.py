@@ -12,7 +12,8 @@ TEST_SERVINGS = "3"
 TEST_YIELD = "6 pizzas"
 TEST_URL = "https://www.allrecipes.com/recipe/154315/armenian-pizzas-lahmahjoon/"
 
-TEST_USER = "username/password"
+TEST_USER = "username"
+TEST_PSW = "password"
 
 SEARCH_INC_EXC_TEST_QUERY = "soup;:;pumpkin,tomato;:;poop,soy"
 
@@ -174,4 +175,12 @@ def test_user_name():
     user = TEST_CLIENT.get(f"/login/{TEST_USER}").get_json()
     assert isinstance(user, dict)
     assert isinstance(user["username"], str)
+    assert user["username"] == TEST_USER
     # assert isinstance(user["pwd"], str)
+
+
+def test_password():
+    user = TEST_CLIENT.get(f"/password/{TEST_PSW}").get_json()
+    assert isinstance(user, dict)
+    assert isinstance(user["hashed"], str)
+    assert len(user["hashed"]) > len(TEST_PSW)

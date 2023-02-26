@@ -17,6 +17,7 @@ import werkzeug.exceptions as wz
 import json
 import bson.json_util as json_util
 import hashlib
+import bcrypt
 
 import sys
 import os
@@ -122,6 +123,27 @@ class Login(Resource):
         commented I guess :(
         '''
         return {"username": username}  # , "password": password}
+
+
+# This allows testing of the password storing and loging before
+# having a workable UI
+@api.route('/password/<path:password>')  # /<path:password>')
+class Password(Resource):
+    '''
+    This is used as the login endpoint.
+    '''
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self, password):
+        '''
+        This takes the password and encrypts it and stores it
+        '''
+        pwd = password
+        encoded = pwd.encode('utf-8')
+        salt = bcrypt.gensalt()
+        hashed = bcrypt.hashpw(encoded, salt)
+
+        return {"hashed": hashed.decode("utf-8")}
 
 
 @api.route('/format')
