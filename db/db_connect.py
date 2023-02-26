@@ -46,7 +46,9 @@ def connect_db():
         else:
             print("Connecting to Mongo Locally.")
             local_user = os.environ.get("MONGO_USER")
+            print("MONGO_USER: "+local_user)
             local_passwrd = os.environ.get("MONGO_PASSWORD")
+            print("MONGO_PASSWORD:"+local_passwrd)
             client = pm.MongoClient(f'mongodb://{local_user}:'
                                     + f'{local_passwrd}@'
                                     + '127.0.0.1:27017')
