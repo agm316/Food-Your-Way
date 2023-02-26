@@ -15,7 +15,9 @@ on:
 env:
   DEMO_HOME: /home/runner/work/Food-Your-Way/Food-Your-Way/
   PYTHONPATH: /home/runner/work/Food-Your-Way/Food-Your-Way/
-    # MONGO_PASSWD: ${{secrets.MONGO_PASSWD}}
+  MONGO_PASSWD: ${{secrets.MONGO_PASSWD}}
+  MONGO_USER: ${{secrets.MONGO_USER}}
+  CLOUD_MONGO: ${{secrets.CLOUD_MONGO}}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
