@@ -14,6 +14,8 @@ TEST_URL = "https://www.allrecipes.com/recipe/154315/armenian-pizzas-lahmahjoon/
 
 TEST_USER = "username/password"
 
+SEARCH_INC_EXC_TEST_QUERY = "soup;:;pumpkin,tomato;:;poop,soy"
+
 
 # replaces TEST_SEARCH_QUERY
 @pytest.fixture
@@ -38,7 +40,6 @@ def test_hello(input_test_client):
     assert isinstance(resp_json[ep.MESSAGE], str)
 
 
-@pytest.mark.skip("Can't run this test until a recipe gets deleted from the database.")
 def test_scrape_website():
     """
     Test the web scraping endpoint
@@ -51,7 +52,7 @@ def test_scrape_website():
           verify that the code in endpoints.py is using the
           correct id tags.
     """
-    resp_json = TEST_CLIENT.get(f'{ep.SCRAPE_WEBSITE}/{TEST_WEBSITE}').get_json()
+    resp_json = TEST_CLIENT.get(f'/scrape/{TEST_WEBSITE}').get_json()
     assert isinstance(resp_json["recipe_name"], str)
     assert isinstance(resp_json["prep_time"], str)
     assert isinstance(resp_json["cook_time"], str)
@@ -127,6 +128,14 @@ def test_get_all():
     """
     alldb = TEST_CLIENT.get(ep.GETALL).get_json()
     assert isinstance(alldb, dict)
+
+
+def test_searchIncExc():
+    """
+    See if searchIncExc works
+    """
+    resp_json = TEST_CLIENT.get(f'/searchIncExc/{SEARCH_INC_EXC_TEST_QUERY}').data
+    assert isinstance(resp_json, bytes)
 
 
 def test_search_query(input_search_query):

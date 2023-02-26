@@ -213,7 +213,6 @@ class ScrapeWebsite(Resource):
         """
         html_doc = requests.get(website).content
         soup = BeautifulSoup(html_doc, 'html.parser')
-
         # Get Recipe Name
         recipe_name = ''
         try:
@@ -413,7 +412,7 @@ class GetAll(Resource):
     """
     def get(self):
         # return recdb.get_all()
-        return recmongo.get_recipe_dict()
+        return recmongo.get_recipes_dict()
 
 
 @api.route('/searchIncExc/<search_query>')
@@ -464,12 +463,45 @@ class SearchIncExc(Resource):
             print(inclusions_list[x])
         for y in range(len(exclusions_list)):
             print(exclusions_list[y])
-        return {'Data': {"Cuisine": "Chinese",
-                         "Food": "Roasted Pork",
-                         "Drink": "Ginger Lime Ice Green Tea"},
-                'Type': {'Data': 12},
-                'Title': {'Suggestion': 'Chinese Food'}
-                }
+        # recipe_list = {'1': {"recipe_name": "Soup", "prep_time": "10mins"}}
+        # rec_list_to_ret_json = json.loads(json_util.dumps(recipe_list))
+        # return rec_list_to_ret_json
+        rec_list = {
+                    "Armenian Pizzas (Lahmahjoon)": {
+                        "recipe_name": "Armenian Pizzas (Lahmahjoon)",
+                        "prep_time": "20 mins",
+                        "cook_time": "30 mins",
+                        "total_time": "50 mins",
+                        "servings": "3",
+                        "yield": "6 pizzas",
+                        "ingredients": "example ing 1",
+                        "directions": "directions",
+                        "rating": "4.5",
+                        "url": "https://www.allrecipes.com/recipe/154315/a",
+                        "cuisine_path": "/Meat and Poultry/Lamb/Ground/",
+                        "nutrition": "Total Fat 33g 42%, Potassium 1003mg 21%",
+                        "timing": "Prep Time: 20 mins, Cook Time: 30 mins",
+                        "img_src": "https://www.allrecipes.comb8d4eb9c02.jpg"
+                        },
+                    "Chef John's Fresh Salmon Cakes": {
+                        "recipe_name": "Chef John's Fresh Salmon Cakes",
+                        "prep_time": "20 mins",
+                        "cook_time": "15 mins",
+                        "total_time": "1 hrs 35 mins",
+                        "servings": "4",
+                        "yield": "4 salmon cakes",
+                        "ingredients": "1 tablespoon extra-virgin olive oil",
+                        "directions": "Heat extra virgin olive oil in ",
+                        "rating": "4.8",
+                        "url": "https://www.allrecipes.cocakes/",
+                        "cuisine_path": "/Main Dishes/Seafood Main Dishes/",
+                        "nutrition": "Total Fat 34g 43%, Total Carbohydrate",
+                        "timing": "Prep Time: 20 mins, Cook Time: 15 mins",
+                        "img_src": "https://www.allr98ee1cb0044994758.jpg"
+                        }
+                    }
+        rec_list_jsonified = json.loads(json_util.dumps(rec_list))
+        return rec_list_jsonified
 
 
 @api.route('/filterByCalories')
