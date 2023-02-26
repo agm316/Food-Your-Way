@@ -1,6 +1,8 @@
 # Further Goals for this semester:
 * Adding a front end to our API.
 Further developing a UI using react to make it easier to interact with our API (add stack navigator next)
+* Splitting our front end from backend.
+This will make it easier to develop and run them together (like HATEOAS)
 * Cleaning up our code to make it more efficient.
 Going back through our endpoints and changing any deprecated functions.
 * Adding further options for API calls Ie. filtering, searching, etc...
