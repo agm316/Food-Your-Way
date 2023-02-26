@@ -20,6 +20,7 @@ TIMING = 'timing'
 IMG_SRC = 'img_src'
 
 RECIPE_KEY = 'recipe_name'
+URL_KEY = 'url'
 RECIPE_COLLECT = 'recipes'
 REQUIRED_FLDS = [RECIPE_NAME, PREP_TIME, COOK_TIME,
                  PREP_TIME, COOK_TIME, TOTAL_TIME,
@@ -32,6 +33,15 @@ REQUIRED_FLDS = [RECIPE_NAME, PREP_TIME, COOK_TIME,
 def get_recipe_details(recipe):
     dbc.connect_db()
     return dbc.fetch_one(RECIPE_COLLECT, {RECIPE_KEY: recipe})
+
+
+def get_recipe_from_rec_url(rec_url):
+    dbc.connect_db()
+    return dbc.fetch_one(RECIPE_COLLECT, {URL_KEY: rec_url})
+
+
+def recipe_exists_from_url(rec_url):
+    return get_recipe_from_rec_url(rec_url) is not None
 
 
 def get_time_filter(time):

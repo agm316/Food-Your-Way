@@ -346,9 +346,15 @@ class ScrapeWebsite(Resource):
                             "timing": timing,
                             "img_src": img_src}
 
-        # Recipe gets added to the database for later retrieval
         rec_to_ret_json = json.loads(json_util.dumps(recipe_to_return))
-        recmongo.add_recipe(recipe_name, rec_to_ret_json)
+        # Check if recipe is in db already based on URL
+        if (not (recmongo.recipe_exists_from_url(website))):
+            print("Recipe not in DB, adding it...")
+            recmongo.add_recipe(recipe_name, rec_to_ret_json)
+        else:
+            print("Recipe already in DB! NOT ADDING IT AGAIN!")
+        # Recipe gets added to the database for later retrieval
+        # recmongo.add_recipe(recipe_name, rec_to_ret_json)
         return recipe_to_return
 
 
