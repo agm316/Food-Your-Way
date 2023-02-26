@@ -135,6 +135,7 @@ def test_searchIncExc():
     See if searchIncExc works
     """
     resp_json = TEST_CLIENT.get(f'/searchIncExc/{SEARCH_INC_EXC_TEST_QUERY}').data
+    # Need to fix this to be json dictionary and not bytes!!!
     assert isinstance(resp_json, bytes)
 
 
