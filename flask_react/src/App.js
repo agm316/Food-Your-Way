@@ -40,6 +40,10 @@ function Page() {
   );
 }
 
+function savedRecipes()
+{
+}
+
 function App() {
   return (
     <div className="App">
@@ -73,6 +77,14 @@ function App() {
   		title="Dashboard"
   		color="#50afff"
   		accessibilityLabel="Dashboard"/>
+	</View>
+
+    <View style={[{ width: "40%", margin: 20 }]}>
+		<Button
+  		onPress={savedRecipes}
+  		title="Saved Recipes"
+  		color="#50afff"
+  		accessibilityLabel="Saved Recipes"/>
 	</View>
 
       </header>
