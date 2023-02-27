@@ -54,6 +54,11 @@ const App = () => {
         />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="Dashboard" component={Dashboard} />
+        <Stack.Screen name="Search Recipes" component={SearchRecipes} />
+        <Stack.Screen name="Add Recipes" component={AddRecipes} />
+        <Stack.Screen name="Saved Recipes" component={SavedRecipes} />
+        <Stack.Screen name="Suggested Recipes" component={SuggestedRecipes} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -80,7 +85,7 @@ const HomeScreen = ({navigation}) => {
 
 	<View style={[{ width: "40%", margin: 20 }]}>
 		<Button
-  		onPress={() => navigation.navigate('Profile', {name: 'Search for recipes'})}
+  		onPress={() => navigation.navigate('Search Recipes', {name: 'TEMP_USERNAME'})}
   		title="Search Recipes"
   		color="#50afff"
   		accessibilityLabel="Search for recipes"/>
@@ -88,7 +93,7 @@ const HomeScreen = ({navigation}) => {
 
 	<View style={[{ width: "40%", margin: 20 }]}>
 		<Button
-  		onPress={() => navigation.navigate('Profile', {name: 'Add recipes'})}
+  		onPress={() => navigation.navigate('Add Recipes', {name: 'TEMP_USERNAME'})}
   		title="Add Recipes"
   		color="#50afff"
   		accessibilityLabel="Add new recipes"/>
@@ -96,7 +101,7 @@ const HomeScreen = ({navigation}) => {
 
     <View style={[{ width: "40%", margin: 20 }]}>
 		<Button
-  		onPress={() => navigation.navigate('Profile', {name: 'Saved Recipes'})}
+  		onPress={() => navigation.navigate('Saved Recipes', {name: 'TEMP_USERNAME'})}
   		title="Saved Recipes"
   		color="#50afff"
   		accessibilityLabel="Saved Recipes"/>
@@ -104,7 +109,7 @@ const HomeScreen = ({navigation}) => {
 
 	<View style={[{ width: "40%", margin: 20 }]}>
 		<Button
-  		onPress={() => navigation.navigate('Profile', {name: 'Suggested Recipes'})}
+  		onPress={() => navigation.navigate('Suggested Recipes', {name: 'TEMP_USERNAME'})}
   		title="Suggested Recipes"
   		color="#50afff"
   		accessibilityLabel="Suggested recipes based on search"/>
