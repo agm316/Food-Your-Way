@@ -138,8 +138,14 @@ class Password(Resource):
         '''
         This takes the password and encrypts it and stores it
         '''
-        pwd = password
-        encoded = pwd.encode('utf-8')
+        if len(password) < 8:
+            return "Password too short, should be at least 8"
+        if len(password) > 64:
+            return "Please limit pswd length to 64 chars"
+
+        # future improvement to display password strength here
+
+        encoded = password.encode('utf-8')
         salt = bcrypt.gensalt()
         hashed = bcrypt.hashpw(encoded, salt)
 

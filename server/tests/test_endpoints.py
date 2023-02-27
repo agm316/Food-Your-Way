@@ -15,6 +15,11 @@ TEST_URL = "https://www.allrecipes.com/recipe/154315/armenian-pizzas-lahmahjoon/
 TEST_USER = "username"
 TEST_PSW = "password"
 
+TEST_FAIL_PSW_1 = "psswd"
+# This tests max pswed length (has to be long)
+TEST_FAIL_PSW_2 = "12345678901234567890123456789012345678901234567890123456789012345"
+
+
 SEARCH_INC_EXC_TEST_QUERY = "soup;:;pumpkin,tomato;:;poop,soy"
 
 
@@ -40,7 +45,7 @@ def test_hello(input_test_client):
     resp_json = input_test_client.get(ep.HELLO).get_json()
     assert isinstance(resp_json[ep.MESSAGE], str)
 
-
+# @pytest.mark.skip("Can't run this test until a recipe gets deleted from the database.")
 def test_scrape_website():
     """
     Test the web scraping endpoint
@@ -122,6 +127,7 @@ def test_format_endpoint(input_test_client):
 #     assert isinstance(dbentry, dict)
 
 
+# @pytest.mark.skip("Can't run this test until a recipe gets deleted from the database.")
 def test_get_all():
     """
     This test servers to test the getall() endpoint and asserts
@@ -184,3 +190,9 @@ def test_password():
     assert isinstance(user, dict)
     assert isinstance(user["hashed"], str)
     assert len(user["hashed"]) > len(TEST_PSW)
+
+def test_password_fail():
+    response1 = TEST_CLIENT.get(f"/password/{TEST_FAIL_PSW_1}").get_json()
+    response2 = TEST_CLIENT.get(f"/password/{TEST_FAIL_PSW_2}").get_json()
+    assert isinstance(response1, str)
+    assert isinstance(response2, str)
