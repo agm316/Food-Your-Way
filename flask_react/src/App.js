@@ -14,14 +14,6 @@ import {
   Alert,
 } from 'react-native';
 
-function goSearchRecipes()
-{
-}
-
-function goAddRecipes()
-{
-}
-
 function Page() {
   return (
     <div className="wrapper">
@@ -40,7 +32,22 @@ function Page() {
   );
 }
 
+function goSearchRecipes()
+{
+}
+
+function goAddRecipes()
+{
+}
+
+// will connect this to our backend mongoDB database in order to get this working
 function savedRecipes()
+{
+}
+
+// this function will utilize an algorithm to suggest recipes to
+// the user based on their previous search of recipes
+function suggestRecipes()
 {
 }
 
@@ -54,6 +61,14 @@ function App() {
         <p>
           Food Your Way
         </p>
+
+    <View style={[{ width: "40%", margin: 20 }]}>
+		<Button
+  		onPress={Page}
+  		title="Dashboard"
+  		color="#50afff"
+  		accessibilityLabel="Dashboard"/>
+	</View>
 
 	<View style={[{ width: "40%", margin: 20 }]}>
 		<Button
@@ -73,18 +88,18 @@ function App() {
 
     <View style={[{ width: "40%", margin: 20 }]}>
 		<Button
-  		onPress={Page}
-  		title="Dashboard"
-  		color="#50afff"
-  		accessibilityLabel="Dashboard"/>
-	</View>
-
-    <View style={[{ width: "40%", margin: 20 }]}>
-		<Button
   		onPress={savedRecipes}
   		title="Saved Recipes"
   		color="#50afff"
   		accessibilityLabel="Saved Recipes"/>
+	</View>
+
+	<View style={[{ width: "40%", margin: 20 }]}>
+		<Button
+  		onPress={suggestRecipes}
+  		title="Suggested Recipes"
+  		color="#50afff"
+  		accessibilityLabel="Suggested recipes based on search"/>
 	</View>
 
       </header>
