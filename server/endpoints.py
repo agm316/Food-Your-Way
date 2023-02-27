@@ -12,6 +12,7 @@ from http import HTTPStatus
 from pymongo import MongoClient
 from db import db as recdb  # need to fix issue with make prod
 from db import recipes as recmongo
+from .errs import pswdError
 import requests
 import werkzeug.exceptions as wz
 import json
@@ -138,10 +139,8 @@ class Password(Resource):
         '''
         This takes the password and encrypts it and stores it
         '''
-        if len(password) < 8:
-            return "Password too short, should be at least 8"
-        if len(password) > 64:
-            return "Please limit pswd length to 64 chars"
+        if not (65 > len(password) > 7):
+            raise pswdError(len(password))
 
         # future improvement to display password strength here
 

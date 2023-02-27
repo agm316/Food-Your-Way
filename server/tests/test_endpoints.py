@@ -1,5 +1,6 @@
 import pytest
 import server.endpoints as ep
+from ..errs import pswdError
 
 TEST_CLIENT = ep.app.test_client()
 
@@ -193,6 +194,6 @@ def test_password():
 
 def test_password_fail():
     response1 = TEST_CLIENT.get(f"/password/{TEST_FAIL_PSW_1}").get_json()
+    assert(response1["message"] == 'Internal Server Error')
     response2 = TEST_CLIENT.get(f"/password/{TEST_FAIL_PSW_2}").get_json()
-    assert isinstance(response1, str)
-    assert isinstance(response2, str)
+    assert(response1["message"] == 'Internal Server Error')
