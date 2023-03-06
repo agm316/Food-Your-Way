@@ -19,6 +19,7 @@ import json
 import bson.json_util as json_util
 import hashlib
 import bcrypt
+import re
 
 import sys
 import os
@@ -108,7 +109,10 @@ class Login(Resource):
         Until we have a better system, the password will stay
         commented I guess :(
         '''
-        return {"username": username}  # , "password": password}
+        email_pattern = re.compile("[a-zA-Z0-9]+\.[a-zA-Z0-9]+@gmail\.com")
+        if email_pattern.match(username):
+            return {"username": username}  # , "password": password}
+        return {"error": "username must be a gmail address"}
 
 
 # This allows testing of the password storing and loging before
