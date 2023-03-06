@@ -13,7 +13,7 @@ TEST_SERVINGS = "3"
 TEST_YIELD = "6 pizzas"
 TEST_URL = "https://www.allrecipes.com/recipe/154315/armenian-pizzas-lahmahjoon/"
 
-TEST_USER = "username@gmail.com"
+TEST_USER = "username.user@gmail.com"
 TEST_PSW = "password"
 
 TEST_FAIL_PSW_1 = "psswd"
