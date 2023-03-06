@@ -47,13 +47,41 @@ def recipe_exists_from_url(rec_url):
     return get_recipe_from_rec_url(rec_url) is not None
 
 
-def search_recipe_ingr(include, exclude):
+def search_recipe_ingr(search_term, include, exclude):
+    """
+    Searches for recipes including specific ingredients
+    and excluding other ingredients
+    include and exclude are lists
+    FYI doesn't make sense to search for something
+    with the same include and exclude
+    query result would be null
+    """
     dbc.connect_db()
     # ^(?=.*(?:inc1|inc2|inc3))(?!.*(?:ex1|ex2|ex3)).*$
     # return dbc.fetch_all_filter({ingredients:
     #  {$regex: f'^((?!{exclude}).)*$',$options: 'i'}})
-    reg = f'^(?=.*(?:{include}))(?!.*(?:{exclude})).*$'
-    query = {"ingredients": {"$regex": reg, "$options": 'i'}}
+    reg = ''
+    query = ''
+    query_on = 0
+    if len(include) > 0:
+        query_on = 1
+        reg = reg + '^'
+        for x in range(len(include)):
+            if include[x] != '':
+                reg = reg + f'(?=.*(?:{include[x]}))'
+    if len(exclude) > 0:
+        query_on = 1
+        if (len(include) == 0):
+            reg = reg + '^'
+        for y in range(len(exclude)):
+            if exclude[y] != '':
+                reg = reg + f'(?!.*(?:{exclude[y]}))'
+        reg = reg + '.*$'
+    if (query_on == 1):
+        query = {"ingredients": {"$regex": reg, "$options": 'i'}}
+        # print(query)
+    # reg = f'^(?=.*(?:{include}))(?!.*(?:{exclude})).*$'
+    # query = {"ingredients": {"$regex": reg, "$options": 'i'}}
     return dbc.fetch_all_filter(RECIPE_COLLECT, query, RECIPE_DB)
 
 
