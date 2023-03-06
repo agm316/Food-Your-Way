@@ -7,7 +7,7 @@ The endpoint called `endpoints` will return all available endpoints.
 # import urllib3
 from bs4 import BeautifulSoup
 from flask import Flask, render_template, request, url_for, redirect
-from flask_restx import Resource, Api, Namespace
+from flask_restx import Resource, Api, Namespace, abort
 from http import HTTPStatus
 from pymongo import MongoClient
 from db import db as recdb  # need to fix issue with make prod
@@ -400,18 +400,21 @@ class SearchIncExc(Resource):
         exclusions = ''
         inclusions_list = []
         exclusions_list = []
-        try:
-            search_term = search_split[0]
-        except Warning:
+        if (len(search_split) == 0):
             print("No Search Term")
-        try:
+            abort(400, 'No Search Term', custom='000001')
+        if (len(search_split) == 1):
+            print("Search Term Only, No Include/Exclude")
+            search_term = search_split[0]
+        elif (len(search_split) == 2):
+            print("Search Term and Include Only, No Exclude")
+            search_term = search_split[0]
             inclusions = search_split[1]
-        except Warning:
-            print("No Inclusions")
-        try:
+        elif (len(search_split) == 3):
+            print("Search Term, Include AND Exclude")
+            search_term = search_split[0]
+            inclusions = search_split[1]
             exclusions = search_split[2]
-        except Warning:
-            print("No Exclusions")
         if (inclusions != ''):
             inclusions_list = inclusions.split(',')
         if (exclusions != ''):
