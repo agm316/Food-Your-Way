@@ -93,21 +93,6 @@ class HelloWorld(Resource):
         return {MESSAGE: 'hello world'}
 
 
-@api.route('/endpoints')
-class Endpoints(Resource):
-    """
-    This class will serve as live, fetchable documentation of what endpoints
-    are available in the system.
-    """
-    def get(self):
-        """
-        The `get()` method will return a list of available endpoints.
-        """
-        endpoints = ''
-        # sorted(rule.rule for rule in api.app.url_map.iter_rules())
-        return {"Available endpoints": endpoints}
-
-
 # VERY VERY rudementary system put in place to allow us to test
 # login before a working UI, this works with Swagger
 @api.route('/login/<path:username>')  # /<path:password>')
@@ -129,6 +114,7 @@ class Login(Resource):
 # This allows testing of the password storing and loging before
 # having a workable UI
 @api.route('/password/<path:password>')  # /<path:password>')
+# @app.route('/password', methods=(['GET','POST']))
 class Password(Resource):
     '''
     This is used as the login endpoint.
@@ -170,48 +156,6 @@ class DataFormat(Resource):
                 "cook_time": "cook_time", "total_time": "total_time",
                 "servings": "servings", "yield": "yield", "ingredients": [],
                 "directions": [], "url": "url"}
-
-
-@api.route('/formatTextGame')
-class DataFormatTextGame(Resource):
-    """
-    This class serves to inform the user on the format of the db
-    entries and also servers to assert that the entires are
-    of the right form
-    """
-
-    def get(self):
-        """
-        Trivial endpoint at the moment, will update with asserting
-        right db entry format later.
-        The 'get()' method returns an object holding the formula
-        in the form of an array that has every type of entry.
-        """
-        return {'Data': {"row": "row", "name": "name",
-                         "prep_time": "prep_time",
-                         "cook_time": "cook_time",
-                         "total_time": "total_time",
-                         "servings": "servings",
-                         "yield": "yield", "ingredients": [],
-                         "directions": [], "url": "url"},
-                'Type': {'Data': 10},
-                'Title': {'Title': 'RecipeFormat'}
-                }
-
-
-@api.route(f'/search={SEARCH_QUERY}')
-class SearchQuery(Resource):
-    """
-    This class will return a search query of recipes in the database.
-    """
-    def get(self):
-        """
-        The `get()` method will return a list of recipes.
-        Later, this will be updated to
-        return the HTML page of such a list
-        (when React Front-End is being developed)
-        """
-        return {"Available recipes: CONNECT TO DB!"}
 
 
 @api.route(f'{SCRAPE_WEBSITE}/<path:website>')
@@ -383,29 +327,6 @@ class ScrapeWebsite(Resource):
         # Recipe gets added to the database for later retrieval
         # recmongo.add_recipe(recipe_name, rec_to_ret_json)
         return recipe_to_return
-
-
-@api.route(MAIN_MENU)
-class MainMenu(Resource):
-    """
-    This Will Deliver Our Main Menu.
-    """
-    def get(self):
-        """
-        Gets the main menu.
-        """
-        return {'Title': MAIN_MENU_NM,
-                'Default': 1,
-                'Choices': {
-                    '1': {'url': f'/{GET_ALL_RECIPES}', 'method': 'get',
-                          'text': 'Get All Recipes'},
-                    '2': {'url': f'/{GET_RECIPE_SUGGESTIONS}', 'method': 'get',
-                          'text': 'Get Recipe Suggestions'},
-                    '3': {'url': f'/{FORMATTEXTGAME}', 'method': 'get',
-                          'text': 'Get the recipe format'},
-                    '4': {'url': f'/{SETTINGS}', 'method': 'get',
-                          'text': 'Get search and UI settings'},
-                }}
 
 
 @api.route('/getRecipeSuggestions')
@@ -594,15 +515,6 @@ class RecipeSuggestionsList(Resource):
     """
     def get(self):
         return {RECIPE_SUGGESTIONS_LIST_NM: recdb.get_all()}
-
-
-@api.route('/recipes')
-class Database(Resource):
-    """
-    An endpoint to see the requests being sent to the MongoDB database.
-    """
-    def get(self):
-        return "This is the database endpoint.", 200
 
 
 @app.route('/recipes', methods=('GET', 'POST'))
