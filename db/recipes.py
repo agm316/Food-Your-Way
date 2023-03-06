@@ -61,24 +61,45 @@ def search_recipe_ingr(search_term, include, exclude):
     # return dbc.fetch_all_filter({ingredients:
     #  {$regex: f'^((?!{exclude}).)*$',$options: 'i'}})
     reg = ''
+    search_reg = ''
     query = ''
-    query_on = 0
+    # query_search_term = ''
+    # query_ingr = ''
+    query_ingr_on = 0
+    query_search_term_on = 0
     if len(include) > 0:
-        query_on = 1
+        query_ingr_on = 1
         reg = reg + '^'
         for x in range(len(include)):
             if include[x] != '':
                 reg = reg + f'(?=.*(?:{include[x]}))'
     if len(exclude) > 0:
-        query_on = 1
+        query_ingr_on = 1
         if (len(include) == 0):
             reg = reg + '^'
         for y in range(len(exclude)):
             if exclude[y] != '':
                 reg = reg + f'(?!.*(?:{exclude[y]}))'
         reg = reg + '.*$'
-    if (query_on == 1):
+    # if (query_ingr_on == 1):
+    # query_ingr = {"ingredients": {"$regex": reg, "$options": 'i'}}
+    if (search_term.strip() != ''):
+        search_term_split = (search_term.strip()).split()
+        if (len(search_term_split) > 0):
+            query_search_term_on = 1
+            for x in range(len(search_term_split)):
+                search_reg = search_reg + f'(?=.*{search_term_split[x]})'
+        # query_search_term = {"recipe_name"
+        # : {"$regex": search_reg, "$options": 'i'}}
+    if ((query_ingr_on == 1) and (query_search_term_on == 1)):
+        query = {"$and": [
+            {"recipe_name": {"$regex": search_reg, "$options": 'i'}},
+            {"ingredients": {"$regex": reg, "$options": 'i'}}
+        ]}
+    elif (query_ingr_on == 1):
         query = {"ingredients": {"$regex": reg, "$options": 'i'}}
+    elif (query_search_term_on == 1):
+        query = {"recipe_name": {"$regex": search_reg, "$options": 'i'}}
         # print(query)
     # reg = f'^(?=.*(?:{include}))(?!.*(?:{exclude})).*$'
     # query = {"ingredients": {"$regex": reg, "$options": 'i'}}
