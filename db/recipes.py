@@ -21,7 +21,10 @@ IMG_SRC = 'img_src'
 
 RECIPE_KEY = 'recipe_name'
 URL_KEY = 'url'
+RECIPE_KEY = 'ingredients'
 RECIPE_COLLECT = 'recipes'
+
+RECIPE_DB = 'api_dev_db'
 REQUIRED_FLDS = [RECIPE_NAME, PREP_TIME, COOK_TIME,
                  PREP_TIME, COOK_TIME, TOTAL_TIME,
                  SERVINGS, YIELD, INGREDIENTS,
@@ -42,6 +45,16 @@ def get_recipe_from_rec_url(rec_url):
 
 def recipe_exists_from_url(rec_url):
     return get_recipe_from_rec_url(rec_url) is not None
+
+
+def search_recipe_ingr(include, exclude):
+    dbc.connect_db()
+    # ^(?=.*(?:inc1|inc2|inc3))(?!.*(?:ex1|ex2|ex3)).*$
+    # return dbc.fetch_all_filter({ingredients:
+    #  {$regex: f'^((?!{exclude}).)*$',$options: 'i'}})
+    reg = f'^(?=.*(?:{include}))(?!.*(?:{exclude})).*$'
+    query = {"ingredients": {"$regex": reg, "$options": 'i'}}
+    return dbc.fetch_all_filter(RECIPE_COLLECT, query, RECIPE_DB)
 
 
 def get_time_filter(time):

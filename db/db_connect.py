@@ -17,6 +17,7 @@ CLOUD = "1"
 # the Username is "mongo_cloud" and the Password is "MPasswrdC177"
 # if Mongo is running on the cloud
 RECIPE_DB = 'api_dev_db'
+MONGO_ID = '_id'
 
 client = None
 
@@ -81,6 +82,16 @@ def fetch_all(collection, db=RECIPE_DB):
     ret = []
     for doc in client[db][collection].find():
         ret.append(doc)
+    return ret
+
+
+def fetch_all_filter(collection, filt, db=RECIPE_DB):
+    ret = []
+    for doc in client[db][collection].find(filt):
+        if MONGO_ID in doc:
+            # Convert mongo ID to a string so it works as JSON
+            doc[MONGO_ID] = str(doc[MONGO_ID])
+            ret.append(doc)
     return ret
 
 

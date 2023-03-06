@@ -468,7 +468,7 @@ class SearchIncExc(Resource):
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self, search_query):
-        print(search_query)
+        # print(search_query)
         search_split = search_query.split(';:;')
         search_term = ''
         inclusions = ''
@@ -496,6 +496,10 @@ class SearchIncExc(Resource):
             print(inclusions_list[x])
         for y in range(len(exclusions_list)):
             print(exclusions_list[y])
+        results = recmongo.search_recipe_ingr(inclusions_list[0],
+                                              exclusions_list[1])
+        for z in range(len(results)):
+            print(results[z])
         # recipe_list = {'1': {"recipe_name": "Soup", "prep_time": "10mins"}}
         # rec_list_to_ret_json = json.loads(json_util.dumps(recipe_list))
         # return rec_list_to_ret_json
