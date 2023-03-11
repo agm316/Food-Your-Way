@@ -26,7 +26,6 @@ Future goals:
 [Future TO DOs](FurtherGoals.md)
 
 TO DO:
-- separate front end (react native) and backend into two repos
 - connect react native to endpoints and database
 - update HOWTOSETUP.txt to account for new MongoDB
 - finish db and connect it to "front-end" (also WIP)
