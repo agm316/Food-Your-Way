@@ -72,6 +72,8 @@ GET_ALL_RECIPES = 'getallrecipes'
 GET_RECIPE_SUGGESTIONS = 'getrecipesuggestions'
 SETTINGS = 'searchUIsettings'
 password = ''
+ALL_REC_URL_START = 'https://www.allrecipes.com/'
+URL_REC_SUB_TARGET = 'recipe/'
 
 recipe_cuisines = Namespace(RECIPE_CUISINES_NS, 'Recipe Cuisines')
 api.add_namespace(recipe_cuisines)
@@ -429,12 +431,27 @@ class SearchAllRec(Resource):
     """
     This endpoint searches allrecipes.com for a given keyword and returns
     a list of url's to related pages
+    so far this only returns one page
+    second page example
+    https://www.allrecipes.com/search?pizza=pizza&offset=24&q=pizza
     """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self, search_query):
-        results = ['www.allrecipes.com', 'www.allrecipes.com/awesome']
-        return results
+        link_lst = []
+        len_url_start = len(ALL_REC_URL_START)
+        len_sub_url = len(URL_REC_SUB_TARGET)
+        query_url = "https://www.allrecipes.com/search?q="
+        query_url = query_url + search_query.strip()
+        html_doc = requests.get(query_url).content
+        soup = BeautifulSoup(html_doc, 'html.parser')
+        for link in soup.find_all('a', href=True):
+            link_i = link.get('href')
+            if (((link_i[0:len_url_start]) == ALL_REC_URL_START) and
+               ((link_i[len_url_start:(len_sub_url+len_url_start)]) ==
+               URL_REC_SUB_TARGET)):
+                link_lst.append(link.get('href'))
+        return link_lst
 
 
 @api.route('/filterByCalories')
