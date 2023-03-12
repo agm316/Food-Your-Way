@@ -424,6 +424,19 @@ class SearchIncExc(Resource):
         return results
 
 
+@api.route('/searchAllRec/<search_query>')
+class SearchAllRec(Resource):
+    """
+    This endpoint searches allrecipes.com for a given keyword and returns
+    a list of url's to related pages
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self, search_query):
+        results = ['www.allrecipes.com', 'www.allrecipes.com/awesome']
+        return results
+
+
 @api.route('/filterByCalories')
 class FilterByCalories(Resource):
     """
