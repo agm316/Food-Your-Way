@@ -14,6 +14,7 @@ TEST_YIELD = "6 pizzas"
 TEST_URL = "https://www.allrecipes.com/recipe/154315/armenian-pizzas-lahmahjoon/"
 
 TEST_USER = "username.user@gmail.com"
+TEST_USER_FAIL = "test"
 TEST_PSW = "password"
 
 TEST_FAIL_PSW_1 = "psswd"
@@ -186,11 +187,20 @@ def test_user_name():
     # assert isinstance(user["pwd"], str)
 
 
+def test_user_name_fail():
+    user = TEST_CLIENT.get(f"/login/{TEST_USER_FAIL}").get_json()
+    assert isinstance(user, dict)
+    assert isinstance(user["error"], str)
+    assert user["error"] == "username must be an email address"
+    # assert isinstance(user["pwd"], str)
+
+
 def test_password():
     user = TEST_CLIENT.get(f"/password/{TEST_PSW}").get_json()
     assert isinstance(user, dict)
     assert isinstance(user["hashed"], str)
     assert len(user["hashed"]) > len(TEST_PSW)
+
 
 def test_password_fail():
     response1 = TEST_CLIENT.get(f"/password/{TEST_FAIL_PSW_1}").get_json()
