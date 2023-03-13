@@ -130,7 +130,7 @@ class Login(Resource):
         Until we have a better system, the password will stay
         commented I guess :(
         '''
-        email_pattern = re.compile(r"[a-zA-Z0-9]+\.?[a-zA-Z0-9]+@gmail\.com")
+        email_pattern = re.compile(r"[a-zA-Z0-9]+\.?[a-zA-Z0-9]+@[a-zA-Z]+\.(com|co|org|edu)")
         if email_pattern.match(username):
             return {"username": username}  # , "password": password}
         return {"error": "username must be a gmail address"}
