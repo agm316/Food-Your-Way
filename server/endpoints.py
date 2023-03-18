@@ -12,6 +12,8 @@ from http import HTTPStatus
 from pymongo import MongoClient
 from db import db as recdb  # need to fix issue with make prod
 from db import recipes as recmongo
+from urllib.parse import unquote
+# from urllib.parse import quote
 from .errs import pswdError
 import requests
 import werkzeug.exceptions as wz
@@ -417,7 +419,7 @@ class SearchIncExc(Resource):
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self, search_query):
         # print(search_query)
-        search_split = search_query.split(';:;')
+        search_split = ((unquote(search_query)).strip()).split(';:;')
         search_term = ''
         inclusions = ''
         exclusions = ''
@@ -427,17 +429,22 @@ class SearchIncExc(Resource):
             print("No Search Term")
             abort(400, 'No Search Term', custom='000001')
         if (len(search_split) == 1):
-            print("Search Term Only, No Include/Exclude")
-            search_term = search_split[0]
+            if (len((unquote(search_split[0])).strip()) > 0):
+                print("Search Term Only, No Include/Exclude")
+                search_term = unquote(search_split[0]).strip()
+            else:
+                print("No Search Term")
+                abort(400, 'No Search Term', custom='000002')
+            # print(search_term)
         elif (len(search_split) == 2):
             print("Search Term and Include Only, No Exclude")
-            search_term = search_split[0]
-            inclusions = search_split[1]
+            search_term = unquote(search_split[0]).strip()
+            inclusions = unquote(search_split[1]).strip()
         elif (len(search_split) == 3):
             print("Search Term, Include AND Exclude")
-            search_term = search_split[0]
-            inclusions = search_split[1]
-            exclusions = search_split[2]
+            search_term = unquote(search_split[0]).strip()
+            inclusions = unquote(search_split[1]).strip()
+            exclusions = unquote(search_split[2]).strip()
         if (inclusions != ''):
             inclusions_list = inclusions.split(',')
         if (exclusions != ''):
