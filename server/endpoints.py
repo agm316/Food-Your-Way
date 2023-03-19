@@ -103,6 +103,140 @@ def SearchLaterPages(website):
     return link_lst
 
 
+def ScrapeWebsiteSoup(soup, website):
+    # Get Recipe Name
+    recipe_name = ''
+    try:
+        recipe_name_test = soup.find(id=RECIPE_NAME_ID_1)
+        if (isinstance(recipe_name_test, type(None))):
+            pass
+        else:
+            recipe_name = recipe_name_test.get_text().strip()
+    except Warning:
+        pass
+    if recipe_name == '':
+        try:
+            recipe_name_test = soup.find(id=RECIPE_NAME_ID_2)
+            if (isinstance(recipe_name_test, type(None))):
+                pass
+            else:
+                recipe_name = recipe_name_test.get_text().strip()
+        except Warning:
+            pass
+    if recipe_name == '':
+        raise wz.NotFound(f'{website} not found')
+    prep_time = ""
+    cook_time = ""
+    total_time = ""
+    servings = ""
+    yield_val = ""
+    ingr = ""
+    directions = ""
+    rating = ""
+    cuisine_path = "/"
+    nutr = ""
+    timing = ""
+    tm_label = ""
+    tm_val = ""
+    img_src = ""
+    # Get Ingredients
+    ing_list_soup = soup.find(class_=INGREDIENTS_ID)
+    for li in ing_list_soup.find_all("li"):
+        if li.text != "":
+            ingr += (li.text[1:(len(li.text)-1)] + ", ")
+    if ingr == '':
+        raise wz.NotFound("Ingredients Not Found")
+    ingr = ingr[:(len(ingr)-2)]
+    # Get Directions
+    directions_soup = soup.find(id=DIRECTIONS_ID)
+    for li in directions_soup.find_all("li"):
+        if li.text != "":
+            directions += (li.text[1:(len(li.text)-3)])
+    if directions == '':
+        raise wz.NotFound("Directions Not Found")
+    directions = directions[1:]
+    # Get Rating (out of 5 stars)
+    rating_sp = soup.find(id=RATING_ID)
+    if (isinstance(rating_sp, type(None))):
+        pass
+    else:
+        rating = rating_sp.get_text().strip()
+    if (rating == ""):
+        rating_sp = soup.find(id=RATING_ID_2)
+        if (isinstance(rating_sp, type(None))):
+            pass
+        else:
+            rating = rating_sp.get_text().strip()
+    # Get Cuisine Path
+    cuisine_soup = soup.find_all(class_=CUISINE_CLASS)
+    for div in cuisine_soup:
+        if div.text.strip() != "Recipes":
+            cuisine_path = (cuisine_path + div.text.strip() + "/")
+    # Get Nutrition Information
+    nutr_soup = soup.find(class_=NUTRITION_CLASS)
+    for tr in nutr_soup.find_all("tr"):
+        if (tr.text != "") and (tr.text.strip() != "% Daily Value *"):
+            tr_list = tr.text.split()
+            for i in tr_list:
+                nutr += i + ' '
+            nutr = nutr[:(len(nutr)-1)]
+            nutr += ', '
+    if len(nutr) > 1:
+        if nutr[-2:] == ', ':
+            nutr = nutr[:(len(nutr)-2)]
+    # Get Timing
+    time_lb_soup = soup.find_all(class_=TIMING_LABEL)
+    time_val_soup = soup.find_all(class_=TIMING_VALUE)
+    for div in time_lb_soup:
+        tm_label += (div.text.strip() + ',')
+    tm_label = (tm_label[:len(tm_label)-1])
+    for div in time_val_soup:
+        tm_val += (div.text.strip() + ',')
+    tm_val = (tm_val[:len(tm_val)-1])
+    tm_l_lst = tm_label.split(',')
+    tm_v_lst = tm_val.split(',')
+    for i in range(len(tm_l_lst)):
+        timing += tm_l_lst[i].strip()
+        timing += ' '
+        timing += tm_v_lst[i].strip()
+        timing += ', '
+    timing = timing[:(len(timing)-2)]
+    # Split timing into its individual components
+    tm_split = timing.split(',')
+    for x in range(len(tm_split)):
+        split_indiv = tm_split[x].split(':')
+        if split_indiv[0].strip() == "Prep Time":
+            prep_time = split_indiv[1].strip()
+        elif split_indiv[0].strip() == "Cook Time":
+            cook_time = split_indiv[1].strip()
+        elif split_indiv[0].strip() == "Total Time":
+            total_time = split_indiv[1].strip()
+        elif split_indiv[0].strip() == "Servings":
+            servings = split_indiv[1].strip()
+        elif split_indiv[0].strip() == "Yield":
+            yield_val = split_indiv[1].strip()
+    # Get Image URL
+    img_soup = soup.find_all("img", class_=IMG_CLASS)
+    img2_soup = soup.find("img", id=IMG_ID2)
+    if len(img_soup) > 0:
+        img_src = img_soup[0]['src'].strip()
+    elif img2_soup != "":
+        img_src = img2_soup['data-src'].strip()
+    # Return
+    recipe_to_return = {"recipe_name": recipe_name, "prep_time": prep_time,
+                        "cook_time": cook_time, "total_time": total_time,
+                        "servings": servings, "yield": yield_val,
+                        "ingredients": ingr,
+                        "directions": directions, "rating": rating,
+                        "url": website,
+                        "cuisine_path": cuisine_path,
+                        "nutrition": nutr,
+                        "timing": timing,
+                        "img_src": img_src}
+    rec_to_ret_json = json.loads(json_util.dumps(recipe_to_return))
+    return rec_to_ret_json
+
+
 @api.route('/hello')
 class HelloWorld(Resource):
     """
@@ -213,149 +347,17 @@ class ScrapeWebsite(Resource):
         """
         html_doc = requests.get(website).content
         soup = BeautifulSoup(html_doc, 'html.parser')
-        # Get Recipe Name
-        recipe_name = ''
-        try:
-            recipe_name_test = soup.find(id=RECIPE_NAME_ID_1)
-            if (isinstance(recipe_name_test, type(None))):
-                pass
-            else:
-                recipe_name = recipe_name_test.get_text().strip()
-        except Warning:
-            pass
-        if recipe_name == '':
-            try:
-                recipe_name_test = soup.find(id=RECIPE_NAME_ID_2)
-                if (isinstance(recipe_name_test, type(None))):
-                    pass
-                else:
-                    recipe_name = recipe_name_test.get_text().strip()
-            except Warning:
-                pass
-        if recipe_name == '':
-            raise wz.NotFound(f'{website} not found')
-        prep_time = ""
-        cook_time = ""
-        total_time = ""
-        servings = ""
-        yield_val = ""
-        ingr = ""
-        directions = ""
-        rating = ""
-        cuisine_path = "/"
-        nutr = ""
-        timing = ""
-        tm_label = ""
-        tm_val = ""
-        img_src = ""
-
-        # Get Ingredients
-        ing_list_soup = soup.find(class_=INGREDIENTS_ID)
-        for li in ing_list_soup.find_all("li"):
-            if li.text != "":
-                ingr += (li.text[1:(len(li.text)-1)] + ", ")
-        if ingr == '':
-            raise wz.NotFound("Ingredients Not Found")
-        ingr = ingr[:(len(ingr)-2)]
-
-        # Get Directions
-        directions_soup = soup.find(id=DIRECTIONS_ID)
-        for li in directions_soup.find_all("li"):
-            if li.text != "":
-                directions += (li.text[1:(len(li.text)-3)])
-        if directions == '':
-            raise wz.NotFound("Directions Not Found")
-        directions = directions[1:]
-
-        # Get Rating (out of 5 stars)
-        rating_sp = soup.find(id=RATING_ID)
-        if (isinstance(rating_sp, type(None))):
-            pass
-        else:
-            rating = rating_sp.get_text().strip()
-        if (rating == ""):
-            rating_sp = soup.find(id=RATING_ID_2)
-            if (isinstance(rating_sp, type(None))):
-                pass
-            else:
-                rating = rating_sp.get_text().strip()
-        # Get Cuisine Path
-        cuisine_soup = soup.find_all(class_=CUISINE_CLASS)
-        for div in cuisine_soup:
-            if div.text.strip() != "Recipes":
-                cuisine_path = (cuisine_path + div.text.strip() + "/")
-        # Get Nutrition Information
-        nutr_soup = soup.find(class_=NUTRITION_CLASS)
-        for tr in nutr_soup.find_all("tr"):
-            if (tr.text != "") and (tr.text.strip() != "% Daily Value *"):
-                tr_list = tr.text.split()
-                for i in tr_list:
-                    nutr += i + ' '
-                nutr = nutr[:(len(nutr)-1)]
-                nutr += ', '
-        if len(nutr) > 1:
-            if nutr[-2:] == ', ':
-                nutr = nutr[:(len(nutr)-2)]
-        # Get Timing
-        time_lb_soup = soup.find_all(class_=TIMING_LABEL)
-        time_val_soup = soup.find_all(class_=TIMING_VALUE)
-        for div in time_lb_soup:
-            tm_label += (div.text.strip() + ',')
-        tm_label = (tm_label[:len(tm_label)-1])
-        for div in time_val_soup:
-            tm_val += (div.text.strip() + ',')
-        tm_val = (tm_val[:len(tm_val)-1])
-        tm_l_lst = tm_label.split(',')
-        tm_v_lst = tm_val.split(',')
-        for i in range(len(tm_l_lst)):
-            timing += tm_l_lst[i].strip()
-            timing += ' '
-            timing += tm_v_lst[i].strip()
-            timing += ', '
-        timing = timing[:(len(timing)-2)]
-        # Split timing into its individual components
-        tm_split = timing.split(',')
-        for x in range(len(tm_split)):
-            split_indiv = tm_split[x].split(':')
-            if split_indiv[0].strip() == "Prep Time":
-                prep_time = split_indiv[1].strip()
-            elif split_indiv[0].strip() == "Cook Time":
-                cook_time = split_indiv[1].strip()
-            elif split_indiv[0].strip() == "Total Time":
-                total_time = split_indiv[1].strip()
-            elif split_indiv[0].strip() == "Servings":
-                servings = split_indiv[1].strip()
-            elif split_indiv[0].strip() == "Yield":
-                yield_val = split_indiv[1].strip()
-        # Get Image URL
-        img_soup = soup.find_all("img", class_=IMG_CLASS)
-        img2_soup = soup.find("img", id=IMG_ID2)
-        if len(img_soup) > 0:
-            img_src = img_soup[0]['src'].strip()
-        elif img2_soup != "":
-            img_src = img2_soup['data-src'].strip()
-        # Return
-        recipe_to_return = {"recipe_name": recipe_name, "prep_time": prep_time,
-                            "cook_time": cook_time, "total_time": total_time,
-                            "servings": servings, "yield": yield_val,
-                            "ingredients": ingr,
-                            "directions": directions, "rating": rating,
-                            "url": website,
-                            "cuisine_path": cuisine_path,
-                            "nutrition": nutr,
-                            "timing": timing,
-                            "img_src": img_src}
-
-        rec_to_ret_json = json.loads(json_util.dumps(recipe_to_return))
+        rec_to_ret_json = ScrapeWebsiteSoup(soup, website)
+        rec_name = rec_to_ret_json["recipe_name"]
         # Check if recipe is in db already based on URL
         if (not (recmongo.recipe_exists_from_url(website))):
             print("Recipe not in DB, adding it...")
-            recmongo.add_recipe(recipe_name, rec_to_ret_json)
+            recmongo.add_recipe(rec_name, rec_to_ret_json)
         else:
             print("Recipe already in DB! NOT ADDING IT AGAIN!")
         # Recipe gets added to the database for later retrieval
         # recmongo.add_recipe(recipe_name, rec_to_ret_json)
-        return recipe_to_return
+        return rec_to_ret_json
 
 
 @api.route('/getRecipeSuggestions')
