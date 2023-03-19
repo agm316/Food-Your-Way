@@ -237,6 +237,55 @@ def ScrapeWebsiteSoup(soup, website):
     return rec_to_ret_json
 
 
+def SearchAllRecFromQuery(search_query):
+    link_lst = []
+    query_str = ''
+    terms_url_ready = ""
+    len_url_start = len(ALL_REC_URL_START)
+    len_sub_url = len(URL_REC_SUB_TARGET)
+    query_url = "https://www.allrecipes.com/search?q="
+    second_p_url = "https://www.allrecipes.com/search?"
+    subsequent_url_base = ''
+    term_lst = (search_query.strip()).split()
+    if (len(term_lst) == 0):
+        print("No Search Terms")
+        return []
+    else:
+        for x in range(len(term_lst)):
+            query_str = query_str + term_lst[x] + '+'
+            terms_url_ready = terms_url_ready + term_lst[x]
+            terms_url_ready = terms_url_ready + '%20'
+        query_str = query_str[:-1]
+        terms_url_ready = terms_url_ready[:-3]
+    query_url = query_url + query_str
+    html_doc = requests.get(query_url).content
+    soup = BeautifulSoup(html_doc, 'html.parser')
+    for link in soup.find_all('a', href=True):
+        link_i = link.get('href')
+        if (((link_i[0:len_url_start]) == ALL_REC_URL_START) and
+            ((link_i[len_url_start:(len_sub_url+len_url_start)]) ==
+             URL_REC_SUB_TARGET)):
+            link_lst.append(link.get('href'))
+    second_p_url = second_p_url + terms_url_ready
+    second_p_url = second_p_url + '='
+    second_p_url = second_p_url + terms_url_ready
+    second_p_url = second_p_url + '&offset='
+    subsequent_url_base = second_p_url
+    y = 0
+    while (True):
+        offset = (y * 24) + 24
+        y = y + 1
+        temp_url = subsequent_url_base + str(offset)
+        temp_url = temp_url + '&q='
+        temp_url = temp_url + terms_url_ready
+        res_lst = SearchLaterPages(temp_url)
+        if (len(res_lst) == 0):
+            break
+        for x in range(len(res_lst)):
+            link_lst.append(res_lst[x])
+    return link_lst
+
+
 @api.route('/hello')
 class HelloWorld(Resource):
     """
@@ -473,52 +522,7 @@ class SearchAllRec(Resource):
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self, search_query):
-        link_lst = []
-        query_str = ''
-        terms_url_ready = ""
-        len_url_start = len(ALL_REC_URL_START)
-        len_sub_url = len(URL_REC_SUB_TARGET)
-        query_url = "https://www.allrecipes.com/search?q="
-        second_p_url = "https://www.allrecipes.com/search?"
-        subsequent_url_base = ''
-        term_lst = (search_query.strip()).split()
-        if (len(term_lst) == 0):
-            print("No Search Terms")
-            return []
-        else:
-            for x in range(len(term_lst)):
-                query_str = query_str + term_lst[x] + '+'
-                terms_url_ready = terms_url_ready + term_lst[x]
-                terms_url_ready = terms_url_ready + '%20'
-            query_str = query_str[:-1]
-            terms_url_ready = terms_url_ready[:-3]
-        query_url = query_url + query_str
-        html_doc = requests.get(query_url).content
-        soup = BeautifulSoup(html_doc, 'html.parser')
-        for link in soup.find_all('a', href=True):
-            link_i = link.get('href')
-            if (((link_i[0:len_url_start]) == ALL_REC_URL_START) and
-               ((link_i[len_url_start:(len_sub_url+len_url_start)]) ==
-               URL_REC_SUB_TARGET)):
-                link_lst.append(link.get('href'))
-        second_p_url = second_p_url + terms_url_ready
-        second_p_url = second_p_url + '='
-        second_p_url = second_p_url + terms_url_ready
-        second_p_url = second_p_url + '&offset='
-        subsequent_url_base = second_p_url
-        y = 0
-        while (True):
-            offset = (y * 24) + 24
-            y = y + 1
-            temp_url = subsequent_url_base + str(offset)
-            temp_url = temp_url + '&q='
-            temp_url = temp_url + terms_url_ready
-            res_lst = SearchLaterPages(temp_url)
-            if (len(res_lst) == 0):
-                break
-            for x in range(len(res_lst)):
-                link_lst.append(res_lst[x])
-        return link_lst
+        return SearchAllRecFromQuery(search_query)
 
 
 @api.route('/filterByCalories')
