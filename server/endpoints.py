@@ -525,6 +525,25 @@ class SearchAllRec(Resource):
         return SearchAllRecFromQuery(search_query)
 
 
+@api.route('/searchFrontEnd/<search_query>')
+class SearchFrontEnd(Resource):
+    """
+    This endpoint runs through a sequence of
+    what we want our frontend to call.
+    One someone enters a search query with
+    ingredients that they want to include
+    or exclude, this endpoint will first
+    pull all recipes associated with that
+    search term and ensure they are in our DB
+    next, we will search through the db for everything
+    that matches that request.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self, search_query):
+        return search_query
+
+
 @api.route('/filterByCalories')
 class FilterByCalories(Resource):
     """
