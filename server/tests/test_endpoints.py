@@ -1,4 +1,6 @@
 import pytest
+import json
+import bson.json_util as json_util
 import server.endpoints as ep
 from ..errs import pswdError
 
@@ -61,8 +63,10 @@ def test_scrape_website():
           correct id tags.
     """
     resp = TEST_CLIENT.get(f'/scrape/{TEST_WEBSITE}')
-    resp_json = resp.get_json()
+    resp2 = resp.get_json()
+    resp_json = json.loads(json_util.dumps(resp2))
     print(type(resp))
+    print(type(resp2))
     print(type(resp_json))
     print(resp_json)
     assert isinstance(resp_json["recipe_name"], str)
