@@ -174,16 +174,17 @@ def ScrapeWebsiteSoup(soup, website):
             cuisine_path = (cuisine_path + div.text.strip() + "/")
     # Get Nutrition Information
     nutr_soup = soup.find(class_=NUTRITION_CLASS)
-    for tr in nutr_soup.find_all("tr"):
-        if (tr.text != "") and (tr.text.strip() != "% Daily Value *"):
-            tr_list = tr.text.split()
-            for i in tr_list:
-                nutr += i + ' '
-            nutr = nutr[:(len(nutr)-1)]
-            nutr += ', '
-    if len(nutr) > 1:
-        if nutr[-2:] == ', ':
-            nutr = nutr[:(len(nutr)-2)]
+    if (not isinstance(nutr_soup, type(None))):
+        for tr in nutr_soup.find_all("tr"):
+            if (tr.text != "") and (tr.text.strip() != "% Daily Value *"):
+                tr_list = tr.text.split()
+                for i in tr_list:
+                    nutr += i + ' '
+                nutr = nutr[:(len(nutr)-1)]
+                nutr += ', '
+        if len(nutr) > 1:
+            if nutr[-2:] == ', ':
+                nutr = nutr[:(len(nutr)-2)]
     # Get Timing
     time_lb_soup = soup.find_all(class_=TIMING_LABEL)
     time_val_soup = soup.find_all(class_=TIMING_VALUE)
@@ -220,9 +221,11 @@ def ScrapeWebsiteSoup(soup, website):
     img2_soup = soup.find("img", id=IMG_ID2)
     if len(img_soup) > 0:
         img_src = img_soup[0]['src'].strip()
+    elif (isinstance(img2_soup, type(None))):
+        pass
     elif img2_soup != "":
         img_src = img2_soup['data-src'].strip()
-    print("recipe_name = " + recipe_name)
+    # print("recipe_name = " + recipe_name)
     # Return
     recipe_to_return = {"recipe_name": recipe_name, "prep_time": prep_time,
                         "cook_time": cook_time, "total_time": total_time,
@@ -235,7 +238,7 @@ def ScrapeWebsiteSoup(soup, website):
                         "timing": timing,
                         "img_src": img_src}
     rec_to_ret_json = json.loads(json_util.dumps(recipe_to_return))
-    print("recipe_name2 = " + rec_to_ret_json["recipe_name"])
+    # print("recipe_name2 = " + rec_to_ret_json["recipe_name"])
     return rec_to_ret_json
 
 
@@ -566,7 +569,30 @@ class SearchFrontEnd(Resource):
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self, search_query):
-        return search_query
+        # Process Search Query
+        search_split_dict = SplitSearchQueryIncExc(search_query)
+        # Split Return to Individual Parts
+        search_term = search_split_dict["search_term"]
+        inclusions_list = search_split_dict["inclusions"]
+        exclusions_list = search_split_dict["exclusions"]
+        # Get all recipes about the search term
+        rec_url_list = SearchAllRecFromQuery(search_term)
+        # Scrape each URL in list
+        for x in rec_url_list:
+            html_doc = requests.get(x).content
+            soup = BeautifulSoup(html_doc, 'html.parser')
+            scrape_return = ScrapeWebsiteSoup(soup, x)
+            url_data = json.loads(json_util.dumps(scrape_return))
+            rec_name = url_data["recipe_name"]
+            if (not (recmongo.recipe_exists_from_url(x))):
+                print("Recipe not in DB, adding it...")
+                recmongo.add_recipe(rec_name, url_data)
+            else:
+                print("recipe already in DB! NOT ADDING IT AGAIN!")
+        # Search DB for Recipe with Inclusion and Exclusion
+        results = recmongo.search_recipe_ingr(search_term, inclusions_list,
+                                              exclusions_list)
+        return results
 
 
 @api.route('/filterByCalories')
