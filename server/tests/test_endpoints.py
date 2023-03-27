@@ -62,7 +62,9 @@ def test_scrape_website():
     """
     resp = TEST_CLIENT.get(f'/scrape/{TEST_WEBSITE}')
     resp_json = resp.get_json()
-    print("resp_json['recipe_name']: " + resp_json["recipe_name"])
+    print(type(resp))
+    print(type(resp_json))
+    print(resp_json)
     assert isinstance(resp_json["recipe_name"], str)
     assert isinstance(resp_json["prep_time"], str)
     assert isinstance(resp_json["cook_time"], str)
