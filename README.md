@@ -41,5 +41,3 @@ Authors:
 - Brad Yuan
 - Ara Mangoyan
 - Ricky Chu
-
-Checking auto deployment
