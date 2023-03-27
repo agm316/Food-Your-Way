@@ -61,6 +61,7 @@ def test_scrape_website():
           correct id tags.
     """
     resp_json = TEST_CLIENT.get(f'/scrape/{TEST_WEBSITE}').get_json()
+    print("resp_json['recipe_name']: " + resp_json["recipe_name"])
     assert isinstance(resp_json["recipe_name"], str)
     assert isinstance(resp_json["prep_time"], str)
     assert isinstance(resp_json["cook_time"], str)
