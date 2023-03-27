@@ -398,7 +398,8 @@ class ScrapeWebsite(Resource):
         """
         html_doc = requests.get(website).content
         soup = BeautifulSoup(html_doc, 'html.parser')
-        rec_to_ret_json = ScrapeWebsiteSoup(soup, website)
+        scrape_return = ScrapeWebsiteSoup(soup, website)
+        rec_to_ret_json = json.loads(json_util.dumps(scrape_return))
         rec_name = rec_to_ret_json["recipe_name"]
         # Check if recipe is in db already based on URL
         if (not (recmongo.recipe_exists_from_url(website))):
