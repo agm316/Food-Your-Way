@@ -222,6 +222,7 @@ def ScrapeWebsiteSoup(soup, website):
         img_src = img_soup[0]['src'].strip()
     elif img2_soup != "":
         img_src = img2_soup['data-src'].strip()
+    print("recipe_name = " + recipe_name)
     # Return
     recipe_to_return = {"recipe_name": recipe_name, "prep_time": prep_time,
                         "cook_time": cook_time, "total_time": total_time,
