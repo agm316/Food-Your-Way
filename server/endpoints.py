@@ -288,6 +288,44 @@ def SearchAllRecFromQuery(search_query):
     return link_lst
 
 
+def SplitSearchQueryIncExc(search_query):
+    search_split = ((unquote(search_query)).strip()).split(';:;')
+    search_term = ''
+    inclusions = ''
+    exclusions = ''
+    inclusions_list = []
+    exclusions_list = []
+    if (len(search_split) == 0):
+        print("No Search Term")
+        abort(400, 'No Search Term', custom='000001')
+    if (len(search_split) == 1):
+        if (len((unquote(search_split[0])).strip()) > 0):
+            print("Search Term Only, No Include/Exclude")
+            search_term = unquote(search_split[0]).strip()
+        else:
+            print("No Search Term")
+            abort(400, 'No Search Term', custom='000002')
+        # print(search_term)
+    elif (len(search_split) == 2):
+        print("Search Term and Include Only, No Exclude")
+        search_term = unquote(search_split[0]).strip()
+        inclusions = unquote(search_split[1]).strip()
+    elif (len(search_split) == 3):
+        print("Search Term, Include AND Exclude")
+        search_term = unquote(search_split[0]).strip()
+        inclusions = unquote(search_split[1]).strip()
+        exclusions = unquote(search_split[2]).strip()
+    if (inclusions != ''):
+        inclusions_list = inclusions.split(',')
+    if (exclusions != ''):
+        exclusions_list = exclusions.split(',')
+    # Return
+    return_dict = {"search_term": search_term,
+                   "inclusions": inclusions_list,
+                   "exclusions": exclusions_list}
+    return return_dict
+
+
 @api.route('/hello')
 class HelloWorld(Resource):
     """
@@ -401,8 +439,8 @@ class ScrapeWebsite(Resource):
         scrape_return = ScrapeWebsiteSoup(soup, website)
         rec_to_ret_json = json.loads(json_util.dumps(scrape_return))
         rec_name = rec_to_ret_json["recipe_name"]
-        print("inside ScrapeWebsite")
-        print("rec_name: " + rec_name)
+        # print("inside ScrapeWebsite")
+        # print("rec_name: " + rec_name)
         # Check if recipe is in db already based on URL
         if (not (recmongo.recipe_exists_from_url(website))):
             print("Recipe not in DB, adding it...")
@@ -411,7 +449,7 @@ class ScrapeWebsite(Resource):
             print("Recipe already in DB! NOT ADDING IT AGAIN!")
         # Recipe gets added to the database for later retrieval
         # recmongo.add_recipe(recipe_name, rec_to_ret_json)
-        print(rec_to_ret_json["url"])
+        # print(rec_to_ret_json["url"])
         return rec_to_ret_json
 
 
@@ -476,36 +514,10 @@ class SearchIncExc(Resource):
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self, search_query):
         # print(search_query)
-        search_split = ((unquote(search_query)).strip()).split(';:;')
-        search_term = ''
-        inclusions = ''
-        exclusions = ''
-        inclusions_list = []
-        exclusions_list = []
-        if (len(search_split) == 0):
-            print("No Search Term")
-            abort(400, 'No Search Term', custom='000001')
-        if (len(search_split) == 1):
-            if (len((unquote(search_split[0])).strip()) > 0):
-                print("Search Term Only, No Include/Exclude")
-                search_term = unquote(search_split[0]).strip()
-            else:
-                print("No Search Term")
-                abort(400, 'No Search Term', custom='000002')
-            # print(search_term)
-        elif (len(search_split) == 2):
-            print("Search Term and Include Only, No Exclude")
-            search_term = unquote(search_split[0]).strip()
-            inclusions = unquote(search_split[1]).strip()
-        elif (len(search_split) == 3):
-            print("Search Term, Include AND Exclude")
-            search_term = unquote(search_split[0]).strip()
-            inclusions = unquote(search_split[1]).strip()
-            exclusions = unquote(search_split[2]).strip()
-        if (inclusions != ''):
-            inclusions_list = inclusions.split(',')
-        if (exclusions != ''):
-            exclusions_list = exclusions.split(',')
+        search_split_dict = SplitSearchQueryIncExc(search_query)
+        search_term = search_split_dict["search_term"]
+        inclusions_list = search_split_dict["inclusions"]
+        exclusions_list = search_split_dict["exclusions"]
         results = recmongo.search_recipe_ingr(search_term, inclusions_list,
                                               exclusions_list)
         return results
@@ -543,6 +555,13 @@ class SearchFrontEnd(Resource):
     search term and ensure they are in our DB
     next, we will search through the db for everything
     that matches that request.
+        Format for search will be as follows:
+    'search term;:;inclusion1,inclusion2,
+    inclusion3;:;exclusion1,exclusion2,exclusion3'
+    search with only inclusion:
+    'search term;:;inclusion1,inclusion2,inclusion3;:;'
+    search with only exclusion:
+    'search term;:;;:;exclusion1,exclusion2,exclusion3'
     """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
