@@ -235,6 +235,7 @@ def ScrapeWebsiteSoup(soup, website):
                         "timing": timing,
                         "img_src": img_src}
     rec_to_ret_json = json.loads(json_util.dumps(recipe_to_return))
+    print("recipe_name2 = " + rec_to_ret_json["recipe_name"])
     return rec_to_ret_json
 
 
