@@ -401,6 +401,8 @@ class ScrapeWebsite(Resource):
         scrape_return = ScrapeWebsiteSoup(soup, website)
         rec_to_ret_json = json.loads(json_util.dumps(scrape_return))
         rec_name = rec_to_ret_json["recipe_name"]
+        print("inside ScrapeWebsite")
+        print("rec_name: " + rec_name)
         # Check if recipe is in db already based on URL
         if (not (recmongo.recipe_exists_from_url(website))):
             print("Recipe not in DB, adding it...")
@@ -409,6 +411,7 @@ class ScrapeWebsite(Resource):
             print("Recipe already in DB! NOT ADDING IT AGAIN!")
         # Recipe gets added to the database for later retrieval
         # recmongo.add_recipe(recipe_name, rec_to_ret_json)
+        print(rec_to_ret_json["url"])
         return rec_to_ret_json
 
 
