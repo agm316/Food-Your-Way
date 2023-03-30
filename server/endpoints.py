@@ -84,7 +84,7 @@ recipe_suggestions = Namespace(RECIPE_SUGGESTIONS_NS, 'Recipe Suggestions')
 api.add_namespace(recipe_suggestions)
 
 
-def SearchLaterPages(website):
+def search_later_pages(website):
     """
     searches later pages for url's or recipes
     and returns a list of them
@@ -103,7 +103,7 @@ def SearchLaterPages(website):
     return link_lst
 
 
-def ScrapeWebsiteSoup(soup, website):
+def scrape_website_soup(soup, website):
     # Get Recipe Name
     recipe_name = ''
     try:
@@ -242,7 +242,7 @@ def ScrapeWebsiteSoup(soup, website):
     return rec_to_ret_json
 
 
-def SearchAllRecFromQuery(search_query):
+def search_all_rec_from_query(search_query):
     link_lst = []
     query_str = ''
     terms_url_ready = ""
@@ -283,7 +283,7 @@ def SearchAllRecFromQuery(search_query):
         temp_url = subsequent_url_base + str(offset)
         temp_url = temp_url + '&q='
         temp_url = temp_url + terms_url_ready
-        res_lst = SearchLaterPages(temp_url)
+        res_lst = search_later_pages(temp_url)
         if (len(res_lst) == 0):
             break
         for x in range(len(res_lst)):
@@ -291,7 +291,7 @@ def SearchAllRecFromQuery(search_query):
     return link_lst
 
 
-def SplitSearchQueryIncExc(search_query):
+def split_search_query_inc_exc(search_query):
     search_split = ((unquote(search_query)).strip()).split(';:;')
     search_term = ''
     inclusions = ''
@@ -345,8 +345,8 @@ class HelloWorld(Resource):
         return {MESSAGE: 'hello world'}
 
 
-@api.route('/register_account')
-class Register(Resource):
+@api.route('/register_user')
+class Register_User(Resource):
     """
     This endpoint will be used to register for an account.
     """
@@ -359,6 +359,13 @@ class Register(Resource):
         username = request.form['username']
         password = request.form['password']
         confirm_password = request.form['confirm_password']
+
+        # first need to check if username already exists in database, if so, return an error message saying that
+        # this user already exists
+        # if not, add all of these fields into the MongoDB database collection named "users"
+        # return a message stating that the user was successfully registered!
+        return {"First Name": first_name, "Last Name": last_name, "Email": email, "Username": username,
+                "Password": password, "Confirm Password": confirm_password}
 
 
 # VERY VERY rudementary system put in place to allow us to test
@@ -458,7 +465,7 @@ class ScrapeWebsite(Resource):
         """
         html_doc = requests.get(website).content
         soup = BeautifulSoup(html_doc, 'html.parser')
-        scrape_return = ScrapeWebsiteSoup(soup, website)
+        scrape_return = scrape_website_soup(soup, website)
         rec_to_ret_json = json.loads(json_util.dumps(scrape_return))
         rec_name = rec_to_ret_json["recipe_name"]
         # print("inside ScrapeWebsite")
@@ -541,7 +548,7 @@ class SearchIncExc(Resource):
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self, search_query):
         # print(search_query)
-        search_split_dict = SplitSearchQueryIncExc(search_query)
+        search_split_dict = split_search_query_inc_exc(search_query)
         search_term = search_split_dict["search_term"]
         inclusions_list = search_split_dict["inclusions"]
         exclusions_list = search_split_dict["exclusions"]
@@ -567,7 +574,7 @@ class SearchAllRec(Resource):
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self, search_query):
-        return SearchAllRecFromQuery(search_query)
+        return search_all_rec_from_query(search_query)
 
 
 @api.route('/searchFrontEnd/<search_query>')
@@ -575,7 +582,7 @@ class SearchFrontEnd(Resource):
     """
     This endpoint runs through a sequence of
     what we want our frontend to call.
-    One someone enters a search query with
+    Once someone enters a search query with
     ingredients that they want to include
     or exclude, this endpoint will first
     pull all recipes associated with that
@@ -594,18 +601,18 @@ class SearchFrontEnd(Resource):
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self, search_query):
         # Process Search Query
-        search_split_dict = SplitSearchQueryIncExc(search_query)
+        search_split_dict = split_search_query_inc_exc(search_query)
         # Split Return to Individual Parts
         search_term = search_split_dict["search_term"]
         inclusions_list = search_split_dict["inclusions"]
         exclusions_list = search_split_dict["exclusions"]
         # Get all recipes about the search term
-        rec_url_list = SearchAllRecFromQuery(search_term)
+        rec_url_list = search_all_rec_from_query(search_term)
         # Scrape each URL in list
         for x in rec_url_list:
             html_doc = requests.get(x).content
             soup = BeautifulSoup(html_doc, 'html.parser')
-            scrape_return = ScrapeWebsiteSoup(soup, x)
+            scrape_return = scrape_website_soup(soup, x)
             url_data = json.loads(json_util.dumps(scrape_return))
             rec_name = url_data["recipe_name"]
             if (not (recmongo.recipe_exists_from_url(x))):
@@ -646,8 +653,7 @@ class FilterByDietType(Resource):
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
-        return {'Type': {'Vegetarian', 'Vegan', 'Pescatarian'}
-                }
+        return {'Type': {'Vegetarian', 'Vegan', 'Pescatarian'}}
 
 
 @api.route('/dbtest')

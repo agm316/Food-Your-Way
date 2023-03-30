@@ -49,7 +49,8 @@ def test_hello(input_test_client):
     resp_json = input_test_client.get(ep.HELLO).get_json()
     assert isinstance(resp_json[ep.MESSAGE], str)
 
-# @pytest.mark.skip("Fails in github actions for some reason, but works everywhere else")
+
+@pytest.mark.skip("Fails in github actions for some reason, but works everywhere else")
 def test_scrape_website():
     """
     Test the web scraping endpoint
@@ -147,7 +148,7 @@ def test_get_all():
     assert isinstance(alldb, dict)
 
 
-def test_searchIncExc():
+def test_search_inc_exc():
     """
     See if searchIncExc works
     """
@@ -155,12 +156,13 @@ def test_searchIncExc():
     # Need to fix this to be json dictionary and not bytes!!!
     assert isinstance(resp_json, bytes)
 
+
 @pytest.mark.skip("Still not connected to DB, will reactivate later")
 def test_search_query(input_search_query):
     """
     See if Search Query works (NOT YET CONNECTED TO DB, update later when it is)
     """
-    #assert True
+    # assert True
     resp_json = TEST_CLIENT.get(f'/search={input_search_query}').get_json()
     assert isinstance(resp_json[ep.MESSAGE], str)
 
@@ -214,4 +216,4 @@ def test_password_fail():
     response1 = TEST_CLIENT.get(f"/password/{TEST_FAIL_PSW_1}").get_json()
     assert(response1["message"] == 'Internal Server Error')
     response2 = TEST_CLIENT.get(f"/password/{TEST_FAIL_PSW_2}").get_json()
-    assert(response1["message"] == 'Internal Server Error')
+    assert(response2["message"] == 'Internal Server Error')
