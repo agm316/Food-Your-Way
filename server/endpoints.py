@@ -6,7 +6,7 @@ The endpoint called `endpoints` will return all available endpoints.
 # import time
 # import urllib3
 from bs4 import BeautifulSoup
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, request
 from flask_restx import Resource, Api, Namespace, abort
 from http import HTTPStatus
 from pymongo import MongoClient
@@ -360,10 +360,11 @@ class Register_User(Resource):
         password = request.form['password']
         confirm_password = request.form['confirm_password']
 
-        # first need to check if username already exists in database, if so, return an error message saying that
-        # this user already exists
-        # if not, add all of these fields into the MongoDB database collection named "users"
-        # return a message stating that the user was successfully registered!
+        # first need to check if username already exists in database,
+        # if so, return an error message saying that this user already exists
+        # if not, add all of these fields into the MongoDB database
+        # collection named "users" return a message stating that the
+        # user was successfully registered!
         return {"First Name": first_name, "Last Name": last_name, "Email": email, "Username": username,
                 "Password": password, "Confirm Password": confirm_password}
 
