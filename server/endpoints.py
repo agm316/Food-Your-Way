@@ -366,7 +366,7 @@ class Register_User(Resource):
         # collection named "users" return a message stating that the
         # user was successfully registered!
         return {"First Name": first_name, "Last Name": last_name,
-                "Email": email,"Username": username,
+                "Email": email, "Username": username,
                 "Password": password, "Confirm Password":
                     confirm_password}
 
