@@ -365,8 +365,9 @@ class Register_User(Resource):
         # if not, add all of these fields into the MongoDB database
         # collection named "users" return a message stating that the
         # user was successfully registered!
-        return {"First Name": first_name, "Last Name": last_name, "Email": email, "Username": username,
-                "Password": password, "Confirm Password": confirm_password}
+        return {"First Name": first_name, "Last Name": last_name, "Email": email,
+                "Username": username, "Password": password,
+                "Confirm Password": confirm_password}
 
 
 # VERY VERY rudementary system put in place to allow us to test
