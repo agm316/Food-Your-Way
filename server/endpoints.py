@@ -335,6 +335,8 @@ class HelloWorld(Resource):
     The purpose of the HelloWorld class is to have a simple test to see if the
     app is working at all.
     """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
         """
         A trivial endpoint to see if the server is running.
@@ -343,21 +345,37 @@ class HelloWorld(Resource):
         return {MESSAGE: 'hello world'}
 
 
+@api.route('/register_account')
+class Register(Resource):
+    """
+    This endpoint will be used to register for an account.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def post(self):
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        email = request.form['email']
+        username = request.form['username']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+
+
 # VERY VERY rudementary system put in place to allow us to test
 # login before a working UI, this works with Swagger
 @api.route('/login/<path:username>')  # /<path:password>')
 class Login(Resource):
-    '''
+    """
     This is used as the login endpoint.
-    '''
+    """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self, username):
-        '''
+        """
         The get() method
         Until we have a better system, the password will stay
         commented I guess :(
-        '''
+        """
         email_pattern = re.compile(
             r"[a-zA-Z0-9]+\.?[a-zA-Z0-9]+@[a-zA-Z]+\.(com|co|org|edu)"
         )
@@ -371,15 +389,15 @@ class Login(Resource):
 @api.route('/password/<path:password>')  # /<path:password>')
 # @app.route('/password', methods=(['GET','POST']))
 class Password(Resource):
-    '''
+    """
     This is used as the login endpoint.
-    '''
+    """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self, password):
-        '''
+        """
         This takes the password and encrypts it and stores it
-        '''
+        """
         if not (65 > len(password) > 7):
             raise pswdError(len(password))
 
@@ -399,7 +417,8 @@ class DataFormat(Resource):
     entries and also servers to assert that the entires are
     of the right form
     """
-
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
         """
         Trivial endpoint at the moment, will update with asserting
@@ -462,7 +481,8 @@ class GetRecipeSuggestions(Resource):
     This endpoint serves to return a dictionary of
     recipe suggestions from the database.
     """
-
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
         return {'Data': {"Cuisine": "Chinese",
                          "Food": "Roasted Pork",
@@ -479,6 +499,8 @@ class GetSettings(Resource):
     This endpoint gets current
     search and UI settings.
     """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
         return {'Data': {'BACKGROUND': 'DARK/LIGHT', 'Font': 'Standard'},
                 'Type': {'Data': 2},
@@ -491,6 +513,8 @@ class GetAll(Resource):
     This endpoint servers to return all recipes in the
     database and return them as a list of JSONs.
     """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
         # return recdb.get_all()
         return recmongo.get_recipes_dict()
@@ -601,6 +625,8 @@ class FilterByCalories(Resource):
     This endpoint will allow you to filter by calories for all
     the recipes.
     """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
         return {'Data': {"Cuisine": "Chinese",
                          "Food": "Roasted Pork",
@@ -617,6 +643,8 @@ class FilterByDietType(Resource):
     This endpoint will allow you to filter by specific diet types
     that people might fall under.
     """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
         return {'Type': {'Vegetarian', 'Vegan', 'Pescatarian'}
                 }
@@ -628,6 +656,8 @@ class DbTest(Resource):
     Endpoint to test the data getting from the database
     in the /db/db.py file
     """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
         return recmongo.get_recipe_details("Armenian Pizzas (Lahmahjoon)")
 
@@ -637,6 +667,8 @@ class RecipeCuisinesList(Resource):
     """
     This will get a list of recipe cuisines.
     """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
         return {RECIPE_CUISINES_LIST_NM: recdb.get_all()}
 
@@ -646,20 +678,10 @@ class RecipeSuggestionsList(Resource):
     """
     This will get a list of recipe suggestions.
     """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
         return {RECIPE_SUGGESTIONS_LIST_NM: recdb.get_all()}
-
-
-@app.route('/recipes', methods=('GET', 'POST'))
-def index():
-    if request.method == 'POST':
-        content = request.form['content']
-        degree = request.form['degree']
-        todos.insert_one({'content': content, 'degree': degree})
-        return redirect(url_for('index'))
-
-    all_todos = todos.find()
-    return render_template('index.html', todos=all_todos)
 
 
 # adding in a basic hashing algorithm for a user's password
