@@ -77,7 +77,6 @@ def test_delete_recipe_by_name():
     assert recmongo.delete_recipe_by_name(TEST_WEBSITE_TITLE)
     
 
-@pytest.mark.skip("Fails in github actions for some reason, but works everywhere else")
 def test_scrape_website():
     """
     Test the web scraping endpoint
@@ -93,10 +92,52 @@ def test_scrape_website():
     resp = TEST_CLIENT.get(f'/scrape/{TEST_WEBSITE}')
     resp2 = resp.get_json()
     resp_json = json.loads(json_util.dumps(resp2))
-    print(f'{type(resp)=}')
-    print(f'{resp2=}')
-    print(type(resp_json))
-    print(resp_json)
+    # print(f'{type(resp)=}')
+    # print(f'{resp2=}')
+    # print(type(resp_json))
+    # print(resp_json)
+    assert isinstance(resp_json["recipe_name"], str)
+    assert isinstance(resp_json["prep_time"], str)
+    assert isinstance(resp_json["cook_time"], str)
+    assert isinstance(resp_json["total_time"], str)
+    assert isinstance(resp_json["servings"], str)
+    assert isinstance(resp_json["yield"], str)
+    assert isinstance(resp_json["ingredients"], str)
+    assert isinstance(resp_json["directions"], str)
+    assert isinstance(resp_json["rating"], str)
+    assert isinstance(resp_json["url"], str)
+    assert isinstance(resp_json["nutrition"], str)
+    assert isinstance(resp_json["timing"], str)
+    assert isinstance(resp_json["cuisine_path"], str)
+    assert isinstance(resp_json["img_src"], str)
+    assert isinstance(resp_json, dict)
+    assert resp_json["recipe_name"] == TEST_WEBSITE_TITLE
+    assert resp_json["prep_time"] == TEST_PREP_TIME
+    assert resp_json["cook_time"] == TEST_COOK_TIME
+    assert resp_json["total_time"] == TEST_TOTAL_TIME
+    assert resp_json["servings"] == TEST_SERVINGS
+    assert resp_json["yield"] == TEST_YIELD
+    assert resp_json["url"] == TEST_URL
+
+
+def test_recipe_exists():
+    """
+    Check to see if we can see if
+    recipe that we added to db is in
+    db now
+    """
+    assert recmongo.recipe_exists(TEST_WEBSITE_TITLE)
+
+
+def test_scrape_website_already_in_db():
+    """
+    Check to see if we still are good
+    scraping a website we already have
+    in db
+    """
+    resp = TEST_CLIENT.get(f'/scrape/{TEST_WEBSITE}')
+    resp2 = resp.get_json()
+    resp_json = json.loads(json_util.dumps(resp2))
     assert isinstance(resp_json["recipe_name"], str)
     assert isinstance(resp_json["prep_time"], str)
     assert isinstance(resp_json["cook_time"], str)

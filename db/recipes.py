@@ -40,18 +40,24 @@ REQUIRED_FLDS = [RECIPE_NAME, PREP_TIME, COOK_TIME,
 def get_recipe_details(recipe):
     dbc.connect_db()
     ret = dbc.fetch_one(RECIPE_COLLECT, {RECIPE_KEY: recipe}, RECIPE_DB)
-    print(f'{ret=}')
+    # print(f'{ret=}')
     ret2 = json.loads(json_util.dumps(ret))
-    print(f'{ret2=}')
+    # print(f'{ret2=}')
     return ret2
 
 
 def get_recipe_from_rec_url(rec_url):
+    print('get_recipe_from_rec_url: ' + f'{rec_url=}')
     dbc.connect_db()
-    return dbc.fetch_one(RECIPE_COLLECT, {URL_KEY: rec_url}, RECIPE_DB)
+    ret = dbc.fetch_one(RECIPE_COLLECT, {URL_KEY: unquote(rec_url)}, RECIPE_DB)
+    ret2 = json.loads(json_util.dumps(ret))
+    print('get_recipe_from_rec_url: ' + f'{ret2=}')
+    return ret2
 
 
 def recipe_exists_from_url(rec_url):
+    ret = get_recipe_from_rec_url(rec_url)
+    print('recipe_exists_from_url: ' + f'{ret=}')
     return get_recipe_from_rec_url(rec_url) is not None
 
 
@@ -129,10 +135,10 @@ def recipe_exists(recipe_name):
     """
     Returns whether or not a recipe exists.
     """
-    print('recipe_exists: recipe_name: ' + recipe_name)
-    print('recipe_exists: unquote(recipe_name): ' + unquote(recipe_name))
+    # print('recipe_exists: recipe_name: ' + recipe_name)
+    # print('recipe_exists: unquote(recipe_name): ' + unquote(recipe_name))
     ret = get_recipe_details(unquote(recipe_name))
-    print('recipe_exists: ' + f'{ret=}')
+    # print('recipe_exists: ' + f'{ret=}')
     return ret is not None
 
 
@@ -147,7 +153,6 @@ def get_recipes():
 
 
 def add_recipe(name, recipe_data):
-    data = recipe_data
     if not isinstance(name, str):
         raise TypeError(f'Wrong type for name: {type(name)=}')
     if not isinstance(recipe_data, dict):
@@ -156,7 +161,9 @@ def add_recipe(name, recipe_data):
         if field not in recipe_data:
             raise ValueError(f'Required {field=} missing from recipe_data')
     dbc.connect_db()
-    return dbc.insert_one(RECIPE_COLLECT, data)
+    rec_data = json.loads(json_util.dumps(recipe_data))
+    print('add_recipe: ' + f'{rec_data=}')
+    return dbc.insert_one(RECIPE_COLLECT, rec_data, RECIPE_DB)
 
 
 def delete_recipe_by_name(recipe_name):

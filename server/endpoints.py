@@ -474,6 +474,12 @@ class ScrapeWebsite(Resource):
         # print("inside ScrapeWebsite")
         # print("rec_name: " + rec_name)
         # Check if recipe is in db already based on URL
+        print(f'{rec_to_ret_json=}')
+        print(f'{rec_name=}')
+        print('before recipe_exists_from_url')
+        value = recmongo.recipe_exists_from_url(unquote(website))
+        print('after recipe_exists_from_url')
+        print(f'{value=}')
         if (not (recmongo.recipe_exists_from_url(website))):
             print("ScrapeWebsite: Recipe not in DB, adding it...")
             recmongo.add_recipe(rec_name, rec_to_ret_json)
@@ -620,6 +626,7 @@ class SearchFrontEnd(Resource):
             rec_name = url_data["recipe_name"]
             if (not (recmongo.recipe_exists_from_url(x))):
                 print("Recipe not in DB, adding it...")
+                # print(f'{url_data=}')
                 recmongo.add_recipe(rec_name, url_data)
             else:
                 print("recipe already in DB! NOT ADDING IT AGAIN!")
@@ -650,6 +657,21 @@ class GetRecipe(Resource):
     def get(self, recipe_name):
         rec_name = (unquote(recipe_name)).strip()
         return recmongo.get_recipe_details(rec_name)
+
+
+@api.route('/getRecipeFromURL/<path:website>')
+class GetRecipeFromURL(Resource):
+    """
+    deletes a recipe from the db based on name
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self, website):
+        rec_name = (unquote(website)).strip()
+        print('GetRecipeFromURL: ' + f'{rec_name=}')
+        ret = recmongo.get_recipe_from_rec_url(website)
+        print('GetRecipeFromURL: ' + f'{ret=}')
+        return ret
 
 
 @api.route('/filterByCalories')

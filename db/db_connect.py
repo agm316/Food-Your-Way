@@ -59,7 +59,7 @@ def insert_one(collection, doc, db=RECIPE_DB):
     """
     Insert a single doc into collection.
     """
-    print(f'{db=}')
+    # print(f'{db=}')
     client[db][collection].insert_one(doc)
 
 
