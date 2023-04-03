@@ -32,20 +32,20 @@ def connect_db():
     """
     global client
     if client is None:  # not connected yet!
-        print("Setting client because it is None.")
+        print("db_connect: Setting client because it is None.")
         if os.environ.get("CLOUD_MONGO", LOCAL) == CLOUD:
             user = os.environ.get("MONGO_CLOUD_USER")
             password = os.environ.get("MONGO_CLOUD_PSWRD")
             if not password:
                 raise ValueError('Cloud Password Not Set in Env Varia'
                                  + 'bles. Please Set and Try Again.')
-            print("Connecting to Mongo in the CLOUD.")
+            print("db_connect: Connecting to Mongo in the CLOUD.")
             client = pm.MongoClient(f'mongodb+srv://{user}:{password}'
                                     + '@cluster0.catgdge.mongodb.net/'
                                     + '?retryWrites=true&w=majority',
                                     tlsCAFile=certifi.where())
         else:
-            print("Connecting to Mongo Locally.")
+            print("db_connect: Connecting to Mongo Locally.")
             local_user = os.environ.get("MONGO_USER")
             print("MONGO_USER: "+local_user)
             local_passwrd = os.environ.get("MONGO_PASSWORD")

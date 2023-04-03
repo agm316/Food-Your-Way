@@ -1,7 +1,9 @@
 import pytest
 import json
 import bson.json_util as json_util
+from urllib.parse import unquote
 import server.endpoints as ep
+import db.recipes as recmongo
 from ..errs import pswdError
 
 TEST_CLIENT = ep.app.test_client()
@@ -26,6 +28,9 @@ TEST_FAIL_PSW_2 = "1234567890123456789012345678901234567890123456789012345678901
 
 SEARCH_INC_EXC_TEST_QUERY = "soup;:;pumpkin,tomato;:;poop,soy"
 
+RECIPE_DB = 'api_dev_db'
+
+# {recipe_name: 'Armenian Pizzas (Lahmahjoon)'}
 
 # replaces TEST_SEARCH_QUERY
 @pytest.fixture
@@ -49,6 +54,28 @@ def test_hello(input_test_client):
     resp_json = input_test_client.get(ep.HELLO).get_json()
     assert isinstance(resp_json[ep.MESSAGE], str)
 
+
+def test_delete_recipe_by_name():
+    """
+    Delete Armenian Pizza Recipe if it
+    is in the DB
+    """
+    print('test_delete_recipe_by_name: Checking if Armenian Pizza is in DB...')
+    if (not (recmongo.recipe_exists(TEST_WEBSITE_TITLE))):
+        print('test_delete_recipe_by_name: RECIPE NOT IN DB')
+        print('test_delete_recipe_by_name: SCRAPING URL TO ADD IT...')
+        resp = TEST_CLIENT.get(f'/scrape/{TEST_WEBSITE}')
+        print('test_delete_recipe_by_name: CHECKING IF RECIPE IS IN DB NOW...')
+        if recmongo.recipe_exists(TEST_WEBSITE_TITLE):
+            print("test_delete_recipe_by_name: IT'S THERE!!!")
+        else:
+            print('test_delete_recipe_by_name: RECIPE NOT IN DB AGAIN?!?!?!')
+            assert False
+    else:
+        print('test_delete_recipe_by_name: RECIPE EXISTS!!!')
+    print('test_delete_recipe_by_name: TRYING TO DELETE Armenian Pizza Recipe...')
+    assert recmongo.delete_recipe_by_name(TEST_WEBSITE_TITLE)
+    
 
 @pytest.mark.skip("Fails in github actions for some reason, but works everywhere else")
 def test_scrape_website():

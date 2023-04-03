@@ -1,7 +1,11 @@
 """
 This module encapsulates details about recipes
 """
+from urllib.parse import unquote
+import json
+import bson.json_util as json_util
 import db.db_connect as dbc
+
 
 TEST_RECIPE_NAME = 'Test Recipe'
 RECIPE_NAME = 'recipe_name'
@@ -21,7 +25,7 @@ IMG_SRC = 'img_src'
 
 RECIPE_KEY = 'recipe_name'
 URL_KEY = 'url'
-RECIPE_KEY = 'ingredients'
+RECIPE_INGR_KEY = 'ingredients'
 RECIPE_COLLECT = 'recipes'
 
 RECIPE_DB = 'api_dev_db'
@@ -35,12 +39,16 @@ REQUIRED_FLDS = [RECIPE_NAME, PREP_TIME, COOK_TIME,
 
 def get_recipe_details(recipe):
     dbc.connect_db()
-    return dbc.fetch_one(RECIPE_COLLECT, {RECIPE_KEY: recipe})
+    ret = dbc.fetch_one(RECIPE_COLLECT, {RECIPE_KEY: recipe}, RECIPE_DB)
+    print(f'{ret=}')
+    ret2 = json.loads(json_util.dumps(ret))
+    print(f'{ret2=}')
+    return ret2
 
 
 def get_recipe_from_rec_url(rec_url):
     dbc.connect_db()
-    return dbc.fetch_one(RECIPE_COLLECT, {URL_KEY: rec_url})
+    return dbc.fetch_one(RECIPE_COLLECT, {URL_KEY: rec_url}, RECIPE_DB)
 
 
 def recipe_exists_from_url(rec_url):
@@ -121,7 +129,11 @@ def recipe_exists(recipe_name):
     """
     Returns whether or not a recipe exists.
     """
-    return get_recipe_details(recipe_name) is not None
+    print('recipe_exists: recipe_name: ' + recipe_name)
+    print('recipe_exists: unquote(recipe_name): ' + unquote(recipe_name))
+    ret = get_recipe_details(unquote(recipe_name))
+    print('recipe_exists: ' + f'{ret=}')
+    return ret is not None
 
 
 def get_recipes_dict():
@@ -148,8 +160,8 @@ def add_recipe(name, recipe_data):
 
 
 def delete_recipe_by_name(recipe_name):
-    if recipe_exists(recipe_name):
-        dbc.del_one(RECIPE_COLLECT, {RECIPE_KEY: recipe_name})
+    if recipe_exists(unquote(recipe_name)):
+        dbc.del_one(RECIPE_COLLECT, {RECIPE_KEY: unquote(recipe_name)})
         return 1
     else:
         return 0
