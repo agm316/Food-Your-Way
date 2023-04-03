@@ -47,18 +47,18 @@ def get_recipe_details(recipe):
 
 
 def get_recipe_from_rec_url(rec_url):
-    print('get_recipe_from_rec_url: ' + f'{rec_url=}')
+    # print('get_recipe_from_rec_url: ' + f'{rec_url=}')
     dbc.connect_db()
     ret = dbc.fetch_one(RECIPE_COLLECT, {URL_KEY: unquote(rec_url)}, RECIPE_DB)
     ret2 = json.loads(json_util.dumps(ret))
-    print('get_recipe_from_rec_url: ' + f'{ret2=}')
+    # print('get_recipe_from_rec_url: ' + f'{ret2=}')
     return ret2
 
 
 def recipe_exists_from_url(rec_url):
     ret = get_recipe_from_rec_url(rec_url)
-    print('recipe_exists_from_url: ' + f'{ret=}')
-    return get_recipe_from_rec_url(rec_url) is not None
+    # print('recipe_exists_from_url: ' + f'{ret=}')
+    return ret is not None
 
 
 def search_recipe_ingr(search_term, include, exclude):
@@ -161,8 +161,9 @@ def add_recipe(name, recipe_data):
         if field not in recipe_data:
             raise ValueError(f'Required {field=} missing from recipe_data')
     dbc.connect_db()
+    # print('add_recipe: ' + f'{recipe_data=}')
     rec_data = json.loads(json_util.dumps(recipe_data))
-    print('add_recipe: ' + f'{rec_data=}')
+    # print('add_recipe: ' + f'{rec_data=}')
     return dbc.insert_one(RECIPE_COLLECT, rec_data, RECIPE_DB)
 
 
