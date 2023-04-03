@@ -147,6 +147,14 @@ def add_recipe(name, recipe_data):
     return dbc.insert_one(RECIPE_COLLECT, data)
 
 
+def delete_recipe_by_name(recipe_name):
+    if recipe_exists(recipe_name):
+        dbc.del_one(RECIPE_COLLECT, {RECIPE_KEY: recipe_name})
+        return 1
+    else:
+        return 0
+
+
 def main():
     print("Getting recipes as a list:")
     recipes = get_recipes()
