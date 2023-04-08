@@ -692,6 +692,29 @@ class FilterByCalories(Resource):
                 }
 
 
+@api.route(MAIN_MENU)
+class MainMenu(Resource):
+    """
+    This Will Deliver Our Main Menu.
+    """
+    def get(self):
+        """
+        Gets the main menu.
+        """
+        return {'Title': MAIN_MENU_NM,
+                'Default': 1,
+                'Choices': {
+                    '1': {'url': f'/{GET_ALL_RECIPES}', 'method': 'get',
+                          'text': 'Get All Recipes'},
+                    '2': {'url': f'/{GET_RECIPE_SUGGESTIONS}', 'method': 'get',
+                          'text': 'Get Recipe Suggestions'},
+                    '3': {'url': f'/{FORMATTEXTGAME}', 'method': 'get',
+                          'text': 'Get the recipe format'},
+                    '4': {'url': f'/{SETTINGS}', 'method': 'get',
+                          'text': 'Get search and UI settings'},
+                }}
+
+
 @api.route('/filterByDietType')
 class FilterByDietType(Resource):
     """
