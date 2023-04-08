@@ -76,6 +76,9 @@ SETTINGS = 'searchUIsettings'
 password = ''
 ALL_REC_URL_START = 'https://www.allrecipes.com/'
 URL_REC_SUB_TARGET = 'recipe/'
+SEARCH_HATEOAS = '/search_hateoas'
+SEARCH_HATEOAS_TITLE = 'Recipe Options'
+VEG_REC = '/searchIncExc/Vegetarian;:;;:;'
 
 recipe_cuisines = Namespace(RECIPE_CUISINES_NS, 'Recipe Cuisines')
 api.add_namespace(recipe_cuisines)
@@ -712,6 +715,31 @@ class MainMenu(Resource):
                           'text': 'Get the recipe format'},
                     '4': {'url': f'/{SETTINGS}', 'method': 'get',
                           'text': 'Get search and UI settings'},
+                }}
+
+
+@api.route(SEARCH_HATEOAS)
+class SearchHateoas(Resource):
+    """
+    This Will return a menu list
+    that the frontend can call to search
+    for different recipes
+    """
+    def get(self):
+        """
+        Gets the search main menu.
+        """
+        return {'Title': SEARCH_HATEOAS_TITLE,
+                'Default': 1,
+                'Choices': {
+                    '1': {'url': f'/{GET_ALL_RECIPES}', 'method': 'get',
+                          'text': 'Get All Recipes'},
+                    '2': {'url': f'{VEG_REC}', 'method': 'get',
+                          'text': 'Get Vegetarian Recipes'},
+                    '3': {'url': '/searchIncExc/;:;;:;soy', 'method': 'get',
+                          'text': 'Get Recipes Without Soy'},
+                    '4': {'url': '/searchIncExc/;:;;:;milk', 'method': 'get',
+                          'text': 'Get Recipes Without Milk'},
                 }}
 
 
