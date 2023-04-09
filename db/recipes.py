@@ -6,7 +6,6 @@ import json
 import bson.json_util as json_util
 import db.db_connect as dbc
 
-
 TEST_RECIPE_NAME = 'Test Recipe'
 RECIPE_NAME = 'recipe_name'
 PREP_TIME = 'prep_time'
@@ -30,11 +29,11 @@ RECIPE_COLLECT = 'recipes'
 
 RECIPE_DB = 'api_dev_db'
 REQUIRED_FIELDS = [RECIPE_NAME, PREP_TIME, COOK_TIME,
-                 PREP_TIME, COOK_TIME, TOTAL_TIME,
-                 SERVINGS, YIELD, INGREDIENTS,
-                 DIRECTIONS, RATING, URL,
-                 CUISINE_PATH, NUTRITION,
-                 TIMING, IMG_SRC]
+                   PREP_TIME, COOK_TIME, TOTAL_TIME,
+                   SERVINGS, YIELD, INGREDIENTS,
+                   DIRECTIONS, RATING, URL,
+                   CUISINE_PATH, NUTRITION,
+                   TIMING, IMG_SRC]
 
 
 def get_recipe_details(recipe):
