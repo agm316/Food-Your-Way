@@ -29,6 +29,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 
 app = Flask(__name__)
+CORS(app)
 api = Api(app)
 
 client = MongoClient('localhost', 27017)
