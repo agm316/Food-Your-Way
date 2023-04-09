@@ -734,7 +734,7 @@ class SearchHateoas(Resource):
         return {'Title': SEARCH_HATEOAS_TITLE,
                 'Default': 1,
                 'Choices': {
-                    '1': {'url': f'/{GET_ALL_RECIPES}', 'method': 'get',
+                    '1': {'url': '/getAllRecipes', 'method': 'get',
                           'text': 'Get All Recipes'},
                     '2': {'url': f'{VEG_REC}', 'method': 'get',
                           'text': 'Get Vegetarian Recipes'},
