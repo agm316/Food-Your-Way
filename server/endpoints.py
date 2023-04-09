@@ -81,12 +81,33 @@ URL_REC_SUB_TARGET = 'recipe/'
 SEARCH_HATEOAS = '/search_hateoas'
 SEARCH_HATEOAS_TITLE = 'Recipe Options'
 VEG_REC = '/searchIncExc/Vegetarian;:;;:;'
+NEW_RECIPES_URL = 'https://www.allrecipes.com/'
+NEW_RECIPES_URL = NEW_RECIPES_URL + 'recipes/22908/everyday-cooking'
+NEW_RECIPES_URL = NEW_RECIPES_URL + '/special-collections/new/'
+SEARCH_TERMS_FILE_NAME = '/search_terms.txt'
+DB_MESSAGE_NOT = 'Recipe already in DB! NOT ADDING IT AGAIN!'
 
 recipe_cuisines = Namespace(RECIPE_CUISINES_NS, 'Recipe Cuisines')
 api.add_namespace(recipe_cuisines)
 
 recipe_suggestions = Namespace(RECIPE_SUGGESTIONS_NS, 'Recipe Suggestions')
 api.add_namespace(recipe_suggestions)
+
+
+def load_search_terms(file_name):
+    """
+    this function loads the search terms
+    from search_terms.txt and returns
+    a list of search terms
+    """
+    ret_list = []
+    ppath = os.path.dirname(__file__)
+    file_path = ppath + file_name
+    search_terms_file = open(file_path, 'r')
+    for line in search_terms_file:
+        ret_list.append(line.strip())
+    search_terms_file.close()
+    return ret_list
 
 
 def search_later_pages(website):
@@ -639,6 +660,45 @@ class SearchFrontEnd(Resource):
         results = recmongo.search_recipe_ingr(search_term, inclusions_list,
                                               exclusions_list)
         return results
+
+
+@api.route('/loadDB')
+class LoadDB(Resource):
+    """
+    This endpoint searches allrecipes.com for each of
+    the search terms that are in the search_terms.txt
+    file that is in /server . The endpoint takes each
+    term and exhaustively searches allrecipes.com
+    for each of them individually and loads all recipes
+    into the DB
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self):
+        print("LoadDB:		INSIDE LoadDB")
+        print("LoadDB:		Loading Search Terms...")
+        search_terms = load_search_terms(SEARCH_TERMS_FILE_NAME)
+        print("LoadDB:		Search Terms Loaded!")
+        for x in search_terms:
+            print("LoadDB:		_______________")
+            print("LoadDB:		Search Term: " + x)
+            print("LoadDB:		Getting List of Recipe URL's...")
+            url_list = search_all_rec_from_query(x)
+            print("LoadDB:		URL's Gathered!")
+            for y in url_list:
+                html_doc = requests.get(y).content
+                soup = BeautifulSoup(html_doc, 'html.parser')
+                scrape_return = scrape_website_soup(soup, y)
+                rec_to_ret_json = json.loads(json_util.dumps(scrape_return))
+                rec_name = rec_to_ret_json["recipe_name"]
+                print("LoadDB:		Recipe Name: " + rec_name)
+                if (not (recmongo.recipe_exists_from_url(y))):
+                    print("LoadDB:		Recipe not in DB, adding it...")
+                    recmongo.add_recipe(rec_name, rec_to_ret_json)
+                else:
+                    print("LoadDB:		" + DB_MESSAGE_NOT)
+        print("LoadDB:		LoadDB Completed Loading DB!!!")
+        return True
 
 
 @api.route('/deleteRecipe/<recipe_name>')
