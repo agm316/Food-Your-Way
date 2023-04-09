@@ -29,7 +29,7 @@ RECIPE_INGR_KEY = 'ingredients'
 RECIPE_COLLECT = 'recipes'
 
 RECIPE_DB = 'api_dev_db'
-REQUIRED_FLDS = [RECIPE_NAME, PREP_TIME, COOK_TIME,
+REQUIRED_FIELDS = [RECIPE_NAME, PREP_TIME, COOK_TIME,
                  PREP_TIME, COOK_TIME, TOTAL_TIME,
                  SERVINGS, YIELD, INGREDIENTS,
                  DIRECTIONS, RATING, URL,
@@ -157,7 +157,7 @@ def add_recipe(name, recipe_data):
         raise TypeError(f'Wrong type for name: {type(name)=}')
     if not isinstance(recipe_data, dict):
         raise TypeError(f'Wrong type for recipe_data: {type(recipe_data)=}')
-    for field in REQUIRED_FLDS:
+    for field in REQUIRED_FIELDS:
         if field not in recipe_data:
             raise ValueError(f'Required {field=} missing from recipe_data')
     dbc.connect_db()

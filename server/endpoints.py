@@ -301,29 +301,29 @@ def split_search_query_inc_exc(search_query):
     exclusions = ''
     inclusions_list = []
     exclusions_list = []
-    if (len(search_split) == 0):
+    if len(search_split) == 0:
         print("No Search Term")
         abort(400, 'No Search Term', custom='000001')
-    if (len(search_split) == 1):
-        if (len((unquote(search_split[0])).strip()) > 0):
+    if len(search_split) == 1:
+        if len((unquote(search_split[0])).strip()) > 0:
             print("Search Term Only, No Include/Exclude")
             search_term = unquote(search_split[0]).strip()
         else:
             print("No Search Term")
             abort(400, 'No Search Term', custom='000002')
         # print(search_term)
-    elif (len(search_split) == 2):
+    elif len(search_split) == 2:
         print("Search Term and Include Only, No Exclude")
         search_term = unquote(search_split[0]).strip()
         inclusions = unquote(search_split[1]).strip()
-    elif (len(search_split) == 3):
+    elif len(search_split) == 3:
         print("Search Term, Include AND Exclude")
         search_term = unquote(search_split[0]).strip()
         inclusions = unquote(search_split[1]).strip()
         exclusions = unquote(search_split[2]).strip()
-    if (inclusions != ''):
+    if inclusions != '':
         inclusions_list = inclusions.split(',')
-    if (exclusions != ''):
+    if exclusions != '':
         exclusions_list = exclusions.split(',')
     # Return
     return_dict = {"search_term": search_term,
