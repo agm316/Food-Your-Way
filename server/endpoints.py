@@ -22,6 +22,7 @@ import bson.json_util as json_util
 import hashlib
 import bcrypt
 import re
+from flask_cors import CORS
 
 import sys
 import os
