@@ -12,6 +12,8 @@ Saves a HUGE amount of headache in my experience.
 
 Front-End Repo Link: https://github.com/agm316/Food-Your-Way-Frontend
 
+Front-End Heroku Deployment Link: https://food-your-way-frontend.herokuapp.com/
+
 Heroku Deployment Link: https://food-your-way.herokuapp.com/
 
 PythonAnywhere Deployment Link: http://agm316.pythonanywhere.com/
