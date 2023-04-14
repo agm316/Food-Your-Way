@@ -161,6 +161,7 @@ def add_recipe(name, recipe_data):
             raise ValueError(f'Required {field=} missing from recipe_data')
     dbc.connect_db()
     # print('add_recipe: ' + f'{recipe_data=}')
+    recipe_data[RECIPE_NAME] = name
     rec_data = json.loads(json_util.dumps(recipe_data))
     # print('add_recipe: ' + f'{rec_data=}')
     return dbc.insert_one(RECIPE_COLLECT, rec_data, RECIPE_DB)

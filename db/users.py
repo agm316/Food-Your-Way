@@ -38,15 +38,24 @@ def user_exists(user):
     return ret is not None
 
 
-def add_user(user_data):
+def add_user(user_name, user_data):
     """
     Add a user to the DB
     """
+    if not isinstance(user_name, str):
+        raise TypeError(f'Wrong type for user_name: {type(user_name)=}')
     if not isinstance(user_data, dict):
         raise TypeError(f'Wrong type for user_data: {type(user_data)=}')
+    for field in REQUIRED_FIELDS:
+        if field not in user_data:
+            raise ValueError(f'Required {field=} missing from user_data')
     dbc.connect_db()
+    user_data[USER_KEY] = user_name
     usr_data = json.loads(json_util.dumps(user_data))
-    return dbc.insert_one(USER_COLLECTION, usr_data, USER_DB)
+    if (not user_exists(user_name)):
+        return dbc.insert_one(USER_COLLECTION, usr_data, USER_DB)
+    else:
+        print("users.py:    add_user: USER ALREADY IN DB")
 
 
 def delete_user(user):

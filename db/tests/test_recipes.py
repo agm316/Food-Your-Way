@@ -12,7 +12,7 @@ TEST_DEL_NAME = 'Recipe to be deleted'
 
 def create_recipe_details():
     details = {}
-    for field in rec.REQUIRED_FLDS:
+    for field in rec.REQUIRED_FIELDS:
         details[field] = 2
     return details
 
@@ -21,7 +21,7 @@ def create_recipe_details():
 def temp_recipe():
     rec.add_recipe(rec.TEST_RECIPE_NAME, create_recipe_details())
     yield
-    rec.del_recipe(rec.TEST_RECIPE_NAME)
+    rec.delete_recipe_by_name(rec.TEST_RECIPE_NAME)
 
 
 @pytest.fixture(scope='function')
@@ -30,14 +30,14 @@ def new_recipe():
 
 
 def test_del_recipe(new_recipe):
-    rec.del_recipe(TEST_DEL_NAME)
+    rec.delete_recipe_by_name(TEST_DEL_NAME)
     assert not rec.recipe_exists(TEST_DEL_NAME)
 
 
 def test_get_recipes(temp_recipe):
     recs = rec.get_recipes()
     assert isinstance(recs, list)
-    assert len(gms) > 0
+    assert len(recs) > 0
 
 
 def test_get_recipes_dict(temp_recipe):
@@ -77,4 +77,4 @@ def test_add_missing_field():
 def test_add_recipe():
     rec.add_recipe(rec.TEST_RECIPE_NAME, create_recipe_details())
     assert rec.recipe_exists(rec.TEST_RECIPE_NAME)
-    rec.del_recipe(rec.TEST_RECIPE_NAME)
+    rec.delete_recipe_by_name(rec.TEST_RECIPE_NAME)
