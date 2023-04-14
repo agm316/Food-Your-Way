@@ -8,7 +8,7 @@ import db.db_connect as dbc
 
 USER_DB = 'api_dev_db'
 USER_COLLECTION = 'users'
-USER_KEY = 'user_name'
+USER_KEY = 'username'
 
 FIRST_NAME = 'first_name'
 LAST_NAME = 'last_name'
@@ -16,6 +16,8 @@ EMAIL = 'email'
 USERNAME = 'username'
 PASSWORD = 'password_hash'
 REQUIRED_FIELDS = [FIRST_NAME, LAST_NAME, EMAIL, USERNAME, PASSWORD]
+
+TEST_USER_NAME = 'TEST_USERNAME'
 
 
 def get_user_details(user):
@@ -45,3 +47,14 @@ def add_user(user_data):
     dbc.connect_db()
     usr_data = json.loads(json_util.dumps(user_data))
     return dbc.insert_one(USER_COLLECTION, usr_data, USER_DB)
+
+
+def delete_user(user):
+    """
+    Deletes a user
+    """
+    if user_exists(user):
+        dbc.del_one(USER_COLLECTION, {USER_KEY: unquote(user)})
+        return 1
+    else:
+        return 0

@@ -26,12 +26,12 @@ def temp_recipe():
 
 @pytest.fixture(scope='function')
 def new_recipe():
-    return rec.add_recipe(TEST_DEL_NAME, create_game_details())
+    return rec.add_recipe(TEST_DEL_NAME, create_recipe_details())
 
 
 def test_del_recipe(new_recipe):
-    rec.del_game(TEST_DEL_NAME)
-    assert not rec.game_exists(TEST_DEL_NAME)
+    rec.del_recipe(TEST_DEL_NAME)
+    assert not rec.recipe_exists(TEST_DEL_NAME)
 
 
 def test_get_recipes(temp_recipe):
