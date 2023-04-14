@@ -225,14 +225,14 @@ def test_search_inc_exc():
     assert isinstance(resp_json, bytes)
 
 
-@pytest.mark.skip("Still not connected to DB, will reactivate later")
 def test_search_query(input_search_query):
     """
-    See if Search Query works (NOT YET CONNECTED TO DB, update later when it is)
+    See if Search Query works
     """
     # assert True
-    resp_json = TEST_CLIENT.get(f'/search={input_search_query}').get_json()
-    assert isinstance(resp_json[ep.MESSAGE], str)
+    resp_json = TEST_CLIENT.get(f'/searchIncExc/{input_search_query}').get_json()
+    # print(f'{type(resp_json)=}')
+    assert isinstance(resp_json, list)
 
 
 def test_get_recipe_cuisines_list():
