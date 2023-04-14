@@ -665,6 +665,7 @@ class SearchFrontEnd(Resource):
 @api.route('/loadDB')
 class LoadDB(Resource):
     """
+    DEVELOPER ENDPOINT
     This endpoint searches allrecipes.com for each of
     the search terms that are in the search_terms.txt
     file that is in /server . The endpoint takes each
