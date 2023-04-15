@@ -378,6 +378,9 @@ class Register_User(Resource):
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def post(self):
+        """
+        Registers a User
+        """
         first_name = request.form['first_name']
         last_name = request.form['last_name']
         email = request.form['email']
@@ -488,8 +491,9 @@ class ScrapeWebsite(Resource):
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self, website):
         """
-        The `get()` method get the html from the website and return
-        a dictionary with the recipe info
+        This endpoint will get html from the website and return
+        a dictionary with the recipe info.
+        This endpoint scrapes from allrecipes.com only
         """
         html_doc = requests.get(website).content
         soup = BeautifulSoup(html_doc, 'html.parser')
@@ -543,6 +547,10 @@ class GetSettings(Resource):
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
+        """
+        This endpoint gets current
+        search and UI settings.
+        """
         return {'Data': {'BACKGROUND': 'DARK/LIGHT', 'Font': 'Standard'},
                 'Type': {'Data': 2},
                 'Title': {'UI Settings': 'Example Setting'}}
@@ -557,6 +565,9 @@ class GetAll(Resource):
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
+        """
+        Returns All Recipes From the DB
+        """
         # return recdb.get_all()
         return recmongo.get_recipes_dict()
 
@@ -581,6 +592,21 @@ class SearchIncExc(Resource):
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self, search_query):
+        """
+        Main Search Endpoint for Finding Recipes.
+        This allows you to search with Ingredient
+        Inclusions and Exclusions (though not required)
+        Format for search will be as follows:
+        'search term(s);:;inclusion1,inclusion2,
+        inclusion3;:;exclusion1,exclusion2,exclusion3;:;'
+        search with only inclusion:
+        'search term(s);:;inclusion1,inclusion2,inclusion3'
+        search with only exclusion:
+        'search term(s);:;;:;exclusion1,exclusion2,
+        exclusion3'
+        search with only search term:
+        'search term(s)'
+        """
         # print(search_query)
         search_split_dict = split_search_query_inc_exc(search_query)
         search_term = search_split_dict["search_term"]
@@ -596,7 +622,6 @@ class SearchAllRec(Resource):
     """
     This endpoint searches allrecipes.com for a given keyword and returns
     a list of url's to related pages
-    so far this only returns one page
     example
     https://www.allrecipes.com/search?q=pesto+pizza
     second page example
@@ -608,6 +633,11 @@ class SearchAllRec(Resource):
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self, search_query):
+        """
+        This endpoint searches allrecipes.com
+        for a given keyword and returns a list of
+        url's to recipes related to search term
+        """
         return search_all_rec_from_query(search_query)
 
 
@@ -634,6 +664,22 @@ class SearchFrontEnd(Resource):
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self, search_query):
+        """
+        This endpoint searches allrecipes.com
+        for the search term and loads into the db
+        then uses the inclusion and exclusion criteria
+        to do a search of the db and returns the results
+        Format for search will be as follows:
+        'search term(s);:;inclusion1,inclusion2,
+        inclusion3;:;exclusion1,exclusion2,exclusion3;:;'
+        search with only inclusion:
+        'search term(s);:;inclusion1,inclusion2,inclusion3'
+        search with only exclusion:
+        'search term(s);:;;:;exclusion1,exclusion2,
+        exclusion3'
+        search with only search term:
+        'search term(s)'
+        """
         # Process Search Query
         search_split_dict = split_search_query_inc_exc(search_query)
         # Split Return to Individual Parts
@@ -675,6 +721,15 @@ class LoadDB(Resource):
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
+        """
+        DEVELOPER ENDPOINT
+        This endpoint searches allrecipes.com
+        for each search term that is in search_terms.txt
+        that is located in /server . The endpoint
+        takes each term and exhaustively searches
+        allrecipes.com for each of them individually and
+        loads all recipes into the DB
+        """
         print("LoadDB:		INSIDE LoadDB")
         print("LoadDB:		Loading Search Terms...")
         search_terms = load_search_terms(SEARCH_TERMS_FILE_NAME)
@@ -709,17 +764,24 @@ class DeleteRecipe(Resource):
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self, recipe_name):
+        """
+        Deletes a recipe from the DB based on
+        Recipe Name
+        """
         return recmongo.delete_recipe_by_name(recipe_name)
 
 
 @api.route('/getRecipe/<recipe_name>')
 class GetRecipe(Resource):
     """
-    deletes a recipe from the db based on name
+    Gets a recipe from the db based on name
     """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self, recipe_name):
+        """
+        Gets a recipe from the db based on name
+        """
         rec_name = (unquote(recipe_name)).strip()
         return recmongo.get_recipe_details(rec_name)
 
@@ -727,11 +789,14 @@ class GetRecipe(Resource):
 @api.route('/getRecipeFromURL/<path:website>')
 class GetRecipeFromURL(Resource):
     """
-    deletes a recipe from the db based on name
+    Gets a recipe from the db based URL
     """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self, website):
+        """
+        Gets a recipe form the DB based on URL
+        """
         # rec_name = (unquote(website)).strip()
         # print('GetRecipeFromURL: ' + f'{rec_name=}')
         ret = recmongo.get_recipe_from_rec_url(website)
@@ -826,6 +891,10 @@ class DbTest(Resource):
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
+        """
+        Endpoint that Searches the DB for Armenian Pizza (Lahmahjoon)
+        and Returns Recipe Details
+        """
         return recmongo.get_recipe_details("Armenian Pizzas (Lahmahjoon)")
 
 
