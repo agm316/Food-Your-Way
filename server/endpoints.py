@@ -10,7 +10,6 @@ from flask import Flask, request
 from flask_restx import Resource, Api, Namespace, abort
 from http import HTTPStatus
 from pymongo import MongoClient
-from db import db as recdb  # need to fix issue with make prod
 from db import recipes as recmongo
 from urllib.parse import unquote
 # from urllib.parse import quote
@@ -838,7 +837,7 @@ class RecipeCuisinesList(Resource):
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
-        return {RECIPE_CUISINES_LIST_NM: recdb.get_all()}
+        return {RECIPE_CUISINES_LIST_NM: recmongo.get_recipes()}
 
 
 @recipe_suggestions.route(RECIPE_SUGGESTIONS_LIST)
@@ -849,7 +848,7 @@ class RecipeSuggestionsList(Resource):
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
-        return {RECIPE_SUGGESTIONS_LIST_NM: recdb.get_all()}
+        return {RECIPE_SUGGESTIONS_LIST_NM: recmongo.get_recipes()}
 
 
 # adding in a basic hashing algorithm for a user's password

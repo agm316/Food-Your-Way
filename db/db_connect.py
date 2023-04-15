@@ -81,6 +81,7 @@ def del_one(collection, filt, db=RECIPE_DB):
 def fetch_all(collection, db=RECIPE_DB):
     ret = []
     for doc in client[db][collection].find():
+        doc[MONGO_ID] = str(doc[MONGO_ID])
         ret.append(doc)
     return ret
 
@@ -98,6 +99,6 @@ def fetch_all_filter(collection, filt, db=RECIPE_DB):
 def fetch_all_as_dict(key, collection, db=RECIPE_DB):
     ret = {}
     for doc in client[db][collection].find():
-        del doc['_id']
+        del doc[MONGO_ID]
         ret[doc[key]] = doc
     return ret
