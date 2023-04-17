@@ -12,6 +12,7 @@ from http import HTTPStatus
 from pymongo import MongoClient
 from db import recipes as recmongo
 from urllib.parse import unquote
+from flask_cors import CORS
 # from urllib.parse import quote
 from .errs import pswdError
 import requests
@@ -21,12 +22,10 @@ import bson.json_util as json_util
 import hashlib
 import bcrypt
 import re
-from flask_cors import CORS
 
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
 
 app = Flask(__name__)
 CORS(app)
@@ -93,6 +92,22 @@ recipe_suggestions = Namespace(RECIPE_SUGGESTIONS_NS, 'Recipe Suggestions')
 api.add_namespace(recipe_suggestions)
 
 
+@api.route('/hello')
+class HelloWorld(Resource):
+    """
+    The purpose of the HelloWorld class is to have a simple test to see if the
+    app is working at all.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self):
+        """
+        A trivial endpoint to see if the server is running.
+        It just answers with "hello world."
+        """
+        return {MESSAGE: 'hello world'}
+
+
 def load_search_terms(file_name):
     """
     this function loads the search terms
@@ -133,7 +148,7 @@ def scrape_website_soup(soup, website):
     recipe_name = ''
     try:
         recipe_name_test = soup.find(id=RECIPE_NAME_ID_1)
-        if (isinstance(recipe_name_test, type(None))):
+        if isinstance(recipe_name_test, type(None)):
             pass
         else:
             recipe_name = recipe_name_test.get_text().strip()
@@ -142,7 +157,7 @@ def scrape_website_soup(soup, website):
     if recipe_name == '':
         try:
             recipe_name_test = soup.find(id=RECIPE_NAME_ID_2)
-            if (isinstance(recipe_name_test, type(None))):
+            if isinstance(recipe_name_test, type(None)):
                 pass
             else:
                 recipe_name = recipe_name_test.get_text().strip()
@@ -182,13 +197,13 @@ def scrape_website_soup(soup, website):
     directions = directions[1:]
     # Get Rating (out of 5 stars)
     rating_sp = soup.find(id=RATING_ID)
-    if (isinstance(rating_sp, type(None))):
+    if isinstance(rating_sp, type(None)):
         pass
     else:
         rating = rating_sp.get_text().strip()
-    if (rating == ""):
+    if rating == "":
         rating_sp = soup.find(id=RATING_ID_2)
-        if (isinstance(rating_sp, type(None))):
+        if isinstance(rating_sp, type(None)):
             pass
         else:
             rating = rating_sp.get_text().strip()
@@ -199,7 +214,7 @@ def scrape_website_soup(soup, website):
             cuisine_path = (cuisine_path + div.text.strip() + "/")
     # Get Nutrition Information
     nutr_soup = soup.find(class_=NUTRITION_CLASS)
-    if (not isinstance(nutr_soup, type(None))):
+    if not isinstance(nutr_soup, type(None)):
         for tr in nutr_soup.find_all("tr"):
             if (tr.text != "") and (tr.text.strip() != "% Daily Value *"):
                 tr_list = tr.text.split()
@@ -246,7 +261,7 @@ def scrape_website_soup(soup, website):
     img2_soup = soup.find("img", id=IMG_ID2)
     if len(img_soup) > 0:
         img_src = img_soup[0]['src'].strip()
-    elif (isinstance(img2_soup, type(None))):
+    elif isinstance(img2_soup, type(None)):
         pass
     elif img2_soup != "":
         img_src = img2_soup['data-src'].strip()
@@ -277,7 +292,7 @@ def search_all_rec_from_query(search_query):
     second_p_url = "https://www.allrecipes.com/search?"
     subsequent_url_base = ''
     term_lst = (search_query.strip()).split()
-    if (len(term_lst) == 0):
+    if len(term_lst) == 0:
         print("No Search Terms")
         return []
     else:
@@ -309,7 +324,7 @@ def search_all_rec_from_query(search_query):
         temp_url = temp_url + '&q='
         temp_url = temp_url + terms_url_ready
         res_lst = search_later_pages(temp_url)
-        if (len(res_lst) == 0):
+        if len(res_lst) == 0:
             break
         for x in range(len(res_lst)):
             link_lst.append(res_lst[x])
@@ -352,51 +367,6 @@ def split_search_query_inc_exc(search_query):
                    "inclusions": inclusions_list,
                    "exclusions": exclusions_list}
     return return_dict
-
-
-@api.route('/hello')
-class HelloWorld(Resource):
-    """
-    The purpose of the HelloWorld class is to have a simple test to see if the
-    app is working at all.
-    """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def get(self):
-        """
-        A trivial endpoint to see if the server is running.
-        It just answers with "hello world."
-        """
-        return {MESSAGE: 'hello world'}
-
-
-@api.route('/register_user')
-class Register_User(Resource):
-    """
-    This endpoint will be used to register for an account.
-    """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def post(self):
-        """
-        Registers a User
-        """
-        first_name = request.form['first_name']
-        last_name = request.form['last_name']
-        email = request.form['email']
-        username = request.form['username']
-        password = request.form['password']
-        confirm_password = request.form['confirm_password']
-
-        # first need to check if username already exists in database,
-        # if so, return an error message saying that this user already exists
-        # if not, add all of these fields into the MongoDB database
-        # collection named "users" return a message stating that the
-        # user was successfully registered!
-        return {"First Name": first_name, "Last Name": last_name,
-                "Email": email, "Username": username,
-                "Password": password, "Confirm Password":
-                    confirm_password}
 
 
 # VERY VERY rudementary system put in place to allow us to test
@@ -756,6 +726,35 @@ class LoadDB(Resource):
         return True
 
 
+@api.route('/register_user')
+class RegisterUser(Resource):
+    """
+    This endpoint will be used to register for an account.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def post(self):
+        """
+        Registers a User
+        """
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        email = request.form['email']
+        username = request.form['username']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+
+        # first need to check if username already exists in database,
+        # if so, return an error message saying that this user already exists
+        # if not, add all of these fields into the MongoDB database
+        # collection named "users" return a message stating that the
+        # user was successfully registered!
+        return {"First Name": first_name, "Last Name": last_name,
+                "Email": email, "Username": username,
+                "Password": password, "Confirm Password":
+                    confirm_password}
+
+
 @api.route('/deleteRecipe/<recipe_name>')
 class DeleteRecipe(Resource):
     """
@@ -763,7 +762,7 @@ class DeleteRecipe(Resource):
     """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def get(self, recipe_name):
+    def delete(self, recipe_name):
         """
         Deletes a recipe from the DB based on
         Recipe Name
