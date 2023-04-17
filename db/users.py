@@ -52,7 +52,7 @@ def add_user(user_name, user_data):
     dbc.connect_db()
     user_data[USER_KEY] = user_name
     usr_data = json.loads(json_util.dumps(user_data))
-    if (not user_exists(user_name)):
+    if not user_exists(user_name):
         return dbc.insert_one(USER_COLLECTION, usr_data, USER_DB)
     else:
         print("users.py:    add_user: USER ALREADY IN DB")

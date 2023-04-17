@@ -755,10 +755,11 @@ class RegisterUser(Resource):
                     confirm_password}
 
 
-@api.route('/deleteRecipe/<recipe_name>')
-class DeleteRecipe(Resource):
+@api.route('/deleteSavedRecipe/<recipe_name>')
+class DeleteSavedRecipe(Resource):
     """
-    deletes a recipe from the db based on name
+    Deletes a saved recipe from the db based on name
+    that the user does not want anymore
     """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
