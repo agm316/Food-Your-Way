@@ -8,6 +8,7 @@ The endpoint called `endpoints` will return all available endpoints.
 from bs4 import BeautifulSoup
 from flask import Flask, request
 from flask_restx import Resource, Api, Namespace, abort
+# , fields
 from http import HTTPStatus
 from pymongo import MongoClient
 from db import recipes as recmongo
@@ -584,6 +585,8 @@ class SearchIncExc(Resource):
         exclusions_list = search_split_dict["exclusions"]
         results = recmongo.search_recipe_ingr(search_term, inclusions_list,
                                               exclusions_list)
+        # for x in results:
+        #     print(f'{type(x)=}')
         return results
 
 

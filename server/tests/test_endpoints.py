@@ -1,4 +1,6 @@
 import pytest
+from unittest.mock import patch
+from http import HTTPStatus
 import json
 import bson.json_util as json_util
 from urllib.parse import unquote
@@ -25,6 +27,8 @@ TEST_FAIL_PSW_1 = "psswd"
 # This tests max pswed length (has to be long)
 TEST_FAIL_PSW_2 = "12345678901234567890123456789012345678901234567890123456789012345"
 
+SAMPLE_RECIPE_DETAILS = {'_id': {'$oid': '64231fd4502eab40303bfde4'}, 'recipe_name': 'Armenian Pizzas (Lahmahjoon)', 'prep_time': '20 mins', 'cook_time': '30 mins', 'total_time': '50 mins', 'servings': '3', 'yield': '6 pizzas', 'ingredients': '1 pound lean ground lamb, ½ teaspoon salt, ¼ teaspoon ground black pepper, 1 tablespoon extra-virgin olive oil, ½ cup chopped red onion, 3 cloves garlic, minced, ½  green bell pepper, chopped, 1 tablespoon freshly ground cumin seed, 1 teaspoon ground turmeric, 1 teaspoon paprika, 1 pinch fenugreek seeds, finely crushed (Optional), 1  lemon wedge, 1 (14.5 ounce) can diced tomatoes, 2 tablespoons ketchup, 1 cup chopped flat-leaf parsley, 6 (6 inch) pita bread rounds, ⅓ cup crumbled feta cheese (Optional), 1  lime, cut into wedges, 1 tablespoon chopped fresh mint', 'directions': 'Preheat oven to 450 degrees F (230 degrees C). Season lamb with salt and pepper, and set aside.\nHeat olive oil in large skillet over medium-high heat. Add onion, garlic, and bell pepper and stir until just beginning to brown. Stir in the cumin, turmeric, paprika, and fenugreek.\nImmediately add the ground lamb. Squeeze lemon wedge over lamb, and drop the peel into the mixture. Break up the meat and stir until it has browned. Remove lemon peel.\nStir in the tomatoes, ketchup, and parsley. Continue to simmer until most of the liquid has evaporated, 10 to 15 minutes. The mixture should be spreadable but not too wet or the pitas will become soggy.\nArrange pitas on a large baking sheet unless you are baking them directly on the oven rack. Spoon meat mixture onto pitas and smooth into an even layer to within 1/8 inch of the edge of the pita. Sprinkle feta cheese on the meat mixture.\nBake pitas until the edges are slightly crisp and meat is lightly browned but not dried out, about 10 to 20 minutes depending on whether pitas are on a baking sheet or on the oven rack. Squeeze lime lightly over the top, sprinkle with chopped mint and enjoy!', 'rating': '4.5', 'url': 'https://www.allrecipes.com/recipe/154315/armenian-pizzas-lahmahjoon/', 'cuisine_path': '/Meat and Poultry/Lamb/Ground/', 'nutrition': 'Total Fat 33g 42%, Saturated Fat 14g 68%, Cholesterol 126mg 42%, Sodium 1663mg 72%, Total Carbohydrate 75g 27%, Dietary Fiber 7g 23%, Total Sugars 11g, Protein 42g, Vitamin C 68mg 342%, Calcium 369mg 28%, Iron 11mg 63%, Potassium 1003mg 21%', 'timing': 'Prep Time: 20 mins, Cook Time: 30 mins, Total Time: 50 mins, Servings: 3, Yield: 6 pizzas', 'img_src': 'https://www.allrecipes.com/thmb/4cLLHor7cXeVg9rds4vs3Q9yt0U=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/211614-c6da8451a13b464980f7feb8d4eb9c02.jpg'}
+CRAZY_SEARCH = 'toenails test recipe;:;poop;:;'
 
 SEARCH_INC_EXC_TEST_QUERY = "soup;:;pumpkin,tomato;:;poop,soy"
 
@@ -221,9 +225,35 @@ def test_search_inc_exc():
     """
     See if searchIncExc works
     """
-    resp_json = TEST_CLIENT.get(f'/searchIncExc/{SEARCH_INC_EXC_TEST_QUERY}').data
-    # Need to fix this to be json dictionary and not bytes!!!
-    assert isinstance(resp_json, bytes)
+    resp_json = TEST_CLIENT.get(f'/searchIncExc/{SEARCH_INC_EXC_TEST_QUERY}').get_json()
+    # print(f'{type(resp_json)=}')
+    # for x in resp_json:
+    #     print(f'{type(x)=}')
+    assert isinstance(resp_json, list)
+    assert resp_json == []
+
+
+@patch('db.recipes.search_recipe_ingr', return_value=SAMPLE_RECIPE_DETAILS)
+def test_search_get_rec_details(mock_get_recipe_details):
+    """
+    See if we can search for
+    Armenian Pizza
+    """
+    resp = TEST_CLIENT.get(f'searchIncExc/{TEST_WEBSITE_TITLE};:;;:;')
+    assert resp.status_code == HTTPStatus.OK
+    resp_json = resp.get_json()
+    assert resp_json['recipe_name'] == TEST_WEBSITE_TITLE
+
+
+@patch('db.recipes.search_recipe_ingr', return_value=None)
+def test_search_no_result(mock_get_recipe_details_none):
+    """
+    empty result for crazy search
+    """
+    resp = TEST_CLIENT.get(f'searchIncExc/{CRAZY_SEARCH}')
+    assert resp.status_code == HTTPStatus.OK
+    resp_json = resp.get_json()
+    assert resp_json == None
 
 
 def test_search_query(input_search_query):
