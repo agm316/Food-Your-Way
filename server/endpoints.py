@@ -85,6 +85,7 @@ NEW_RECIPES_URL = NEW_RECIPES_URL + 'recipes/22908/everyday-cooking'
 NEW_RECIPES_URL = NEW_RECIPES_URL + '/special-collections/new/'
 SEARCH_TERMS_FILE_NAME = '/search_terms.txt'
 DB_MESSAGE_NOT = 'Recipe already in DB! NOT ADDING IT AGAIN!'
+USERS_NS = 'users'
 
 recipe_cuisines = Namespace(RECIPE_CUISINES_NS, 'Recipe Cuisines')
 api.add_namespace(recipe_cuisines)
@@ -92,21 +93,8 @@ api.add_namespace(recipe_cuisines)
 recipe_suggestions = Namespace(RECIPE_SUGGESTIONS_NS, 'Recipe Suggestions')
 api.add_namespace(recipe_suggestions)
 
-
-@api.route('/hello')
-class HelloWorld(Resource):
-    """
-    The purpose of the HelloWorld class is to have a simple test to see if the
-    app is working at all.
-    """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def get(self):
-        """
-        A trivial endpoint to see if the server is running.
-        It just answers with "hello world."
-        """
-        return {MESSAGE: 'hello world'}
+users = Namespace(USERS_NS, 'Users')
+api.add_namespace(users)
 
 
 def load_search_terms(file_name):
@@ -368,6 +356,22 @@ def split_search_query_inc_exc(search_query):
                    "inclusions": inclusions_list,
                    "exclusions": exclusions_list}
     return return_dict
+
+
+@api.route('/hello')
+class HelloWorld(Resource):
+    """
+    The purpose of the HelloWorld class is to have a simple test to see if the
+    app is working at all.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self):
+        """
+        A trivial endpoint to see if the server is running.
+        It just answers with "hello world."
+        """
+        return {MESSAGE: 'hello world'}
 
 
 # VERY VERY rudementary system put in place to allow us to test
@@ -729,35 +733,6 @@ class LoadDB(Resource):
         return True
 
 
-@api.route('/register_user')
-class RegisterUser(Resource):
-    """
-    This endpoint will be used to register for an account.
-    """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def post(self):
-        """
-        Registers a User
-        """
-        first_name = request.form['first_name']
-        last_name = request.form['last_name']
-        email = request.form['email']
-        username = request.form['username']
-        password = request.form['password']
-        confirm_password = request.form['confirm_password']
-
-        # first need to check if username already exists in database,
-        # if so, return an error message saying that this user already exists
-        # if not, add all of these fields into the MongoDB database
-        # collection named "users" return a message stating that the
-        # user was successfully registered!
-        return {"First Name": first_name, "Last Name": last_name,
-                "Email": email, "Username": username,
-                "Password": password, "Confirm Password":
-                    confirm_password}
-
-
 @api.route('/deleteSavedRecipe/<recipe_name>')
 class DeleteSavedRecipe(Resource):
     """
@@ -921,6 +896,34 @@ class RecipeSuggestionsList(Resource):
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
         return {RECIPE_SUGGESTIONS_LIST_NM: recmongo.get_recipes()}
+
+
+@users.route('/register_user')
+class RegisterUser(Resource):
+    """
+    This endpoint will be used to register for a user account.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def post(self):
+        """
+        Registers a New User
+        """
+        first_name = request.form.get['first_name']
+        last_name = request.form.get['last_name']
+        email = request.form.get['email']
+        username = request.form.get['username']
+        password = request.form.get['password']
+        confirm_password = request.form.get['confirm_password']
+        # first need to check if username already exists in database,
+        # if so, return an error message saying that this user already exists
+        # if not, add all of these fields into the MongoDB database
+        # collection named "users" return a message stating that the
+        # user was successfully registered!
+        return {"First Name": first_name, "Last Name": last_name,
+                "Email": email, "Username": username,
+                "Password": password, "Confirm Password":
+                    confirm_password}
 
 
 # adding in a basic hashing algorithm for a user's password
