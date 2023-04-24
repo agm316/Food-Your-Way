@@ -12,10 +12,16 @@ USER_KEY = 'username'
 
 FIRST_NAME = 'first_name'
 LAST_NAME = 'last_name'
-EMAIL = 'email'
 USERNAME = 'username'
-PASSWORD = 'password_hash'
-REQUIRED_FIELDS = [FIRST_NAME, LAST_NAME, EMAIL, USERNAME, PASSWORD]
+PASSWORD = 'hashed_password'
+INCLUDE_PREF = 'inc_ingr_pref'
+EXCLUDE_PREF = 'exc_ingr_pref'
+OTHER_PREFS = 'other_preferences'
+DIET = 'diet'
+SAVED_RECIPES = 'saved_recipes'
+REQUIRED_FIELDS = [FIRST_NAME, LAST_NAME, USERNAME, PASSWORD, INCLUDE_PREF,
+                   EXCLUDE_PREF, OTHER_PREFS, DIET, SAVED_RECIPES]
+
 
 TEST_USER_NAME = 'TEST_USERNAME'
 

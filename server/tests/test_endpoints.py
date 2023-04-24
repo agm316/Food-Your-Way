@@ -6,6 +6,7 @@ import bson.json_util as json_util
 from urllib.parse import unquote
 import server.endpoints as ep
 import db.recipes as recmongo
+import db.users as usermongo
 from ..errs import pswdError
 
 TEST_CLIENT = ep.app.test_client()
@@ -33,6 +34,17 @@ CRAZY_SEARCH = 'toenails test recipe;:;poop;:;'
 SEARCH_INC_EXC_TEST_QUERY = "soup;:;pumpkin,tomato;:;poop,soy"
 
 RECIPE_DB = 'api_dev_db'
+
+TEST_USER_REGISTRATION_DATA = {"first_name": "TEST FIRST",
+                               "last_name": "TEST LAST",
+                               "username": "user@name.com",
+                               "inc_ingr_pref": "",
+                               "exc_ingr_pref": "",
+                               "other_preferences": "",
+                               "diet": "",
+                               "saved_recipes": '',
+                               "password": 'abcdefghij',
+                               "confirm_password": 'abcdefghij'}
 
 # {recipe_name: 'Armenian Pizzas (Lahmahjoon)'}
 
@@ -278,6 +290,24 @@ def test_password():
     assert isinstance(user, dict)
     assert isinstance(user["hashed"], str)
     assert len(user["hashed"]) > len(TEST_PSW)
+
+
+def test_register_user():
+    username = TEST_USER_REGISTRATION_DATA["username"]
+    if (usermongo.user_exists(username)):
+        print(f'test_endpoints.py:    test_register_user:{username=} exists')
+        usermongo.delete_user(username)
+        print(f'test_endpoints.py:    test_register_user:{username=} deleted')
+    resp = TEST_CLIENT.post('/users/register_user', data=TEST_USER_REGISTRATION_DATA)
+    resp1 = resp.get_json()
+    print(f'test_endpoints.py:    resp1: {resp1=}')
+    assert(resp1["success"] == 1)
+
+
+def test_delete_user():
+    resp = TEST_CLIENT.get(f'/users/delete_user/{TEST_USER_REGISTRATION_DATA["username"]}')
+    resp_json = resp.get_json()
+    assert(resp_json == 1)
 
 
 def test_password_fail():

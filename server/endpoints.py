@@ -12,6 +12,7 @@ from flask_restx import Resource, Api, Namespace, abort
 from http import HTTPStatus
 from pymongo import MongoClient
 from db import recipes as recmongo
+from db import users as usermongo
 from urllib.parse import unquote
 from flask_cors import CORS
 # from urllib.parse import quote
@@ -92,6 +93,26 @@ NEW_RECIPES_URL = NEW_RECIPES_URL + 'recipes/22908/everyday-cooking'
 NEW_RECIPES_URL = NEW_RECIPES_URL + '/special-collections/new/'
 SEARCH_TERMS_FILE_NAME = '/search_terms.txt'
 DB_MESSAGE_NOT = 'Recipe already in DB! NOT ADDING IT AGAIN!'
+
+
+def text_strip(text):
+    """
+    This function strips whitespace off ends of text
+    """
+    if (isinstance(text, type(None))):
+        return ''
+    elif (type(text) == str):
+        return text.strip()
+
+
+def hash_pwd(password):
+    """
+    This function hashes passwords used for login
+    """
+    encoded = password.encode('utf-8')
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(encoded, salt)
+    return hashed.decode("utf-8")
 
 
 def load_search_terms(file_name):
@@ -904,11 +925,12 @@ class Password(Resource):
 
         # future improvement to display password strength here
 
-        encoded = password.encode('utf-8')
-        salt = bcrypt.gensalt()
-        hashed = bcrypt.hashpw(encoded, salt)
-
-        return {"hashed": hashed.decode("utf-8")}
+        # encoded = password.encode('utf-8')
+        # salt = bcrypt.gensalt()
+        # hashed = bcrypt.hashpw(encoded, salt)
+        hashed = hash_pwd(password)
+        # return {"hashed": hashed.decode("utf-8")}
+        return {"hashed": hashed}
 
 
 @users.route('/register_user')
@@ -922,21 +944,83 @@ class RegisterUser(Resource):
         """
         Registers a New User
         """
-        first_name = request.form.get['first_name']
-        last_name = request.form.get['last_name']
-        email = request.form.get['email']
-        username = request.form.get['username']
-        password = request.form.get['password']
-        confirm_password = request.form.get['confirm_password']
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
+        # email = request.form.get['email']
+        username = request.form.get('username')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        include_ingr_preference = request.form.get('inc_ingr_pref')
+        exclude_ingr_preference = request.form.get('exc_ingr_pref')
+        other_preferences = request.form.get('other_preferences')
+        diet = request.form.get('diet')
+        first_name = text_strip(first_name)
+        last_name = text_strip(last_name)
+        username = text_strip(username)
+        password = text_strip(password)
+        confirm_password = text_strip(confirm_password)
+        include_ingr_preference = text_strip(include_ingr_preference)
+        exclude_ingr_preference = text_strip(exclude_ingr_preference)
+        other_preferences = text_strip(other_preferences)
+        diet = text_strip(diet)
+        user_data = {"first_name": first_name,
+                     "last_name": last_name,
+                     "username": username,
+                     "inc_ingr_pref": include_ingr_preference,
+                     "exc_ingr_pref": exclude_ingr_preference,
+                     "other_preferences": other_preferences,
+                     "diet": diet,
+                     "saved_recipes": ''
+                     }
         # first need to check if username already exists in database,
         # if so, return an error message saying that this user already exists
         # if not, add all of these fields into the MongoDB database
         # collection named "users" return a message stating that the
         # user was successfully registered!
-        return {"First Name": first_name, "Last Name": last_name,
-                "Email": email, "Username": username,
-                "Password": password, "Confirm Password":
-                    confirm_password}
+        if (username == ''):
+            user_data["message"] = "Username is Blank!!!"
+            user_data["success"] = 0
+            return user_data
+        if (usermongo.user_exists(username)):
+            # raise ValueError(f'Username: "{username=}" already exists')
+            user_data["message"] = "Username Already Exists in DB"
+            user_data["success"] = 0
+            return user_data
+        else:
+            if (password == confirm_password):
+                hashed = hash_pwd(password)
+                user_data["hashed_password"] = hashed
+                usermongo.add_user(username, user_data)
+                if (usermongo.user_exists(username)):
+                    user_data["message"] = "User Added Successfully"
+                    user_data["success"] = 1
+                    return user_data
+                else:
+                    user_data["message"] = "Error Adding User to Database"
+                    user_data["success"] = 0
+                    return user_data
+            else:
+                user_data["message"] = "Passwords Don't Match"
+                user_data["success"] = 0
+                return user_data
+
+
+@users.route('/delete_user/<username>')
+class DeleteUser(Resource):
+    """
+    This endpoint will be used to delete a user account
+    from the DB.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self, username):
+        """
+        Delete a User
+        """
+        if (usermongo.user_exists(username.strip())):
+            return usermongo.delete_user(username.strip())
+        else:
+            return 0
 
 
 # adding in a basic hashing algorithm for a user's password
