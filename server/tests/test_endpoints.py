@@ -69,7 +69,7 @@ def test_delete_recipe_by_name():
     if not (recmongo.recipe_exists(TEST_WEBSITE_TITLE)):
         print('test_delete_recipe_by_name: RECIPE NOT IN DB')
         print('test_delete_recipe_by_name: SCRAPING URL TO ADD IT...')
-        resp = TEST_CLIENT.get(f'/scrape/{TEST_WEBSITE}')
+        resp = TEST_CLIENT.get(f'/recipes/scrape/{TEST_WEBSITE}')
         print('test_delete_recipe_by_name: CHECKING IF RECIPE IS IN DB NOW...')
         if recmongo.recipe_exists(TEST_WEBSITE_TITLE):
             print("test_delete_recipe_by_name: IT'S THERE!!!")
@@ -80,7 +80,7 @@ def test_delete_recipe_by_name():
         print('test_delete_recipe_by_name: RECIPE EXISTS!!!')
     print('test_delete_recipe_by_name: TRYING TO DELETE Armenian Pizza Recipe...')
     # assert recmongo.delete_recipe_by_name(TEST_WEBSITE_TITLE)
-    assert TEST_CLIENT.get(f'/deleteSavedRecipe/{TEST_WEBSITE_TITLE}')
+    assert TEST_CLIENT.get(f'/recipes/deleteSavedRecipe/{TEST_WEBSITE_TITLE}')
     
 
 def test_scrape_website():
