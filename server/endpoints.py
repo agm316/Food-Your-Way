@@ -733,6 +733,22 @@ class LoadDB(Resource):
         return True
 
 
+@api.route('/addASavedRecipe/<recipe_name>')
+class AddASavedRecipe(Resource):
+    """
+    Adds a recipe that the user wants to
+    save to their own personal db
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def post(self, recipe_name):
+        """
+        Adds a recipe to the DB based on
+        Recipe Name
+        """
+        return recmongo.add_recipe(recipe_name)
+
+
 @api.route('/deleteSavedRecipe/<recipe_name>')
 class DeleteSavedRecipe(Resource):
     """
