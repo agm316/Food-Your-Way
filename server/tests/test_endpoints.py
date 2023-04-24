@@ -60,6 +60,14 @@ def test_hello(input_test_client):
     assert isinstance(resp_json[ep.MESSAGE], str)
 
 
+def test_get_recipes_list():
+    """
+    This test will test the recipes namespace endpoint.
+    """
+    resp_json = TEST_CLIENT.get(ep.RECIPES_LIST_W_NS).get_json()
+    assert isinstance(resp_json[ep.RECIPES_LIST_NM], list)
+
+
 def test_delete_recipe_by_name():
     """
     Delete Armenian Pizza Recipe if it
@@ -192,26 +200,6 @@ def test_format_endpoint(input_test_client):
     assert isinstance(dbformat["url"], str)
 
 
-# NOTE: Currently fails.  Can test author take a look?
-# def test_get_database():
-#
-#     """
-#     Test to see if data is being stored in the database the right
-#     way and if the get data from the database works.
-#     """
-#     dbentry = TEST_CLIENT.get(ep.DBGETTEST).get_json()
-#     assert dbentry["recipe_name"] == TEST_WEBSITE_TITLE
-#     assert isinstance(dbentry["prep_time"], str)
-#     assert isinstance(dbentry["cook_time"], str)
-#     assert isinstance(dbentry["total_time"], str)
-#     assert isinstance(dbentry["servings"], str)
-#     assert isinstance(dbentry["ingredients"], str)
-#     assert isinstance(dbentry["directions"], str)
-#     assert isinstance(dbentry["rating"], str)
-#     assert isinstance(dbentry["url"], str)
-#     assert isinstance(dbentry, dict)
-
-
 # @pytest.mark.skip("Can't run this test until a recipe gets deleted from the database.")
 def test_get_all():
     """
@@ -265,14 +253,6 @@ def test_search_query(input_search_query):
     resp_json = TEST_CLIENT.get(f'/recipes/searchIncExc/{input_search_query}').get_json()
     # print(f'{type(resp_json)=}')
     assert isinstance(resp_json, list)
-
-
-def test_get_recipes_list():
-    """
-    This test will test the recipe cuisines namespace endpoint.
-    """
-    resp_json = TEST_CLIENT.get(ep.RECIPES_LIST_W_NS).get_json()
-    assert isinstance(resp_json[ep.RECIPES_LIST_NM], list)
 
 
 # @pytest.mark.skip("Unable to test this fully without UI")
