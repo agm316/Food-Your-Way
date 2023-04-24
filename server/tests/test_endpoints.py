@@ -36,6 +36,7 @@ RECIPE_DB = 'api_dev_db'
 
 # {recipe_name: 'Armenian Pizzas (Lahmahjoon)'}
 
+
 # replaces TEST_SEARCH_QUERY
 @pytest.fixture
 def input_search_query():
@@ -65,7 +66,7 @@ def test_delete_recipe_by_name():
     is in the DB
     """
     print('test_delete_recipe_by_name: Checking if Armenian Pizza is in DB...')
-    if (not (recmongo.recipe_exists(TEST_WEBSITE_TITLE))):
+    if not (recmongo.recipe_exists(TEST_WEBSITE_TITLE)):
         print('test_delete_recipe_by_name: RECIPE NOT IN DB')
         print('test_delete_recipe_by_name: SCRAPING URL TO ADD IT...')
         resp = TEST_CLIENT.get(f'/scrape/{TEST_WEBSITE}')
@@ -79,7 +80,7 @@ def test_delete_recipe_by_name():
         print('test_delete_recipe_by_name: RECIPE EXISTS!!!')
     print('test_delete_recipe_by_name: TRYING TO DELETE Armenian Pizza Recipe...')
     # assert recmongo.delete_recipe_by_name(TEST_WEBSITE_TITLE)
-    assert TEST_CLIENT.get(f'/deleteRecipe/{TEST_WEBSITE_TITLE}')
+    assert TEST_CLIENT.get(f'/deleteSavedRecipe/{TEST_WEBSITE_TITLE}')
     
 
 def test_scrape_website():
@@ -253,7 +254,7 @@ def test_search_no_result(mock_get_recipe_details_none):
     resp = TEST_CLIENT.get(f'searchIncExc/{CRAZY_SEARCH}')
     assert resp.status_code == HTTPStatus.OK
     resp_json = resp.get_json()
-    assert resp_json == None
+    assert resp_json is None
 
 
 def test_search_query(input_search_query):

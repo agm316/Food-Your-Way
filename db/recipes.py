@@ -96,22 +96,22 @@ def search_recipe_ingr(search_term, include, exclude):
         reg = reg + '.*$'
     # if (query_ingr_on == 1):
     # query_ingr = {"ingredients": {"$regex": reg, "$options": 'i'}}
-    if (search_term.strip() != ''):
+    if search_term.strip() != '':
         search_term_split = (search_term.strip()).split()
-        if (len(search_term_split) > 0):
+        if len(search_term_split) > 0:
             query_search_term_on = 1
             for x in range(len(search_term_split)):
                 search_reg = search_reg + f'(?=.*{search_term_split[x]})'
         # query_search_term = {"recipe_name"
         # : {"$regex": search_reg, "$options": 'i'}}
-    if ((query_ingr_on == 1) and (query_search_term_on == 1)):
+    if (query_ingr_on == 1) and (query_search_term_on == 1):
         query = {"$and": [
             {"recipe_name": {"$regex": search_reg, "$options": 'i'}},
             {"ingredients": {"$regex": reg, "$options": 'i'}}
         ]}
-    elif (query_ingr_on == 1):
+    elif query_ingr_on == 1:
         query = {"ingredients": {"$regex": reg, "$options": 'i'}}
-    elif (query_search_term_on == 1):
+    elif query_search_term_on == 1:
         query = {"recipe_name": {"$regex": search_reg, "$options": 'i'}}
         # print(query)
     # reg = f'^(?=.*(?:{include}))(?!.*(?:{exclude})).*$'
