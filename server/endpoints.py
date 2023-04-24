@@ -52,14 +52,11 @@ DBGETTEST = '/dbtest'
 GETALL = '/getAllRecipes'
 RECIPE_NAME_ID_1 = "article-heading_1-0"
 RECIPE_NAME_ID_2 = "article-heading_2-0"
-RECIPE_CUISINES_NS = 'recipe_cuisines'
-RECIPE_CUISINES_LIST = f'/{LIST}'
-RECIPE_CUISINES_LIST_W_NS = f'{RECIPE_CUISINES_NS}/{LIST}'
-RECIPE_CUISINES_LIST_NM = f'{RECIPE_CUISINES_NS}_list'
-RECIPE_SUGGESTIONS_NS = 'recipe_suggestions'
-RECIPE_SUGGESTIONS_LIST = f'/{LIST}'
-RECIPE_SUGGESTIONS_LIST_W_NS = f'{RECIPE_SUGGESTIONS_NS}/{LIST}'
-RECIPE_SUGGESTIONS_LIST_NM = f'{RECIPE_SUGGESTIONS_NS}_list'
+RECIPES_NS = 'recipes'
+RECIPES_LIST = f'/{LIST}'
+RECIPES_LIST_W_NS = f'{RECIPES_NS}/{LIST}'
+RECIPES_CUISINES_LIST_NM = f'{RECIPES_NS}_list'
+RECIPES_SUGGESTIONS_LIST_NM = f'{RECIPES_NS}_list'
 CUISINE_CLASS = "comp mntl-breadcrumbs__item mntl-block"
 INGREDIENTS_ID = "mntl-structured-ingredients__list"
 DIRECTIONS_ID = "mntl-sc-block_2-0"
@@ -87,11 +84,8 @@ SEARCH_TERMS_FILE_NAME = '/search_terms.txt'
 DB_MESSAGE_NOT = 'Recipe already in DB! NOT ADDING IT AGAIN!'
 USERS_NS = 'users'
 
-recipe_cuisines = Namespace(RECIPE_CUISINES_NS, 'Recipe Cuisines')
-api.add_namespace(recipe_cuisines)
-
-recipe_suggestions = Namespace(RECIPE_SUGGESTIONS_NS, 'Recipe Suggestions')
-api.add_namespace(recipe_suggestions)
+recipes = Namespace(RECIPES_NS, 'Recipes')
+api.add_namespace(recipes)
 
 users = Namespace(USERS_NS, 'Users')
 api.add_namespace(users)
@@ -374,9 +368,28 @@ class HelloWorld(Resource):
         return {MESSAGE: 'hello world'}
 
 
+# reconfigure for react
+@api.route('/searchUISettings')
+class GetSettings(Resource):
+    """
+    This endpoint gets current
+    search and UI settings.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self):
+        """
+        This endpoint gets current
+        search and UI settings.
+        """
+        return {'Data': {'BACKGROUND': 'DARK/LIGHT', 'Font': 'Standard'},
+                'Type': {'Data': 2},
+                'Title': {'UI Settings': 'Example Setting'}}
+
+
 # VERY VERY rudementary system put in place to allow us to test
 # login before a working UI, this works with Swagger
-@api.route('/login/<path:username>')  # /<path:password>')
+@users.route('/login/<path:username>')  # /<path:password>')
 class Login(Resource):
     """
     This is used as the login endpoint.
@@ -399,7 +412,7 @@ class Login(Resource):
 
 # This allows testing of the password storing and loging before
 # having a workable UI
-@api.route('/password/<path:password>')  # /<path:password>')
+@users.route('/password/<path:password>')  # /<path:password>')
 # @app.route('/password', methods=(['GET','POST']))
 class Password(Resource):
     """
@@ -423,7 +436,7 @@ class Password(Resource):
         return {"hashed": hashed.decode("utf-8")}
 
 
-@api.route('/format')
+@recipes.route('/format')
 class DataFormat(Resource):
     """
     This class serves to inform the user on the format of the db
@@ -445,7 +458,7 @@ class DataFormat(Resource):
                 "directions": [], "url": "url"}
 
 
-@api.route(f'{SCRAPE_WEBSITE}/<path:website>')
+@recipes.route(f'{SCRAPE_WEBSITE}/<path:website>')
 class ScrapeWebsite(Resource):
     """
     This class will scrape a given webpage with a recipe and returns the recipe
@@ -495,7 +508,7 @@ class ScrapeWebsite(Resource):
         return rec_to_ret_json
 
 
-@api.route('/getRecipeSuggestions')
+@recipes.route('/getRecipeSuggestions')
 class GetRecipeSuggestions(Resource):
     """
     This endpoint serves to return a dictionary of
@@ -512,26 +525,7 @@ class GetRecipeSuggestions(Resource):
                 }
 
 
-# reconfigure for react
-@api.route('/searchUISettings')
-class GetSettings(Resource):
-    """
-    This endpoint gets current
-    search and UI settings.
-    """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def get(self):
-        """
-        This endpoint gets current
-        search and UI settings.
-        """
-        return {'Data': {'BACKGROUND': 'DARK/LIGHT', 'Font': 'Standard'},
-                'Type': {'Data': 2},
-                'Title': {'UI Settings': 'Example Setting'}}
-
-
-@api.route('/getAllRecipes')
+@recipes.route('/getAllRecipes')
 class GetAll(Resource):
     """
     This endpoint servers to return all recipes in the
@@ -547,7 +541,7 @@ class GetAll(Resource):
         return recmongo.get_recipes_dict()
 
 
-@api.route('/searchIncExc/<search_query>')
+@recipes.route('/searchIncExc/<search_query>')
 class SearchIncExc(Resource):
     """
     This endpoint will allow you to search for something while
@@ -594,7 +588,7 @@ class SearchIncExc(Resource):
         return results
 
 
-@api.route('/searchAllRec/<search_query>')
+@recipes.route('/searchAllRec/<search_query>')
 class SearchAllRec(Resource):
     """
     This endpoint searches allrecipes.com for a given keyword and returns
@@ -618,7 +612,7 @@ class SearchAllRec(Resource):
         return search_all_rec_from_query(search_query)
 
 
-@api.route('/searchFrontEnd/<search_query>')
+@recipes.route('/searchFrontEnd/<search_query>')
 class SearchFrontEnd(Resource):
     """
     This endpoint runs through a sequence of
@@ -684,7 +678,7 @@ class SearchFrontEnd(Resource):
         return results
 
 
-@api.route('/loadDB')
+@recipes.route('/loadDB')
 class LoadDB(Resource):
     """
     DEVELOPER ENDPOINT
@@ -733,7 +727,7 @@ class LoadDB(Resource):
         return True
 
 
-@api.route('/addASavedRecipe/<recipe_name>')
+@recipes.route('/addASavedRecipe/<recipe_name>')
 class AddASavedRecipe(Resource):
     """
     Adds a recipe that the user wants to
@@ -749,7 +743,7 @@ class AddASavedRecipe(Resource):
         return recmongo.add_recipe(recipe_name)
 
 
-@api.route('/deleteSavedRecipe/<recipe_name>')
+@recipes.route('/deleteSavedRecipe/<recipe_name>')
 class DeleteSavedRecipe(Resource):
     """
     Deletes a saved recipe from the db based on name
@@ -765,7 +759,7 @@ class DeleteSavedRecipe(Resource):
         return recmongo.delete_recipe_by_name(recipe_name)
 
 
-@api.route('/getRecipe/<recipe_name>')
+@recipes.route('/getRecipe/<recipe_name>')
 class GetRecipe(Resource):
     """
     Gets a recipe from the db based on name
@@ -780,7 +774,7 @@ class GetRecipe(Resource):
         return recmongo.get_recipe_details(rec_name)
 
 
-@api.route('/getRecipeFromURL/<path:website>')
+@recipes.route('/getRecipeFromURL/<path:website>')
 class GetRecipeFromURL(Resource):
     """
     Gets a recipe from the db based URL
@@ -798,7 +792,7 @@ class GetRecipeFromURL(Resource):
         return ret
 
 
-@api.route('/filterByCalories')
+@recipes.route('/filterByCalories')
 class FilterByCalories(Resource):
     """
     This endpoint will allow you to filter by calories for all
@@ -816,7 +810,7 @@ class FilterByCalories(Resource):
                 }
 
 
-@api.route(MAIN_MENU)
+@recipes.route(MAIN_MENU)
 class MainMenu(Resource):
     """
     This Will Deliver Our Main Menu.
@@ -839,7 +833,7 @@ class MainMenu(Resource):
                 }}
 
 
-@api.route(SEARCH_HATEOAS)
+@recipes.route(SEARCH_HATEOAS)
 class SearchHateoas(Resource):
     """
     This Will return a menu list
@@ -864,7 +858,7 @@ class SearchHateoas(Resource):
                 }}
 
 
-@api.route('/filterByDietType')
+@recipes.route('/filterByDietType')
 class FilterByDietType(Resource):
     """
     This endpoint will allow you to filter by specific diet types
@@ -876,7 +870,7 @@ class FilterByDietType(Resource):
         return {'Type': {'Vegetarian', 'Vegan', 'Pescatarian'}}
 
 
-@api.route('/dbtest')
+@recipes.route('/dbtest')
 class DbTest(Resource):
     """
     Endpoint to test the data getting from the database
@@ -892,7 +886,7 @@ class DbTest(Resource):
         return recmongo.get_recipe_details("Armenian Pizzas (Lahmahjoon)")
 
 
-@recipe_cuisines.route(RECIPE_CUISINES_LIST)
+@recipes.route('/recipe_cuisines_list')
 class RecipeCuisinesList(Resource):
     """
     This will get a list of recipe cuisines.
@@ -900,10 +894,10 @@ class RecipeCuisinesList(Resource):
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
-        return {RECIPE_CUISINES_LIST_NM: recmongo.get_recipes()}
+        return {RECIPES_CUISINES_LIST_NM: recmongo.get_recipes()}
 
 
-@recipe_suggestions.route(RECIPE_SUGGESTIONS_LIST)
+@recipes.route('/recipe_suggestions_list')
 class RecipeSuggestionsList(Resource):
     """
     This will get a list of recipe suggestions.
@@ -911,7 +905,7 @@ class RecipeSuggestionsList(Resource):
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
-        return {RECIPE_SUGGESTIONS_LIST_NM: recmongo.get_recipes()}
+        return {RECIPES_SUGGESTIONS_LIST_NM: recmongo.get_recipes()}
 
 
 @users.route('/register_user')
