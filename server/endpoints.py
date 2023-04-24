@@ -37,7 +37,22 @@ client = MongoClient('localhost', 27017)
 db = client.flask_db
 todos = db.todos
 
+RECIPES_NS = 'recipes'
+USERS_NS = 'users'
+
+recipes = Namespace(RECIPES_NS, 'Recipes')
+api.add_namespace(recipes)
+
+users = Namespace(USERS_NS, 'Users')
+api.add_namespace(users)
+
 LIST = 'list'
+RECIPES_LIST = f'/{LIST}'
+RECIPES_LIST_W_NS = f'{RECIPES_NS}/{LIST}'
+RECIPES_LIST_NM = f'{RECIPES_NS}_list'
+RECIPES_CUISINES_LIST_NM = f'{RECIPES_NS}_list'
+RECIPES_SUGGESTIONS_LIST_NM = f'{RECIPES_NS}_list'
+
 HELLO = '/hello'
 MESSAGE = 'message'
 SCRAPE_WEBSITE = '/scrape'
@@ -52,12 +67,6 @@ DBGETTEST = '/dbtest'
 GETALL = '/recipes/getAllRecipes'
 RECIPE_NAME_ID_1 = "article-heading_1-0"
 RECIPE_NAME_ID_2 = "article-heading_2-0"
-RECIPES_NS = 'recipes'
-RECIPES_LIST = f'/{LIST}'
-RECIPES_LIST_W_NS = f'{RECIPES_NS}/{LIST}'
-RECIPES_LIST_NM = f'{RECIPES_NS}_list'
-RECIPES_CUISINES_LIST_NM = f'{RECIPES_NS}_list'
-RECIPES_SUGGESTIONS_LIST_NM = f'{RECIPES_NS}_list'
 CUISINE_CLASS = "comp mntl-breadcrumbs__item mntl-block"
 INGREDIENTS_ID = "mntl-structured-ingredients__list"
 DIRECTIONS_ID = "mntl-sc-block_2-0"
@@ -83,13 +92,6 @@ NEW_RECIPES_URL = NEW_RECIPES_URL + 'recipes/22908/everyday-cooking'
 NEW_RECIPES_URL = NEW_RECIPES_URL + '/special-collections/new/'
 SEARCH_TERMS_FILE_NAME = '/search_terms.txt'
 DB_MESSAGE_NOT = 'Recipe already in DB! NOT ADDING IT AGAIN!'
-USERS_NS = 'users'
-
-recipes = Namespace(RECIPES_NS, 'Recipes')
-api.add_namespace(recipes)
-
-users = Namespace(USERS_NS, 'Users')
-api.add_namespace(users)
 
 
 def load_search_terms(file_name):
