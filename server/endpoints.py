@@ -84,7 +84,7 @@ SETTINGS = 'searchUIsettings'
 password = ''
 ALL_REC_URL_START = 'https://www.allrecipes.com/'
 URL_REC_SUB_TARGET = 'recipe/'
-SEARCH_HATEOAS = '/search_hateoas'
+SEARCH_HATEOAS = '/searchHateoas'
 SEARCH_HATEOAS_TITLE = 'Recipe Options'
 VEG_REC = '/searchIncExc/Vegetarian;:;;:;'
 NEW_RECIPES_URL = 'https://www.allrecipes.com/'
@@ -303,7 +303,7 @@ def search_all_rec_from_query(search_query):
     second_p_url = second_p_url + '&offset='
     subsequent_url_base = second_p_url
     y = 0
-    while (True):
+    while True:
         offset = (y * 24) + 24
         y = y + 1
         temp_url = subsequent_url_base + str(offset)
