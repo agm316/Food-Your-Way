@@ -266,20 +266,12 @@ def test_search_query(input_search_query):
     assert isinstance(resp_json, list)
 
 
-def test_get_recipe_cuisines_list():
+def test_get_recipes_list():
     """
     This test will test the recipe cuisines namespace endpoint.
     """
-    resp_json = TEST_CLIENT.get(ep.RECIPE_CUISINES_LIST_W_NS).get_json()
-    assert isinstance(resp_json[ep.RECIPE_CUISINES_LIST_NM], list)
-
-
-def test_get_recipe_suggestions_list():
-    """
-    This test will test the recipe suggestions namespace endpoint.
-    """
-    resp_json = TEST_CLIENT.get(ep.RECIPE_SUGGESTIONS_LIST_W_NS).get_json()
-    assert isinstance(resp_json[ep.RECIPE_SUGGESTIONS_LIST_NM], list)
+    resp_json = TEST_CLIENT.get(ep.RECIPES_LIST_W_NS).get_json()
+    assert isinstance(resp_json[ep.RECIPES_LIST_NM], list)
 
 
 # @pytest.mark.skip("Unable to test this fully without UI")

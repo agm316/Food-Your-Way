@@ -55,6 +55,7 @@ RECIPE_NAME_ID_2 = "article-heading_2-0"
 RECIPES_NS = 'recipes'
 RECIPES_LIST = f'/{LIST}'
 RECIPES_LIST_W_NS = f'{RECIPES_NS}/{LIST}'
+RECIPES_LIST_NM = f'{RECIPES_NS}_list'
 RECIPES_CUISINES_LIST_NM = f'{RECIPES_NS}_list'
 RECIPES_SUGGESTIONS_LIST_NM = f'{RECIPES_NS}_list'
 CUISINE_CLASS = "comp mntl-breadcrumbs__item mntl-block"
@@ -387,53 +388,82 @@ class GetSettings(Resource):
                 'Title': {'UI Settings': 'Example Setting'}}
 
 
-# VERY VERY rudementary system put in place to allow us to test
-# login before a working UI, this works with Swagger
-@users.route('/login/<path:username>')  # /<path:password>')
-class Login(Resource):
+@recipes.route('/addSavedRecipe/<recipe_name>')
+class AddSavedRecipe(Resource):
     """
-    This is used as the login endpoint.
-    """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def get(self, username):
-        """
-        The get() method
-        Until we have a better system, the password will stay
-        commented I guess :(
-        """
-        email_pattern = re.compile(
-            r"[a-zA-Z0-9]+\.?[a-zA-Z0-9]+@[a-zA-Z]+\.(com|co|org|edu)"
-        )
-        if email_pattern.match(username):
-            return {"username": username}  # , "password": password}
-        return {"error": "username must be an email address"}
-
-
-# This allows testing of the password storing and loging before
-# having a workable UI
-@users.route('/password/<path:password>')  # /<path:password>')
-# @app.route('/password', methods=(['GET','POST']))
-class Password(Resource):
-    """
-    This is used as the login endpoint.
+    Adds a recipe that the user wants to
+    save to their own personal db
     """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def get(self, password):
+    def post(self, recipe_name):
         """
-        This takes the password and encrypts it and stores it
+        Adds a recipe to the DB based on
+        Recipe Name
         """
-        if not (65 > len(password) > 7):
-            raise pswdError(len(password))
+        return recmongo.add_recipe(recipe_name)
 
-        # future improvement to display password strength here
 
-        encoded = password.encode('utf-8')
-        salt = bcrypt.gensalt()
-        hashed = bcrypt.hashpw(encoded, salt)
+@recipes.route('/dbtest')
+class DbTest(Resource):
+    """
+    Endpoint to test the data getting from the database
+    in the /db/db.py file
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self):
+        """
+        Endpoint that Searches the DB for Armenian Pizza (Lahmahjoon)
+        and Returns Recipe Details
+        """
+        return recmongo.get_recipe_details("Armenian Pizzas (Lahmahjoon)")
 
-        return {"hashed": hashed.decode("utf-8")}
+
+@recipes.route('/deleteSavedRecipe/<recipe_name>')
+class DeleteSavedRecipe(Resource):
+    """
+    Deletes a saved recipe from the db based on name
+    that the user does not want anymore
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def delete(self, recipe_name):
+        """
+        Deletes a recipe from the DB based on
+        Recipe Name
+        """
+        return recmongo.delete_recipe_by_name(recipe_name)
+
+
+@recipes.route('/filterByCalories')
+class FilterByCalories(Resource):
+    """
+    This endpoint will allow you to filter by calories for all
+    the recipes.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self):
+        return {'Data': {"Cuisine": "Chinese",
+                         "Food": "Roasted Pork",
+                         "Drink": "Ginger Lime Ice Green Tea",
+                         "Calories": "1003"},
+                'Type': {'Data': 12},
+                'Title': {'Suggestion': 'Chinese Food'}
+                }
+
+
+@recipes.route('/filterByDietType')
+class FilterByDietType(Resource):
+    """
+    This endpoint will allow you to filter by specific diet types
+    that people might fall under.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self):
+        return {'Type': {'Vegetarian', 'Vegan', 'Pescatarian'}}
 
 
 @recipes.route('/format')
@@ -456,6 +486,166 @@ class DataFormat(Resource):
                 "cook_time": "cook_time", "total_time": "total_time",
                 "servings": "servings", "yield": "yield", "ingredients": [],
                 "directions": [], "url": "url"}
+
+
+@recipes.route('/getAllRecipes')
+class GetAll(Resource):
+    """
+    This endpoint servers to return all recipes in the
+    database and return them as a list of JSONs.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self):
+        """
+        Returns All Recipes From the DB
+        """
+        # return recdb.get_all()
+        return recmongo.get_recipes_dict()
+
+
+@recipes.route('/getRecipe/<recipe_name>')
+class GetRecipe(Resource):
+    """
+    Gets a recipe from the db based on name
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self, recipe_name):
+        """
+        Gets a recipe from the db based on name
+        """
+        rec_name = (unquote(recipe_name)).strip()
+        return recmongo.get_recipe_details(rec_name)
+
+
+@recipes.route('/getRecipeFromURL/<path:website>')
+class GetRecipeFromURL(Resource):
+    """
+    Gets a recipe from the db based URL
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self, website):
+        """
+        Gets a recipe form the DB based on URL
+        """
+        # rec_name = (unquote(website)).strip()
+        # print('GetRecipeFromURL: ' + f'{rec_name=}')
+        ret = recmongo.get_recipe_from_rec_url(website)
+        # print('GetRecipeFromURL: ' + f'{ret=}')
+        return ret
+
+
+@recipes.route('/getRecipeSuggestions')
+class GetRecipeSuggestions(Resource):
+    """
+    This endpoint serves to return a dictionary of
+    recipe suggestions from the database.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self):
+        return {'Data': {"Cuisine": "Chinese",
+                         "Food": "Roasted Pork",
+                         "Drink": "Ginger Lime Ice Green Tea"},
+                'Type': {'Data': 12},
+                'Title': {'Suggestion': 'Chinese Food'}
+                }
+
+
+@recipes.route('/loadDB')
+class LoadDB(Resource):
+    """
+    DEVELOPER ENDPOINT
+    This endpoint searches allrecipes.com for each of
+    the search terms that are in the search_terms.txt
+    file that is in /server . The endpoint takes each
+    term and exhaustively searches allrecipes.com
+    for each of them individually and loads all recipes
+    into the DB
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self):
+        """
+        DEVELOPER ENDPOINT
+        This endpoint searches allrecipes.com
+        for each search term that is in search_terms.txt
+        that is located in /server . The endpoint
+        takes each term and exhaustively searches
+        allrecipes.com for each of them individually and
+        loads all recipes into the DB
+        """
+        print("LoadDB:		INSIDE LoadDB")
+        print("LoadDB:		Loading Search Terms...")
+        search_terms = load_search_terms(SEARCH_TERMS_FILE_NAME)
+        print("LoadDB:		Search Terms Loaded!")
+        for x in search_terms:
+            print("LoadDB:		_______________")
+            print("LoadDB:		Search Term: " + x)
+            print("LoadDB:		Getting List of Recipe URL's...")
+            url_list = search_all_rec_from_query(x)
+            print("LoadDB:		URL's Gathered!")
+            for y in url_list:
+                html_doc = requests.get(y).content
+                soup = BeautifulSoup(html_doc, 'html.parser')
+                scrape_return = scrape_website_soup(soup, y)
+                rec_to_ret_json = json.loads(json_util.dumps(scrape_return))
+                rec_name = rec_to_ret_json["recipe_name"]
+                print("LoadDB:		Recipe Name: " + rec_name)
+                if (not (recmongo.recipe_exists_from_url(y))):
+                    print("LoadDB:		Recipe not in DB, adding it...")
+                    recmongo.add_recipe(rec_name, rec_to_ret_json)
+                else:
+                    print("LoadDB:		" + DB_MESSAGE_NOT)
+        print("LoadDB:		LoadDB Completed Loading DB!!!")
+        return True
+
+
+@recipes.route(MAIN_MENU)
+class MainMenu(Resource):
+    """
+    This Will Deliver Our Main Menu.
+    """
+    def get(self):
+        """
+        Gets the main menu.
+        """
+        return {'Title': MAIN_MENU_NM,
+                'Default': 1,
+                'Choices': {
+                    '1': {'url': f'/{GET_ALL_RECIPES}', 'method': 'get',
+                          'text': 'Get All Recipes'},
+                    '2': {'url': f'/{GET_RECIPE_SUGGESTIONS}', 'method': 'get',
+                          'text': 'Get Recipe Suggestions'},
+                    '3': {'url': f'/{FORMATTEXTGAME}', 'method': 'get',
+                          'text': 'Get the recipe format'},
+                    '4': {'url': f'/{SETTINGS}', 'method': 'get',
+                          'text': 'Get search and UI settings'},
+                }}
+
+
+@recipes.route('/recipe_cuisines_list')
+class RecipeCuisinesList(Resource):
+    """
+    This will get a list of recipe cuisines.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self):
+        return {RECIPES_CUISINES_LIST_NM: recmongo.get_recipes()}
+
+
+@recipes.route('/recipe_suggestions_list')
+class RecipeSuggestionsList(Resource):
+    """
+    This will get a list of recipe suggestions.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self):
+        return {RECIPES_SUGGESTIONS_LIST_NM: recmongo.get_recipes()}
 
 
 @recipes.route(f'{SCRAPE_WEBSITE}/<path:website>')
@@ -506,86 +696,6 @@ class ScrapeWebsite(Resource):
         # recmongo.add_recipe(recipe_name, rec_to_ret_json)
         # print(rec_to_ret_json["url"])
         return rec_to_ret_json
-
-
-@recipes.route('/getRecipeSuggestions')
-class GetRecipeSuggestions(Resource):
-    """
-    This endpoint serves to return a dictionary of
-    recipe suggestions from the database.
-    """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def get(self):
-        return {'Data': {"Cuisine": "Chinese",
-                         "Food": "Roasted Pork",
-                         "Drink": "Ginger Lime Ice Green Tea"},
-                'Type': {'Data': 12},
-                'Title': {'Suggestion': 'Chinese Food'}
-                }
-
-
-@recipes.route('/getAllRecipes')
-class GetAll(Resource):
-    """
-    This endpoint servers to return all recipes in the
-    database and return them as a list of JSONs.
-    """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def get(self):
-        """
-        Returns All Recipes From the DB
-        """
-        # return recdb.get_all()
-        return recmongo.get_recipes_dict()
-
-
-@recipes.route('/searchIncExc/<search_query>')
-class SearchIncExc(Resource):
-    """
-    This endpoint will allow you to search for something while
-    excluding specific ingredients,
-    or including specific ingredients,
-    or both, depending on what you want to do
-    note that you can search to include specific ingredients
-    and exclude ones as well.
-    Format for search will be as follows:
-    'search term;:;inclusion1,inclusion2,
-    inclusion3;:;exclusion1,exclusion2,exclusion3'
-    search with only inclusion:
-    'search term;:;inclusion1,inclusion2,inclusion3;:;'
-    search with only exclusion:
-    'search term;:;;:;exclusion1,exclusion2,exclusion3'
-    """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def get(self, search_query):
-        """
-        Main Search Endpoint for Finding Recipes.
-        This allows you to search with Ingredient
-        Inclusions and Exclusions (though not required)
-        Format for search will be as follows:
-        'search term(s);:;inclusion1,inclusion2,
-        inclusion3;:;exclusion1,exclusion2,exclusion3;:;'
-        search with only inclusion:
-        'search term(s);:;inclusion1,inclusion2,inclusion3'
-        search with only exclusion:
-        'search term(s);:;;:;exclusion1,exclusion2,
-        exclusion3'
-        search with only search term:
-        'search term(s)'
-        """
-        # print(search_query)
-        search_split_dict = split_search_query_inc_exc(search_query)
-        search_term = search_split_dict["search_term"]
-        inclusions_list = search_split_dict["inclusions"]
-        exclusions_list = search_split_dict["exclusions"]
-        results = recmongo.search_recipe_ingr(search_term, inclusions_list,
-                                              exclusions_list)
-        # for x in results:
-        #     print(f'{type(x)=}')
-        return results
 
 
 @recipes.route('/searchAllRec/<search_query>')
@@ -678,159 +788,51 @@ class SearchFrontEnd(Resource):
         return results
 
 
-@recipes.route('/loadDB')
-class LoadDB(Resource):
+@recipes.route('/searchIncExc/<search_query>')
+class SearchIncExc(Resource):
     """
-    DEVELOPER ENDPOINT
-    This endpoint searches allrecipes.com for each of
-    the search terms that are in the search_terms.txt
-    file that is in /server . The endpoint takes each
-    term and exhaustively searches allrecipes.com
-    for each of them individually and loads all recipes
-    into the DB
-    """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def get(self):
-        """
-        DEVELOPER ENDPOINT
-        This endpoint searches allrecipes.com
-        for each search term that is in search_terms.txt
-        that is located in /server . The endpoint
-        takes each term and exhaustively searches
-        allrecipes.com for each of them individually and
-        loads all recipes into the DB
-        """
-        print("LoadDB:		INSIDE LoadDB")
-        print("LoadDB:		Loading Search Terms...")
-        search_terms = load_search_terms(SEARCH_TERMS_FILE_NAME)
-        print("LoadDB:		Search Terms Loaded!")
-        for x in search_terms:
-            print("LoadDB:		_______________")
-            print("LoadDB:		Search Term: " + x)
-            print("LoadDB:		Getting List of Recipe URL's...")
-            url_list = search_all_rec_from_query(x)
-            print("LoadDB:		URL's Gathered!")
-            for y in url_list:
-                html_doc = requests.get(y).content
-                soup = BeautifulSoup(html_doc, 'html.parser')
-                scrape_return = scrape_website_soup(soup, y)
-                rec_to_ret_json = json.loads(json_util.dumps(scrape_return))
-                rec_name = rec_to_ret_json["recipe_name"]
-                print("LoadDB:		Recipe Name: " + rec_name)
-                if (not (recmongo.recipe_exists_from_url(y))):
-                    print("LoadDB:		Recipe not in DB, adding it...")
-                    recmongo.add_recipe(rec_name, rec_to_ret_json)
-                else:
-                    print("LoadDB:		" + DB_MESSAGE_NOT)
-        print("LoadDB:		LoadDB Completed Loading DB!!!")
-        return True
-
-
-@recipes.route('/addASavedRecipe/<recipe_name>')
-class AddASavedRecipe(Resource):
-    """
-    Adds a recipe that the user wants to
-    save to their own personal db
+    This endpoint will allow you to search for something while
+    excluding specific ingredients,
+    or including specific ingredients,
+    or both, depending on what you want to do
+    note that you can search to include specific ingredients
+    and exclude ones as well.
+    Format for search will be as follows:
+    'search term;:;inclusion1,inclusion2,
+    inclusion3;:;exclusion1,exclusion2,exclusion3'
+    search with only inclusion:
+    'search term;:;inclusion1,inclusion2,inclusion3;:;'
+    search with only exclusion:
+    'search term;:;;:;exclusion1,exclusion2,exclusion3'
     """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def post(self, recipe_name):
+    def get(self, search_query):
         """
-        Adds a recipe to the DB based on
-        Recipe Name
+        Main Search Endpoint for Finding Recipes.
+        This allows you to search with Ingredient
+        Inclusions and Exclusions (though not required)
+        Format for search will be as follows:
+        'search term(s);:;inclusion1,inclusion2,
+        inclusion3;:;exclusion1,exclusion2,exclusion3;:;'
+        search with only inclusion:
+        'search term(s);:;inclusion1,inclusion2,inclusion3'
+        search with only exclusion:
+        'search term(s);:;;:;exclusion1,exclusion2,
+        exclusion3'
+        search with only search term:
+        'search term(s)'
         """
-        return recmongo.add_recipe(recipe_name)
-
-
-@recipes.route('/deleteSavedRecipe/<recipe_name>')
-class DeleteSavedRecipe(Resource):
-    """
-    Deletes a saved recipe from the db based on name
-    that the user does not want anymore
-    """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def delete(self, recipe_name):
-        """
-        Deletes a recipe from the DB based on
-        Recipe Name
-        """
-        return recmongo.delete_recipe_by_name(recipe_name)
-
-
-@recipes.route('/getRecipe/<recipe_name>')
-class GetRecipe(Resource):
-    """
-    Gets a recipe from the db based on name
-    """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def get(self, recipe_name):
-        """
-        Gets a recipe from the db based on name
-        """
-        rec_name = (unquote(recipe_name)).strip()
-        return recmongo.get_recipe_details(rec_name)
-
-
-@recipes.route('/getRecipeFromURL/<path:website>')
-class GetRecipeFromURL(Resource):
-    """
-    Gets a recipe from the db based URL
-    """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def get(self, website):
-        """
-        Gets a recipe form the DB based on URL
-        """
-        # rec_name = (unquote(website)).strip()
-        # print('GetRecipeFromURL: ' + f'{rec_name=}')
-        ret = recmongo.get_recipe_from_rec_url(website)
-        # print('GetRecipeFromURL: ' + f'{ret=}')
-        return ret
-
-
-@recipes.route('/filterByCalories')
-class FilterByCalories(Resource):
-    """
-    This endpoint will allow you to filter by calories for all
-    the recipes.
-    """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def get(self):
-        return {'Data': {"Cuisine": "Chinese",
-                         "Food": "Roasted Pork",
-                         "Drink": "Ginger Lime Ice Green Tea",
-                         "Calories": "1003"},
-                'Type': {'Data': 12},
-                'Title': {'Suggestion': 'Chinese Food'}
-                }
-
-
-@recipes.route(MAIN_MENU)
-class MainMenu(Resource):
-    """
-    This Will Deliver Our Main Menu.
-    """
-    def get(self):
-        """
-        Gets the main menu.
-        """
-        return {'Title': MAIN_MENU_NM,
-                'Default': 1,
-                'Choices': {
-                    '1': {'url': f'/{GET_ALL_RECIPES}', 'method': 'get',
-                          'text': 'Get All Recipes'},
-                    '2': {'url': f'/{GET_RECIPE_SUGGESTIONS}', 'method': 'get',
-                          'text': 'Get Recipe Suggestions'},
-                    '3': {'url': f'/{FORMATTEXTGAME}', 'method': 'get',
-                          'text': 'Get the recipe format'},
-                    '4': {'url': f'/{SETTINGS}', 'method': 'get',
-                          'text': 'Get search and UI settings'},
-                }}
+        # print(search_query)
+        search_split_dict = split_search_query_inc_exc(search_query)
+        search_term = search_split_dict["search_term"]
+        inclusions_list = search_split_dict["inclusions"]
+        exclusions_list = search_split_dict["exclusions"]
+        results = recmongo.search_recipe_ingr(search_term, inclusions_list,
+                                              exclusions_list)
+        # for x in results:
+        #     print(f'{type(x)=}')
+        return results
 
 
 @recipes.route(SEARCH_HATEOAS)
@@ -858,54 +860,53 @@ class SearchHateoas(Resource):
                 }}
 
 
-@recipes.route('/filterByDietType')
-class FilterByDietType(Resource):
+# VERY VERY rudementary system put in place to allow us to test
+# login before a working UI, this works with Swagger
+@users.route('/login/<path:username>')  # /<path:password>')
+class Login(Resource):
     """
-    This endpoint will allow you to filter by specific diet types
-    that people might fall under.
-    """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def get(self):
-        return {'Type': {'Vegetarian', 'Vegan', 'Pescatarian'}}
-
-
-@recipes.route('/dbtest')
-class DbTest(Resource):
-    """
-    Endpoint to test the data getting from the database
-    in the /db/db.py file
+    This is used as the login endpoint.
     """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def get(self):
+    def get(self, username):
         """
-        Endpoint that Searches the DB for Armenian Pizza (Lahmahjoon)
-        and Returns Recipe Details
+        The get() method
+        Until we have a better system, the password will stay
+        commented I guess :(
         """
-        return recmongo.get_recipe_details("Armenian Pizzas (Lahmahjoon)")
+        email_pattern = re.compile(
+            r"[a-zA-Z0-9]+\.?[a-zA-Z0-9]+@[a-zA-Z]+\.(com|co|org|edu)"
+        )
+        if email_pattern.match(username):
+            return {"username": username}  # , "password": password}
+        return {"error": "username must be an email address"}
 
 
-@recipes.route('/recipe_cuisines_list')
-class RecipeCuisinesList(Resource):
+# This allows testing of the password storing and loging before
+# having a workable UI
+@users.route('/password/<path:password>')  # /<path:password>')
+# @app.route('/password', methods=(['GET','POST']))
+class Password(Resource):
     """
-    This will get a list of recipe cuisines.
-    """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def get(self):
-        return {RECIPES_CUISINES_LIST_NM: recmongo.get_recipes()}
-
-
-@recipes.route('/recipe_suggestions_list')
-class RecipeSuggestionsList(Resource):
-    """
-    This will get a list of recipe suggestions.
+    This is used as the login endpoint.
     """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def get(self):
-        return {RECIPES_SUGGESTIONS_LIST_NM: recmongo.get_recipes()}
+    def get(self, password):
+        """
+        This takes the password and encrypts it and stores it
+        """
+        if not (65 > len(password) > 7):
+            raise pswdError(len(password))
+
+        # future improvement to display password strength here
+
+        encoded = password.encode('utf-8')
+        salt = bcrypt.gensalt()
+        hashed = bcrypt.hashpw(encoded, salt)
+
+        return {"hashed": hashed.decode("utf-8")}
 
 
 @users.route('/register_user')
