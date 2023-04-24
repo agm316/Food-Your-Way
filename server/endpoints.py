@@ -99,9 +99,9 @@ def text_strip(text):
     """
     This function strips whitespace off ends of text
     """
-    if (isinstance(text, type(None))):
+    if isinstance(text, type(None)):
         return ''
-    elif (type(text) == str):
+    elif type(text) == str:
         return text.strip()
 
 
@@ -113,6 +113,13 @@ def hash_pwd(password):
     salt = bcrypt.gensalt()
     hashed = bcrypt.hashpw(encoded, salt)
     return hashed.decode("utf-8")
+
+
+# adding in a basic hashing algorithm for a user's password
+# will add to this when working with the login system
+def md5(user_password):
+    result = hashlib.md5(user_password.encode())
+    return result.hexdigest()
 
 
 def load_search_terms(file_name):
@@ -811,6 +818,31 @@ class SearchFrontEnd(Resource):
         return results
 
 
+@recipes.route(SEARCH_HATEOAS)
+class SearchHateoas(Resource):
+    """
+    This Will return a menu list
+    that the frontend can call to search
+    for different recipes
+    """
+    def get(self):
+        """
+        Gets the search main menu.
+        """
+        return {'Title': SEARCH_HATEOAS_TITLE,
+                'Default': 1,
+                'Choices': {
+                    '1': {'url': '/getAllRecipes', 'method': 'get',
+                          'text': 'Get All Recipes'},
+                    '2': {'url': f'{VEG_REC}', 'method': 'get',
+                          'text': 'Get Vegetarian Recipes'},
+                    '3': {'url': '/searchIncExc/;:;;:;soy', 'method': 'get',
+                          'text': 'Get Recipes Without Soy'},
+                    '4': {'url': '/searchIncExc/;:;;:;milk', 'method': 'get',
+                          'text': 'Get Recipes Without Milk'},
+                }}
+
+
 @recipes.route('/searchIncExc/<search_query>')
 class SearchIncExc(Resource):
     """
@@ -858,29 +890,22 @@ class SearchIncExc(Resource):
         return results
 
 
-@recipes.route(SEARCH_HATEOAS)
-class SearchHateoas(Resource):
+@users.route('/delete_user/<username>')
+class DeleteUser(Resource):
     """
-    This Will return a menu list
-    that the frontend can call to search
-    for different recipes
+    This endpoint will be used to delete a user account
+    from the DB.
     """
-    def get(self):
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self, username):
         """
-        Gets the search main menu.
+        Delete a User
         """
-        return {'Title': SEARCH_HATEOAS_TITLE,
-                'Default': 1,
-                'Choices': {
-                    '1': {'url': '/getAllRecipes', 'method': 'get',
-                          'text': 'Get All Recipes'},
-                    '2': {'url': f'{VEG_REC}', 'method': 'get',
-                          'text': 'Get Vegetarian Recipes'},
-                    '3': {'url': '/searchIncExc/;:;;:;soy', 'method': 'get',
-                          'text': 'Get Recipes Without Soy'},
-                    '4': {'url': '/searchIncExc/;:;;:;milk', 'method': 'get',
-                          'text': 'Get Recipes Without Milk'},
-                }}
+        if usermongo.user_exists(username.strip()):
+            return usermongo.delete_user(username.strip())
+        else:
+            return 0
 
 
 # VERY VERY rudementary system put in place to allow us to test
@@ -977,21 +1002,21 @@ class RegisterUser(Resource):
         # if not, add all of these fields into the MongoDB database
         # collection named "users" return a message stating that the
         # user was successfully registered!
-        if (username == ''):
+        if username == '':
             user_data["message"] = "Username is Blank!!!"
             user_data["success"] = 0
             return user_data
-        if (usermongo.user_exists(username)):
+        if usermongo.user_exists(username):
             # raise ValueError(f'Username: "{username=}" already exists')
             user_data["message"] = "Username Already Exists in DB"
             user_data["success"] = 0
             return user_data
         else:
-            if (password == confirm_password):
+            if password == confirm_password:
                 hashed = hash_pwd(password)
                 user_data["hashed_password"] = hashed
                 usermongo.add_user(username, user_data)
-                if (usermongo.user_exists(username)):
+                if usermongo.user_exists(username):
                     user_data["message"] = "User Added Successfully"
                     user_data["success"] = 1
                     return user_data
@@ -1003,28 +1028,3 @@ class RegisterUser(Resource):
                 user_data["message"] = "Passwords Don't Match"
                 user_data["success"] = 0
                 return user_data
-
-
-@users.route('/delete_user/<username>')
-class DeleteUser(Resource):
-    """
-    This endpoint will be used to delete a user account
-    from the DB.
-    """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def get(self, username):
-        """
-        Delete a User
-        """
-        if (usermongo.user_exists(username.strip())):
-            return usermongo.delete_user(username.strip())
-        else:
-            return 0
-
-
-# adding in a basic hashing algorithm for a user's password
-# will add to this when working with the login system
-def md5(user_password):
-    result = hashlib.md5(user_password.encode())
-    return result.hexdigest()

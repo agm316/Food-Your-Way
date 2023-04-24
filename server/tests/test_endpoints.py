@@ -294,7 +294,7 @@ def test_password():
 
 def test_register_user():
     username = TEST_USER_REGISTRATION_DATA["username"]
-    if (usermongo.user_exists(username)):
+    if usermongo.user_exists(username):
         print(f'test_endpoints.py:    test_register_user:{username=} exists')
         usermongo.delete_user(username)
         print(f'test_endpoints.py:    test_register_user:{username=} deleted')
