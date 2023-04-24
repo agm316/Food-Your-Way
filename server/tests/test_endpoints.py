@@ -95,7 +95,7 @@ def test_scrape_website():
           verify that the code in endpoints.py is using the
           correct id tags.
     """
-    resp = TEST_CLIENT.get(f'/scrape/{TEST_WEBSITE}')
+    resp = TEST_CLIENT.get(f'/recipes/scrape/{TEST_WEBSITE}')
     resp2 = resp.get_json()
     resp_json = json.loads(json_util.dumps(resp2))
     # print(f'{type(resp)=}')
@@ -141,7 +141,7 @@ def test_scrape_website_already_in_db():
     scraping a website we already have
     in db
     """
-    resp = TEST_CLIENT.get(f'/scrape/{TEST_WEBSITE}')
+    resp = TEST_CLIENT.get(f'/recipes/scrape/{TEST_WEBSITE}')
     resp2 = resp.get_json()
     resp_json = json.loads(json_util.dumps(resp2))
     assert isinstance(resp_json["recipe_name"], str)
@@ -226,7 +226,7 @@ def test_search_inc_exc():
     """
     See if searchIncExc works
     """
-    resp_json = TEST_CLIENT.get(f'/searchIncExc/{SEARCH_INC_EXC_TEST_QUERY}').get_json()
+    resp_json = TEST_CLIENT.get(f'/recipes/searchIncExc/{SEARCH_INC_EXC_TEST_QUERY}').get_json()
     # print(f'{type(resp_json)=}')
     # for x in resp_json:
     #     print(f'{type(x)=}')
@@ -240,7 +240,7 @@ def test_search_get_rec_details(mock_get_recipe_details):
     See if we can search for
     Armenian Pizza
     """
-    resp = TEST_CLIENT.get(f'searchIncExc/{TEST_WEBSITE_TITLE};:;;:;')
+    resp = TEST_CLIENT.get(f'/recipes/searchIncExc/{TEST_WEBSITE_TITLE};:;;:;')
     assert resp.status_code == HTTPStatus.OK
     resp_json = resp.get_json()
     assert resp_json['recipe_name'] == TEST_WEBSITE_TITLE
@@ -251,7 +251,7 @@ def test_search_no_result(mock_get_recipe_details_none):
     """
     empty result for crazy search
     """
-    resp = TEST_CLIENT.get(f'searchIncExc/{CRAZY_SEARCH}')
+    resp = TEST_CLIENT.get(f'/recipes/searchIncExc/{CRAZY_SEARCH}')
     assert resp.status_code == HTTPStatus.OK
     resp_json = resp.get_json()
     assert resp_json is None
@@ -262,7 +262,7 @@ def test_search_query(input_search_query):
     See if Search Query works
     """
     # assert True
-    resp_json = TEST_CLIENT.get(f'/searchIncExc/{input_search_query}').get_json()
+    resp_json = TEST_CLIENT.get(f'/recipes/searchIncExc/{input_search_query}').get_json()
     # print(f'{type(resp_json)=}')
     assert isinstance(resp_json, list)
 
@@ -277,7 +277,7 @@ def test_get_recipes_list():
 
 # @pytest.mark.skip("Unable to test this fully without UI")
 def test_user_name():
-    user = TEST_CLIENT.get(f"/login/{TEST_USER}").get_json()
+    user = TEST_CLIENT.get(f"/users/login/{TEST_USER}").get_json()
     assert isinstance(user, dict)
     assert isinstance(user["username"], str)
     assert user["username"] == TEST_USER
@@ -285,7 +285,7 @@ def test_user_name():
 
 
 def test_user_name_fail():
-    user = TEST_CLIENT.get(f"/login/{TEST_USER_FAIL}").get_json()
+    user = TEST_CLIENT.get(f"/users/login/{TEST_USER_FAIL}").get_json()
     assert isinstance(user, dict)
     assert isinstance(user["error"], str)
     assert user["error"] == "username must be an email address"
@@ -293,14 +293,14 @@ def test_user_name_fail():
 
 
 def test_password():
-    user = TEST_CLIENT.get(f"/password/{TEST_PSW}").get_json()
+    user = TEST_CLIENT.get(f"/users/password/{TEST_PSW}").get_json()
     assert isinstance(user, dict)
     assert isinstance(user["hashed"], str)
     assert len(user["hashed"]) > len(TEST_PSW)
 
 
 def test_password_fail():
-    response1 = TEST_CLIENT.get(f"/password/{TEST_FAIL_PSW_1}").get_json()
+    response1 = TEST_CLIENT.get(f"/users/password/{TEST_FAIL_PSW_1}").get_json()
     assert(response1["message"] == 'Internal Server Error')
-    response2 = TEST_CLIENT.get(f"/password/{TEST_FAIL_PSW_2}").get_json()
+    response2 = TEST_CLIENT.get(f"/users/password/{TEST_FAIL_PSW_2}").get_json()
     assert(response2["message"] == 'Internal Server Error')
