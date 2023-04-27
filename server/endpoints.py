@@ -93,6 +93,9 @@ NEW_RECIPES_URL = NEW_RECIPES_URL + 'recipes/22908/everyday-cooking'
 NEW_RECIPES_URL = NEW_RECIPES_URL + '/special-collections/new/'
 SEARCH_TERMS_FILE_NAME = '/search_terms.txt'
 DB_MESSAGE_NOT = 'Recipe already in DB! NOT ADDING IT AGAIN!'
+HSHD_PWD_KEY = "hashed_password"
+PASS_SUCCESS_MESSAGE = "Password Successfully Updated!!!"
+INCORRECT_OLD_PWD = "Incorrect Old Password; Can't Update"
 
 
 def text_strip(text):
@@ -1022,6 +1025,81 @@ class RegisterUser(Resource):
                     return user_data
                 else:
                     user_data["message"] = "Error Adding User to Database"
+                    user_data["success"] = 0
+                    return user_data
+            else:
+                user_data["message"] = "Passwords Don't Match"
+                user_data["success"] = 0
+                return user_data
+
+
+@users.route('/update_password')
+class UpdatePassword(Resource):
+    """
+    This endpoint will be used to update a user's password.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def post(self):
+        """
+        update's a user's password
+        """
+        username = request.form.get('username')
+        old_password = request.form.get('old_password')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        username = text_strip(username)
+        old_password = text_strip(old_password)
+        password = text_strip(password)
+        confirm_password = text_strip(confirm_password)
+        user_data = {}
+        user_data_results = {}
+        user_data["username"] = username
+        res_mes = "Something Went Wrong; Password Not Updated Successfully"
+        if username == '':
+            user_data["message"] = "Username is Blank!!!"
+            user_data["success"] = 0
+            return user_data
+        if (not usermongo.user_exists(username)):
+            # raise ValueError(f'Username: "{username=}" already exists')
+            user_data["message"] = "Username Does NOT EXIST in DB"
+            user_data["success"] = 0
+            return user_data
+        else:
+            if password == confirm_password:
+                user_data_results = usermongo.get_user_details(username)
+                if (old_password == ''):
+                    user_data["message"] = "Old Password is Blank!"
+                    user_data["success"] = 0
+                    return user_data
+                hashed = hash_pwd(password)
+                old_hashed = hash_pwd(old_password)
+                print(f'{user_data_results["hashed_password"]=}')
+                print(f'{old_hashed=}')
+                # if (user_data_results["hashed_password"] == old_hashed):
+                db_pw_hash = user_data_results["hashed_password"]
+                db_pw_hash = db_pw_hash.encode('utf-8')
+                old_pwd_encoded = old_password.encode('utf-8')
+                if (bcrypt.checkpw(old_pwd_encoded, db_pw_hash)):
+                    user_data["hashed_password"] = hashed
+                    result = usermongo.update_user_password(username, hashed)
+                    user_data_results = usermongo.get_user_details(username)
+                    pass_upd_succ = result["success"]
+                    # hash_match = (user_data_results[HSHD_PWD_KEY] == hashed)
+                    db_pw_hash_2 = user_data_results[HSHD_PWD_KEY]
+                    db_pw_hash_2 = db_pw_hash_2.encode('utf-8')
+                    pwd_encoded = password.encode('utf-8')
+                    hash_match = bcrypt.checkpw(pwd_encoded, db_pw_hash_2)
+                    if (hash_match and pass_upd_succ):
+                        user_data["message"] = PASS_SUCCESS_MESSAGE
+                        user_data["success"] = 1
+                        return user_data
+                    else:
+                        user_data["message"] = res_mes
+                        user_data["success"] = 0
+                        return user_data
+                else:
+                    user_data["message"] = INCORRECT_OLD_PWD
                     user_data["success"] = 0
                     return user_data
             else:

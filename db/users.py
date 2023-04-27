@@ -69,7 +69,43 @@ def delete_user(user):
     Deletes a user
     """
     if user_exists(user):
+        dbc.connect_db()
         dbc.del_one(USER_COLLECTION, {USER_KEY: unquote(user)})
         return 1
     else:
         return 0
+
+
+def update_user_password(username, new_password):
+    """
+    updates the password for a user
+    old_password, new_password are hashes
+    """
+    new_pass = ''
+    user_name = ''
+    ret = {}
+    dbc.connect_db()
+    if (isinstance(new_password, str)):
+        new_pass = new_password.strip()
+    if (isinstance(username, str)):
+        user_name = username.strip()
+    ret["username"] = user_name
+    if (user_name == ''):
+        ret["success"] = 0
+        ret["message"] = "Username Is Blank"
+        return ret
+    if (not (user_exists(user_name.strip()))):
+        ret["success"] = 0
+        ret["message"] = "User Does Not Exist"
+        return ret
+    if (new_pass == ''):
+        ret["success"] = 0
+        ret["message"] = "New Password is Blank"
+        return ret
+    else:
+        fltr = {'username': user_name}
+        newvals = {"$set": {f'{PASSWORD}': new_pass}}
+        dbc.update_one(USER_COLLECTION, fltr, newvals, USER_DB)
+        ret["success"] = 1
+        ret["message"] = "Password Successfully Updated"
+        return ret

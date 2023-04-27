@@ -102,3 +102,10 @@ def fetch_all_as_dict(key, collection, db=RECIPE_DB):
         del doc[MONGO_ID]
         ret[doc[key]] = doc
     return ret
+
+
+def update_one(collection, filt, newvalues, db=RECIPE_DB):
+    """
+    Update a single doc in collection
+    """
+    client[db][collection].update_one(filt, newvalues)

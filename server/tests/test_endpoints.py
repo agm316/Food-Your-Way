@@ -45,6 +45,10 @@ TEST_USER_REGISTRATION_DATA = {"first_name": "TEST FIRST",
                                "saved_recipes": '',
                                "password": 'abcdefghij',
                                "confirm_password": 'abcdefghij'}
+TEST_USER_UPDATE_PWD = {"username": "user@name.com",
+                        "old_password": 'abcdefghij',
+                        "password": 'newpassword',
+                        "confirm_password": 'newpassword'}
 
 # {recipe_name: 'Armenian Pizzas (Lahmahjoon)'}
 
@@ -302,6 +306,20 @@ def test_register_user():
     resp1 = resp.get_json()
     print(f'test_endpoints.py:    resp1: {resp1=}')
     assert(resp1["success"] == 1)
+
+
+def test_update_password():
+    print(f'test_endpoints.py    test_update_password: Trying to update Password')
+    username = TEST_USER_REGISTRATION_DATA["username"]
+    resp = TEST_CLIENT.post('/users/update_password', data=TEST_USER_UPDATE_PWD)
+    resp1 = resp.get_json()
+    message = resp1["message"]
+    success = resp1["success"]
+    print(f'test_endpoints.py    test_update_password: RESULTS:')
+    print(f'{message=}')
+    print(f'{success=}')
+    assert isinstance(resp1, dict)
+    assert (success == 1)
 
 
 def test_delete_user():
