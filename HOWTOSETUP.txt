@@ -23,16 +23,3 @@ DEFAULT MONGODB CURRENTLY IS IN THE CLOUD (MONGO ATLAS)
 
 cd db
 docker-compose up -d
-
-
-HOW TO RUN FRONT END INSTRUCTIONS:
-cd flask_react
-npm install
-npm install react-native-web
-
-(Install react-navigation and peer dependencies)
-npm install @react-navigation/native @react-navigation/native-stack
-npm install react-native-screens react-native-safe-area-context
-
-npm start
-
