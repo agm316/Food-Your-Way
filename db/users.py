@@ -109,3 +109,58 @@ def update_user_password(username, new_password):
         ret["success"] = 1
         ret["message"] = "Password Successfully Updated"
         return ret
+
+
+def add_saved_recipe(username, recipe_id):
+    """
+    adds a recipe to the user's record
+    in mongodb in their saved recipes
+    """
+    username = ''
+    recipe_id = ''
+    ret = {}
+    dbc.connect_db()
+    if (isinstance(username, str)):
+        username = username.strip()
+    if (isinstance(recipe_id, str)):
+        recipe_id = recipe_id.strip()
+    ret["username"] = username
+    ret["recipe_id"] = recipe_id
+    if (username == ''):
+        ret["success"] = 0
+        ret["message"] = "Username Is Blank"
+        return ret
+    if (not (user_exists(username))):
+        ret["success"] = 0
+        ret["message"] = "User Does Not Exist"
+        return ret
+    if (recipe_id == ''):
+        ret["success"] = 0
+        ret["message"] = "Recipe ID is Blank"
+        return ret
+    else:
+        uservals = get_user_details(username)
+        old_saved_recipes = (uservals[SAVED_RECIPES]).strip()
+        new_saved_recipes = ''
+        if (old_saved_recipes == ''):
+            new_saved_recipes = recipe_id + ';'
+        else:
+            old_recs_lst = old_saved_recipes.split(';')
+            already_saved = False
+            for x in old_recs_lst:
+                if x == recipe_id:
+                    already_saved = True
+            if already_saved:
+                ret["message"] = "Recipe Already Saved in Your Profile"
+                # marking success in this case as 1 since the user
+                # wanted the recipe in their saved and it is actually there
+                ret["success"] = 1
+                return ret
+            else:
+                new_saved_recipes = old_saved_recipes + new_saved_recipes + ';'
+        fltr = {'username': username}
+        newvals = {"$set": {f'{SAVED_RECIPES}': new_saved_recipes}}
+        dbc.update_one(USER_COLLECTION, fltr, newvals, USER_DB)
+        ret["success"] = 1
+        ret["message"] = "Password Successfully Updated"
+        return ret
