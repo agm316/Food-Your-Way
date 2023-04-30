@@ -50,8 +50,6 @@ TEST_USER_UPDATE_PWD = {"username": "user@name.com",
                         "password": 'newpassword',
                         "confirm_password": 'newpassword'}
 
-# {recipe_name: 'Armenian Pizzas (Lahmahjoon)'}
-
 
 # replaces TEST_SEARCH_QUERY
 @pytest.fixture
@@ -76,14 +74,13 @@ def test_hello(input_test_client):
     assert isinstance(resp_json[ep.MESSAGE], str)
 
 
-# commenting out for now, will revisit to fix
-# def test_get_recipes_list():
-#     """
-#     This test will test the recipes namespace endpoint.
-#     """
-#     resp_json = TEST_CLIENT.get(ep.RECIPES_LIST_W_NS).get_json()
-#     print(f'{resp_json=}')
-#     assert isinstance(resp_json[ep.RECIPES_LIST_NM], list)
+def test_get_recipes_list():
+    """
+    This test will test the recipes namespace endpoint.
+    """
+    resp_json = TEST_CLIENT.get(ep.RECIPES_LIST_W_NS).get_json()
+    print(f'{resp_json=}')
+    assert isinstance(resp_json[ep.RECIPES_LIST_NM], list)
 
 
 def test_delete_recipe_by_name():

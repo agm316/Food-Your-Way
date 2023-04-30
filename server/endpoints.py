@@ -664,6 +664,17 @@ class RecipeSuggestionsList(Resource):
         return {RECIPES_SUGGESTIONS_LIST_NM: recmongo.get_recipes()}
 
 
+@recipes.route('/recipes_list')
+class RecipesList(Resource):
+    """
+    This will get a list of recipes.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self):
+        return {RECIPES_LIST_NM: recmongo.get_recipes()}
+
+
 @recipes.route(f'{SCRAPE_WEBSITE}/<path:website>')
 class ScrapeWebsite(Resource):
     """
