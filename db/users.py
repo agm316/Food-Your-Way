@@ -111,26 +111,26 @@ def update_user_password(username, new_password):
         return ret
 
 
-def add_saved_recipe(username, recipe_id):
+def add_saved_recipe(username, recipeid):
     """
     adds a recipe to the user's record
     in mongodb in their saved recipes
     """
-    username = ''
+    user_name = ''
     recipe_id = ''
     ret = {}
     dbc.connect_db()
     if (isinstance(username, str)):
-        username = username.strip()
-    if (isinstance(recipe_id, str)):
-        recipe_id = recipe_id.strip()
-    ret["username"] = username
+        user_name = username.strip()
+    if (isinstance(recipeid, str)):
+        recipe_id = recipeid.strip()
+    ret["username"] = user_name
     ret["recipe_id"] = recipe_id
-    if (username == ''):
+    if (user_name == ''):
         ret["success"] = 0
         ret["message"] = "Username Is Blank"
         return ret
-    if (not (user_exists(username))):
+    if (not (user_exists(user_name))):
         ret["success"] = 0
         ret["message"] = "User Does Not Exist"
         return ret
@@ -139,7 +139,7 @@ def add_saved_recipe(username, recipe_id):
         ret["message"] = "Recipe ID is Blank"
         return ret
     else:
-        uservals = get_user_details(username)
+        uservals = get_user_details(user_name)
         old_saved_recipes = (uservals[SAVED_RECIPES]).strip()
         new_saved_recipes = ''
         if (old_saved_recipes == ''):
@@ -158,9 +158,71 @@ def add_saved_recipe(username, recipe_id):
                 return ret
             else:
                 new_saved_recipes = old_saved_recipes + new_saved_recipes + ';'
-        fltr = {'username': username}
+        fltr = {'username': user_name}
         newvals = {"$set": {f'{SAVED_RECIPES}': new_saved_recipes}}
         dbc.update_one(USER_COLLECTION, fltr, newvals, USER_DB)
         ret["success"] = 1
         ret["message"] = "Password Successfully Updated"
         return ret
+
+
+def remove_saved_recipe(username, recipeid):
+    """
+    Removes a saved recipe from list of saved recipes
+    for a given username
+    """
+    user_name = ''
+    recipe_id = ''
+    ret = {}
+    dbc.connect_db()
+    if (isinstance(username, str)):
+        user_name = username.strip()
+    if (isinstance(recipeid, str)):
+        recipe_id = recipeid.strip()
+    ret["username"] = user_name
+    ret["recipe_id"] = recipe_id
+    if (user_name == ''):
+        ret["success"] = 0
+        ret["message"] = "Username Is Blank"
+        return ret
+    if (not (user_exists(user_name))):
+        ret["success"] = 0
+        ret["message"] = "User Does Not Exist"
+        return ret
+    if (recipe_id == ''):
+        ret["success"] = 0
+        ret["message"] = "Recipe ID is Blank"
+        return ret
+    else:
+        uservals = get_user_details(user_name)
+        old_saved_recipes = (uservals[SAVED_RECIPES]).strip()
+        if (old_saved_recipes == ''):
+            ret["message"] = "No recipes saved for this username."
+        else:
+            old_recs_lst = old_saved_recipes.split(';')
+            rec_found = False
+            new_rec_lst = []
+            for x in old_recs_lst:
+                if x == recipe_id:
+                    rec_found = True
+                else:
+                    new_rec_lst.append(x)
+            if rec_found:
+                verify = False
+                for y in new_rec_lst:
+                    if y == recipe_id:
+                        verify = True
+                if verify:
+                    ret["message"] = "Error removing from list (1)"
+                    ret["success"] = 0
+                    return ret
+                else:
+                    new_lst_str = ''
+                    for z in new_rec_lst:
+                        new_lst_str = new_lst_str + z + ';'
+                    fltr = {'username': user_name}
+                    newvals = {"$set": {f'{SAVED_RECIPES}': new_lst_str}}
+                    dbc.update_one(USER_COLLECTION, fltr, newvals, USER_DB)
+                    ret["success"] = 1
+                    ret["message"] = "Saved Recipe Successfully Removed"
+                    return ret
