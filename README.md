@@ -22,9 +22,7 @@ Future goals:
 
 [Future TO DOs](FurtherGoals.md)
 
-TO DO:
-- connect react native to endpoints and database
-- update HOWTOSETUP.txt to account for new MongoDB
+TO DO: We have finished most of the foundational features in Food Your Way. For future commits we might polish the search function with sleeker UI or add more search options.
 
 Authors:
 - Roman Negri
