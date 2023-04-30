@@ -197,7 +197,11 @@ def remove_saved_recipe(username, recipeid):
         uservals = get_user_details(user_name)
         old_saved_recipes = (uservals[SAVED_RECIPES]).strip()
         if (old_saved_recipes == ''):
-            ret["message"] = "No recipes saved for this username."
+            ret["message"] = "No recipes saved for this username. No Changes"
+            # since that recipe was asked to be removed,
+            # since it is not there, we say we were successful
+            ret["success"] = 1
+            return ret
         else:
             old_recs_lst = old_saved_recipes.split(';')
             rec_found = False
@@ -226,3 +230,38 @@ def remove_saved_recipe(username, recipeid):
                     ret["success"] = 1
                     ret["message"] = "Saved Recipe Successfully Removed"
                     return ret
+
+
+def remove_all_saved_recipes(username):
+    """
+    Removes all saved recipes from list of saved recipes
+    for a given username
+    """
+    user_name = ''
+    ret = {}
+    dbc.connect_db()
+    if (isinstance(username, str)):
+        user_name = username.strip()
+    ret["username"] = user_name
+    if (user_name == ''):
+        ret["success"] = 0
+        ret["message"] = "Username Is Blank"
+        return ret
+    if (not (user_exists(user_name))):
+        ret["success"] = 0
+        ret["message"] = "User Does Not Exist"
+        return ret
+    else:
+        uservals = get_user_details(user_name)
+        old_saved_recipes = (uservals[SAVED_RECIPES]).strip()
+        if (old_saved_recipes == ''):
+            ret["message"] = "No recipes saved for this username. No changes"
+            ret["success"] = 1
+            return ret
+        else:
+            fltr = {'username': user_name}
+            newvals = {"$set": {f'{SAVED_RECIPES}': ''}}
+            dbc.update_one(USER_COLLECTION, fltr, newvals, USER_DB)
+            ret["success"] = 1
+            ret["message"] = "All Saved Recipes Successfully Removed"
+            return ret
