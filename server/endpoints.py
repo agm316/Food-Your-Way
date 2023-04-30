@@ -421,72 +421,6 @@ class GetSettings(Resource):
                 'Title': {'UI Settings': 'Example Setting'}}
 
 
-@recipes.route('/addSavedRecipe')
-class AddSavedRecipe(Resource):
-    """
-    Adds a recipe that the user wants to
-    save to their own personal db
-    """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def post(self):
-        """
-        Adds a recipe to the DB based on
-        Recipe ID
-        """
-        ret = {}
-        username = request.form.get('username')
-        logged_in = request.form.get('logged_in')
-        session_token = request.form.get('session_token')
-        recipe_id = request.form.get('recipe_id')
-        username = text_strip(username)
-        session_token = text_strip(session_token)
-        recipe_id = text_strip(recipe_id)
-        if (isinstance(logged_in, int)):
-            if (logged_in == 0):
-                logged_in = False
-            elif (logged_in == 1):
-                logged_in = True
-            else:
-                raise ValueError("logged_in is not an expected value")
-        elif (isinstance(logged_in, bool)):
-            pass
-        else:
-            raise ValueError("logged_in is not an expected type")
-        ret["username"] = username
-        ret["logged_in"] = logged_in
-        ret["session_token"] = session_token
-        ret["recipe_id"] = recipe_id
-        if (logged_in is False):
-            ret["message"] = "User is not logged in. Can't add recipe"
-            ret["success"] = 0
-            return ret
-        if (not (usermongo.user_exists(username))):
-            ret["message"] = "User does not Exist in the DB"
-            ret["success"] = 0
-            return ret
-        if (recipe_id == ''):
-            ret["message"] = "Recipe ID is blank!"
-            ret["success"] = 0
-        result = usermongo.add_saved_recipe(username, recipe_id)
-        if (result["success"] == 0):
-            ret["message"] = result["message"]
-            ret["success"] = result["success"]
-            return ret
-        # verify it was added
-        user_details = usermongo.get_user_details(username)
-        saved_recs = user_details[usermongo.SAVED_RECIPES]
-        saved_recs_lst = saved_recs.split(';')
-        checkval = False
-        for x in saved_recs_lst:
-            if x == recipe_id:
-                checkval = True
-        if (checkval):
-            ret["message"] = result["message"]
-            ret["success"] = result["success"]
-        return ret
-
-
 @recipes.route('/dbtest')
 class DbTest(Resource):
     """
@@ -507,7 +441,6 @@ class DbTest(Resource):
 class DeleteSavedRecipe(Resource):
     """
     Deletes a saved recipe from the db based on name
-    that the user does not want anymore
     """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
@@ -1156,3 +1089,137 @@ class UpdatePassword(Resource):
                 user_data["message"] = "Passwords Don't Match"
                 user_data["success"] = 0
                 return user_data
+
+
+@users.route('/add_saved_recipe')
+class AddSavedRecipe(Resource):
+    """
+    Adds a recipe that the user wants to
+    save to their own personal db
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def post(self):
+        """
+        Adds a recipe to the DB based on
+        Recipe ID
+        """
+        ret = {}
+        username = request.form.get('username')
+        logged_in = request.form.get('logged_in')
+        session_token = request.form.get('session_token')
+        recipe_id = request.form.get('recipe_id')
+        username = text_strip(username)
+        session_token = text_strip(session_token)
+        recipe_id = text_strip(recipe_id)
+        if (isinstance(logged_in, int)):
+            if (logged_in == 0):
+                logged_in = False
+            elif (logged_in == 1):
+                logged_in = True
+            else:
+                raise ValueError("logged_in is not an expected value")
+        elif (isinstance(logged_in, bool)):
+            pass
+        else:
+            raise ValueError("logged_in is not an expected type")
+        ret["username"] = username
+        ret["logged_in"] = logged_in
+        ret["session_token"] = session_token
+        ret["recipe_id"] = recipe_id
+        if (logged_in is False):
+            ret["message"] = "User is not logged in. Can't add recipe"
+            ret["success"] = 0
+            return ret
+        if (not (usermongo.user_exists(username))):
+            ret["message"] = "User does not Exist in the DB"
+            ret["success"] = 0
+            return ret
+        if (recipe_id == ''):
+            ret["message"] = "Recipe ID is blank!"
+            ret["success"] = 0
+        result = usermongo.add_saved_recipe(username, recipe_id)
+        if (result["success"] == 0):
+            ret["message"] = result["message"]
+            ret["success"] = result["success"]
+            return ret
+        # verify it was added
+        user_details = usermongo.get_user_details(username)
+        saved_recs = user_details[usermongo.SAVED_RECIPES]
+        saved_recs_lst = saved_recs.split(';')
+        checkval = False
+        for x in saved_recs_lst:
+            if x == recipe_id:
+                checkval = True
+        if (checkval):
+            ret["message"] = result["message"]
+            ret["success"] = result["success"]
+        return ret
+
+
+@users.route('/add_saved_recipe_by_rec_name')
+class AddSavedRecipeByRecName(Resource):
+    """
+    Adds a recipe that the user wants to
+    save to their own personal db
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def post(self):
+        """
+        Adds a recipe to the DB based on
+        Recipe Name
+        """
+        ret = {}
+        username = request.form.get('username')
+        logged_in = request.form.get('logged_in')
+        session_token = request.form.get('session_token')
+        recipe_name = request.form.get('recipe_name')
+        username = text_strip(username)
+        session_token = text_strip(session_token)
+        recipe_name = text_strip(recipe_name)
+        if (isinstance(logged_in, int)):
+            if (logged_in == 0):
+                logged_in = False
+            elif (logged_in == 1):
+                logged_in = True
+            else:
+                raise ValueError("logged_in is not an expected value")
+        elif (isinstance(logged_in, bool)):
+            pass
+        else:
+            raise ValueError("logged_in is not an expected type")
+        ret["username"] = username
+        ret["logged_in"] = logged_in
+        ret["session_token"] = session_token
+        ret["recipe_name"] = recipe_name
+        if (logged_in is False):
+            ret["message"] = "User is not logged in. Can't add recipe"
+            ret["success"] = 0
+            return ret
+        if (not (usermongo.user_exists(username))):
+            ret["message"] = "User does not Exist in the DB"
+            ret["success"] = 0
+            return ret
+        if (recipe_name == ''):
+            ret["message"] = "Recipe Name is blank!"
+            ret["success"] = 0
+        rec = recmongo.get_recipe_details(recipe_name)
+        rec_id = rec["_id"]["$oid"]
+        result = usermongo.add_saved_recipe(username, rec_id)
+        if (result["success"] == 0):
+            ret["message"] = result["message"]
+            ret["success"] = result["success"]
+            return ret
+        # verify it was added
+        user_details = usermongo.get_user_details(username)
+        saved_recs = user_details[usermongo.SAVED_RECIPES]
+        saved_recs_lst = saved_recs.split(';')
+        checkval = False
+        for x in saved_recs_lst:
+            if x == rec_id:
+                checkval = True
+        if (checkval):
+            ret["message"] = result["message"]
+            ret["success"] = result["success"]
+        return ret
