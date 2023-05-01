@@ -570,6 +570,17 @@ class GetRecipeSuggestions(Resource):
                 }
 
 
+@recipes.route('/list')
+class List(Resource):
+    """
+    This will get a list of recipes.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def get(self):
+        return {RECIPES_LIST_NM: recmongo.get_recipes()}
+
+
 @recipes.route('/loadDB')
 class LoadDB(Resource):
     """
@@ -662,17 +673,6 @@ class RecipeSuggestionsList(Resource):
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
         return {RECIPES_SUGGESTIONS_LIST_NM: recmongo.get_recipes()}
-
-
-@recipes.route('/list')
-class List(Resource):
-    """
-    This will get a list of recipes.
-    """
-    @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def get(self):
-        return {RECIPES_LIST_NM: recmongo.get_recipes()}
 
 
 @recipes.route(f'{SCRAPE_WEBSITE}/<path:website>')
