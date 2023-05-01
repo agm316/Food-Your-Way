@@ -96,6 +96,33 @@ DB_MESSAGE_NOT = 'Recipe already in DB! NOT ADDING IT AGAIN!'
 HSHD_PWD_KEY = "hashed_password"
 PASS_SUCCESS_MESSAGE = "Password Successfully Updated!!!"
 INCORRECT_OLD_PWD = "Incorrect Old Password; Can't Update"
+email_regex_file_location = '/email_regex.txt'
+
+
+def username_is_valid_email(username):
+    """
+    This function verifies that the username is a valid email address
+    """
+    ppath = os.path.dirname(__file__)
+    file_path = ppath + email_regex_file_location
+    regex_file = open(file_path, 'r')
+    lines = []
+    for line in regex_file:
+        lines.append(line.strip())
+    regex_file.close()
+    regex_line = ''
+    for x in lines:
+        if (x != ''):
+            regex_line = x
+    raw_re = fr"{regex_line}"
+    email_pattern = re.compile(raw_re)
+    # email_pattern = re.compile(
+    #        r"[a-zA-Z0-9]+\.?[a-zA-Z0-9]+@[a-zA-Z]+\.(com|co|org|edu)"
+    #    )
+    if email_pattern.match(username):
+        return True
+    else:
+        return False
 
 
 def text_strip(text):
@@ -1135,6 +1162,10 @@ class RegisterUser(Resource):
         # user was successfully registered!
         if username == '':
             user_data["message"] = "Username is Blank!!!"
+            user_data["success"] = 0
+            return user_data
+        if (not (username_is_valid_email(username))):
+            user_data["message"] = "Username is not a valid email address"
             user_data["success"] = 0
             return user_data
         if usermongo.user_exists(username):
