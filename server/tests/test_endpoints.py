@@ -277,23 +277,6 @@ def test_search_query(input_search_query):
     assert isinstance(resp_json, list)
 
 
-# @pytest.mark.skip("Unable to test this fully without UI")
-# def test_user_name():
-#     user = TEST_CLIENT.get(f"/users/login/{TEST_USER}").get_json()
-#     assert isinstance(user, dict)
-#     assert isinstance(user["username"], str)
-#     assert user["username"] == TEST_USER
-#     # assert isinstance(user["pwd"], str)
-# 
-# 
-# def test_user_name_fail():
-#     user = TEST_CLIENT.get(f"/users/login/{TEST_USER_FAIL}").get_json()
-#     assert isinstance(user, dict)
-#     assert isinstance(user["error"], str)
-#     assert user["error"] == "username must be an email address"
-#     # assert isinstance(user["pwd"], str)
-
-
 def test_password():
     user = TEST_CLIENT.get(f"/users/password/{TEST_PSW}").get_json()
     assert isinstance(user, dict)
