@@ -621,7 +621,7 @@ class LoadDB(Resource):
                 rec_to_ret_json = json.loads(json_util.dumps(scrape_return))
                 rec_name = rec_to_ret_json["recipe_name"]
                 print("LoadDB:		Recipe Name: " + rec_name)
-                if (not (recmongo.recipe_exists_from_url(y))):
+                if not (recmongo.recipe_exists_from_url(y)):
                     print("LoadDB:		Recipe not in DB, adding it...")
                     recmongo.add_recipe(rec_name, rec_to_ret_json)
                 else:
@@ -714,7 +714,7 @@ class ScrapeWebsite(Resource):
         # value = recmongo.recipe_exists_from_url(unquote(website))
         # print('after recipe_exists_from_url')
         # print(f'{value=}')
-        if (not (recmongo.recipe_exists_from_url(website))):
+        if not (recmongo.recipe_exists_from_url(website)):
             print("ScrapeWebsite: Recipe not in DB, adding it...")
             recmongo.add_recipe(rec_name, rec_to_ret_json)
         else:
@@ -803,7 +803,7 @@ class SearchFrontEnd(Resource):
             scrape_return = scrape_website_soup(soup, x)
             url_data = json.loads(json_util.dumps(scrape_return))
             rec_name = url_data["recipe_name"]
-            if (not (recmongo.recipe_exists_from_url(x))):
+            if not (recmongo.recipe_exists_from_url(x)):
                 print("Recipe not in DB, adding it...")
                 # print(f'{url_data=}')
                 recmongo.add_recipe(rec_name, url_data)
@@ -909,9 +909,9 @@ class AddSavedRecipe(Resource):
         session_token = text_strip(session_token)
         recipe_id = text_strip(recipe_id)
         if isinstance(logged_in, int):
-            if (logged_in == 0):
+            if logged_in == 0:
                 logged_in = False
-            elif (logged_in == 1):
+            elif logged_in == 1:
                 logged_in = True
             else:
                 raise ValueError("logged_in is not an expected value")
