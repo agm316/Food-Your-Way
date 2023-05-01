@@ -157,7 +157,10 @@ def add_saved_recipe(username, recipeid):
                 ret["success"] = 1
                 return ret
             else:
-                new_saved_recipes = old_saved_recipes + new_saved_recipes + ';'
+                rec_list_redone = ''
+                for y in old_recs_lst:
+                    rec_list_redone = rec_list_redone + y.strip() + ';'
+                new_saved_recipes = rec_list_redone + recipe_id + ';'
         fltr = {'username': user_name}
         newvals = {"$set": {f'{SAVED_RECIPES}': new_saved_recipes}}
         dbc.update_one(USER_COLLECTION, fltr, newvals, USER_DB)

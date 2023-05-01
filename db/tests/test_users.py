@@ -8,12 +8,14 @@ import db.users as usr
 RUNNING_ON_CICD_SERVER = os.environ.get('CI', False)
 
 TEST_DEL_NAME = 'User to be deleted'
+NEW_TEST_PASSWORD = 'NEW PASSWORD'
+TEST_RECIPE_ID = '123456'
 
 
 def create_user_details():
     details = {}
     for field in usr.REQUIRED_FIELDS:
-        details[field] = 2
+        details[field] = '2'
     return details
 
 
@@ -65,4 +67,46 @@ def test_add_missing_field():
 def test_add_user():
     usr.add_user(usr.TEST_USER_NAME, create_user_details())
     assert usr.user_exists(usr.TEST_USER_NAME)
+    # usr.delete_user(usr.TEST_USER_NAME)
+
+
+def test_update_user_password():
+    usr.update_user_password(usr.TEST_USER_NAME, NEW_TEST_PASSWORD)
+    usr_dtls = usr.get_user_details(usr.TEST_USER_NAME)
+    assert (usr_dtls[usr.PASSWORD] == NEW_TEST_PASSWORD)
+
+def test_add_saved_recipe():
+    usr.add_saved_recipe(usr.TEST_USER_NAME, TEST_RECIPE_ID)
+    usr_dtls = usr.get_user_details(usr.TEST_USER_NAME)
+    saved_recs = usr_dtls[usr.SAVED_RECIPES]
+    print(f'{saved_recs=}')
+    saved_rec_exists = False
+    saved_recs_lst = saved_recs.split(';')
+    for x in saved_recs_lst:
+        if x == TEST_RECIPE_ID:
+            saved_rec_exists = True
+    assert (saved_rec_exists)
+
+
+def test_remove_saved_recipe():
+    usr.remove_saved_recipe(usr.TEST_USER_NAME, TEST_RECIPE_ID)
+    usr_dtls = usr.get_user_details(usr.TEST_USER_NAME)
+    saved_recs = usr_dtls[usr.SAVED_RECIPES]
+    saved_rec_exists = False
+    saved_recs_lst = saved_recs.split(';')
+    for x in saved_recs_lst:
+        if x == TEST_RECIPE_ID:
+            saved_rec_exists = True
+    assert (not saved_rec_exists)
+
+
+def test_remove_all_saved_recipes():
+    usr.remove_all_saved_recipes(usr.TEST_USER_NAME)
+    usr_dtls = usr.get_user_details(usr.TEST_USER_NAME)
+    saved_recs = usr_dtls[usr.SAVED_RECIPES]
+    assert (saved_recs == '')
+
+
+def test_delete_test_recipe():
     usr.delete_user(usr.TEST_USER_NAME)
+    assert (not usr.user_exists(usr.TEST_USER_NAME))
