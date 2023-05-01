@@ -49,8 +49,16 @@ TEST_USER_UPDATE_PWD = {"username": "user@name.com",
                         "old_password": 'abcdefghij',
                         "password": 'newpassword',
                         "confirm_password": 'newpassword'}
-
-
+TEST_LOGIN_PWD_SUCCESS = {"username": "user@name.com",
+                      "password": 'newpassword',
+                      "session_token": '123456'}
+TEST_LOGIN_PWD_FAIL = {"username": "user@name.com",
+                   "password": 'abcdefghij',
+                   "session_token": '123456'}
+TEST_LOGIN_USER_NOT_EXIST = {"username": 'none@none.com',
+                             "password": 'poopydoopypoop',
+                             "session_token": '123456'}
+        
 # replaces TEST_SEARCH_QUERY
 @pytest.fixture
 def input_search_query():
@@ -270,20 +278,20 @@ def test_search_query(input_search_query):
 
 
 # @pytest.mark.skip("Unable to test this fully without UI")
-def test_user_name():
-    user = TEST_CLIENT.get(f"/users/login/{TEST_USER}").get_json()
-    assert isinstance(user, dict)
-    assert isinstance(user["username"], str)
-    assert user["username"] == TEST_USER
-    # assert isinstance(user["pwd"], str)
-
-
-def test_user_name_fail():
-    user = TEST_CLIENT.get(f"/users/login/{TEST_USER_FAIL}").get_json()
-    assert isinstance(user, dict)
-    assert isinstance(user["error"], str)
-    assert user["error"] == "username must be an email address"
-    # assert isinstance(user["pwd"], str)
+# def test_user_name():
+#     user = TEST_CLIENT.get(f"/users/login/{TEST_USER}").get_json()
+#     assert isinstance(user, dict)
+#     assert isinstance(user["username"], str)
+#     assert user["username"] == TEST_USER
+#     # assert isinstance(user["pwd"], str)
+# 
+# 
+# def test_user_name_fail():
+#     user = TEST_CLIENT.get(f"/users/login/{TEST_USER_FAIL}").get_json()
+#     assert isinstance(user, dict)
+#     assert isinstance(user["error"], str)
+#     assert user["error"] == "username must be an email address"
+#     # assert isinstance(user["pwd"], str)
 
 
 def test_password():
@@ -317,6 +325,45 @@ def test_update_password():
     print(f'{success=}')
     assert isinstance(resp1, dict)
     assert (success == 1)
+
+
+def test_login_pwd_success():
+    print('test_endpoints.py    test_login_pwd_success: Trying...')
+    resp = TEST_CLIENT.post('/users/login', data=TEST_LOGIN_PWD_SUCCESS)
+    resp1 = resp.get_json()
+    message = resp1["message"]
+    success = resp1["success"]
+    print(f'test_endpoints.py    test_login_pwd_success: RESULTS:')
+    print(f'{message=}')
+    print(f'{success=}')
+    assert isinstance(resp1, dict)
+    assert (success == 1)
+
+
+def test_login_pwd_fail():
+    print('test_endpoints.py    test_login_pwd_fail: Trying...')
+    resp = TEST_CLIENT.post('/users/login', data=TEST_LOGIN_PWD_FAIL)
+    resp1 = resp.get_json()
+    message = resp1["message"]
+    success = resp1["success"]
+    print(f'test_endpoints.py    test_login_pwd_fail: RESULTS:')
+    print(f'{message=}')
+    print(f'{success=}')
+    assert isinstance(resp1, dict)
+    assert (success == 0)
+
+
+def test_login_no_user():
+    print('test_endpoints.py    test_login_no_user: Trying...')
+    resp = TEST_CLIENT.post('/users/login', data=TEST_LOGIN_USER_NOT_EXIST)
+    resp1 = resp.get_json()
+    message = resp1["message"]
+    success = resp1["success"]
+    print(f'test_endpoints.py    test_login_no_user: RESULTS:')
+    print(f'{message=}')
+    print(f'{success=}')
+    assert isinstance(resp1, dict)
+    assert (success == 0)
 
 
 def test_delete_user():

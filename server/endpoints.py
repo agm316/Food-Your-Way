@@ -99,6 +99,18 @@ INCORRECT_OLD_PWD = "Incorrect Old Password; Can't Update"
 email_regex_file_location = '/email_regex.txt'
 
 
+def check_password(password):
+    """
+    this function checks to see if a password
+    meets our security standards
+    returns true if good, false if password is unacceptable
+    """
+    if (65 > len(password) > 7):
+        return True
+    else:
+        return False
+
+
 def username_is_valid_email(username):
     """
     This function verifies that the username is a valid email address
@@ -1068,25 +1080,50 @@ class DeleteUser(Resource):
 
 # VERY VERY rudementary system put in place to allow us to test
 # login before a working UI, this works with Swagger
-@users.route('/login/<path:username>')  # /<path:password>')
+@users.route('/login')  # <path:username>')  # /<path:password>')
 class Login(Resource):
     """
     This is used as the login endpoint.
     """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    def get(self, username):
+    def post(self):
         """
-        The get() method
-        Until we have a better system, the password will stay
-        commented I guess :(
+        This will be the login endpoint
         """
-        email_pattern = re.compile(
-            r"[a-zA-Z0-9]+\.?[a-zA-Z0-9]+@[a-zA-Z]+\.(com|co|org|edu)"
-        )
-        if email_pattern.match(username):
-            return {"username": username}  # , "password": password}
-        return {"error": "username must be an email address"}
+        ret = {}
+        username = request.form.get('username')
+        password = request.form.get('password')
+        session_token = request.form.get('session_token')
+        username = text_strip(username)
+        password = text_strip(password)
+        session_token = text_strip(session_token)
+        if (not (username_is_valid_email(username))):
+            ret["message"] = "Username is not a valid email address"
+            ret["success"] = 0
+            return ret
+        if (not (usermongo.user_exists(username))):
+            ret["message"] = "Username is not registered. Please Register"
+            ret["success"] = 0
+            return ret
+        if (password == ''):
+            ret["message"] = "Password is blank"
+            ret["success"] = 0
+            return ret
+        ret["session_token"] = session_token
+        user_data_results = usermongo.get_user_details(username)
+        db_pw_hash = user_data_results[HSHD_PWD_KEY]
+        db_pw_hash = db_pw_hash.encode('utf-8')
+        pwd_encoded = password.encode('utf-8')
+        if bcrypt.checkpw(pwd_encoded, db_pw_hash):
+            # password matches! success!
+            ret["message"] = "Login Successful"
+            ret["success"] = 1
+            return ret
+        else:
+            ret["message"] = "Login Unsuccessful. Incorrect Password"
+            ret["success"] = 0
+            return ret
 
 
 # This allows testing of the password storing and loging before
@@ -1103,7 +1140,7 @@ class Password(Resource):
         """
         This takes the password and encrypts it and stores it
         """
-        if not (65 > len(password) > 7):
+        if not (check_password(password)):
             raise pswdError(len(password))
 
         # future improvement to display password strength here
@@ -1176,7 +1213,7 @@ class RegisterUser(Resource):
         else:
             if password == confirm_password:
                 hashed = hash_pwd(password)
-                user_data["hashed_password"] = hashed
+                user_data[HSHD_PWD_KEY] = hashed
                 usermongo.add_user(username, user_data)
                 if usermongo.user_exists(username):
                     user_data["message"] = "User Added Successfully"
@@ -1232,15 +1269,14 @@ class UpdatePassword(Resource):
                     user_data["success"] = 0
                     return user_data
                 hashed = hash_pwd(password)
-                old_hashed = hash_pwd(old_password)
-                print(f'{user_data_results["hashed_password"]=}')
-                print(f'{old_hashed=}')
+                # print(f'{user_data_results["hashed_password"]=}')
+                # print(f'{old_hashed=}')
                 # if (user_data_results["hashed_password"] == old_hashed):
-                db_pw_hash = user_data_results["hashed_password"]
+                db_pw_hash = user_data_results[HSHD_PWD_KEY]
                 db_pw_hash = db_pw_hash.encode('utf-8')
                 old_pwd_encoded = old_password.encode('utf-8')
                 if bcrypt.checkpw(old_pwd_encoded, db_pw_hash):
-                    user_data["hashed_password"] = hashed
+                    user_data[HSHD_PWD_KEY] = hashed
                     result = usermongo.update_user_password(username, hashed)
                     user_data_results = usermongo.get_user_details(username)
                     pass_upd_succ = result["success"]
