@@ -664,8 +664,8 @@ class RecipeSuggestionsList(Resource):
         return {RECIPES_SUGGESTIONS_LIST_NM: recmongo.get_recipes()}
 
 
-@recipes.route('/recipes_list')
-class RecipesList(Resource):
+@recipes.route('/list')
+class List(Resource):
     """
     This will get a list of recipes.
     """

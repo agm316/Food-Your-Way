@@ -79,7 +79,7 @@ def test_get_recipes_list():
     This test will test the recipes namespace endpoint.
     """
     resp_json = TEST_CLIENT.get(ep.RECIPES_LIST_W_NS).get_json()
-    print(f'{resp_json=}')
+    # print(f'{resp_json=}')
     assert isinstance(resp_json[ep.RECIPES_LIST_NM], list)
 
 
