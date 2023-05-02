@@ -120,6 +120,7 @@ def search_recipe_ingr(search_term, include, exclude):
 
 
 def get_time_filter(time):
+    # This endpoint could be fixed
     dbc.connect_db()
     returns = {}
     ind = 0
