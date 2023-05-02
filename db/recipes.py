@@ -123,8 +123,35 @@ def get_time_filter(time):
     dbc.connect_db()
     returns = {}
     ind = 0
-    for recipe in dbc.find():
-        if recipe["total_time"] <= time:
+    if (time < 0):
+        return {}
+    for recipe in get_recipes():
+        first_time_int = -1
+        tot_time = ''
+        try:
+            tot_time = recipe["total_time"]
+        except ValueError:
+            tot_time = ''
+        if (isinstance(tot_time, int)):
+            first_time_int = tot_time
+        elif (isinstance(tot_time, str)):
+            if (tot_time == ''):
+                pass
+            tot_time_split = tot_time.split(' ')
+            if (len(tot_time_split) == 0):
+                pass
+            elif (len(tot_time_split) == 1):
+                if (tot_time_split[0] == ""):
+                    pass
+            first_time_str = tot_time_split[0]
+            try:
+                number = int(first_time_str)
+                first_time_int = number
+            except ValueError:
+                first_time_int = -1
+        if (first_time_int == -1):
+            pass
+        elif first_time_int <= time:
             returns[ind] = recipe
             ind += 1
     return returns

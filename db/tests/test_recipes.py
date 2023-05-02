@@ -77,4 +77,22 @@ def test_add_missing_field():
 def test_add_recipe():
     rec.add_recipe(rec.TEST_RECIPE_NAME, create_recipe_details())
     assert rec.recipe_exists(rec.TEST_RECIPE_NAME)
-    rec.delete_recipe_by_name(rec.TEST_RECIPE_NAME)
+    # rec.delete_recipe_by_name(rec.TEST_RECIPE_NAME)
+
+
+def test_search_recipe_ingr():
+    result = rec.search_recipe_ingr(rec.TEST_RECIPE_NAME, [''], [''])
+    assert result is not None
+
+
+def test_get_time_filter_no_time():
+    assert (rec.get_time_filter(0) == {})
+
+
+def test_get_time_filter_time():
+    assert (rec.get_time_filter(9999) is not None)
+
+
+def test_delete_recipe_by_name():
+    assert (rec.delete_recipe_by_name(rec.TEST_RECIPE_NAME))
+    
