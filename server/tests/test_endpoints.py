@@ -38,10 +38,7 @@ RECIPE_DB = 'api_dev_db'
 TEST_USER_REGISTRATION_DATA = {"first_name": "TEST FIRST",
                                "last_name": "TEST LAST",
                                "username": "user@name.com",
-                               "inc_ingr_pref": "",
-                               "exc_ingr_pref": "",
-                               "other_preferences": "",
-                               "diet": "",
+                               "email": "john@gmail.com",
                                "saved_recipes": '',
                                "password": 'abcdefghij',
                                "confirm_password": 'abcdefghij'}

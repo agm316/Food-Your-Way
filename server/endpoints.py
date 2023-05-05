@@ -63,9 +63,9 @@ EXCLUSION_QUERY = 'carrots'
 RATING_ID = "mntl-recipe-review-bar__rating_1-0"
 RATING_ID_2 = "mntl-recipe-review-bar__rating_2-0"
 FORMAT = '/recipes/format'
-FORMATTEXTGAME = '/formatTextGame'
-DBGETTEST = '/dbtest'
-GETALL = '/recipes/getAllRecipes'
+FORMAT_TEXT_GAME = '/formatTextGame'
+DB_GET_TEST = '/dbtest'
+GET_ALL = '/recipes/getAllRecipes'
 RECIPE_NAME_ID_1 = "article-heading_1-0"
 RECIPE_NAME_ID_2 = "article-heading_2-0"
 CUISINE_CLASS = "comp mntl-breadcrumbs__item mntl-block"
@@ -105,7 +105,7 @@ def check_password(password):
     meets our security standards
     returns true if good, false if password is unacceptable
     """
-    if (65 > len(password) > 7):
+    if 65 > len(password) > 7:
         return True
     else:
         return False
@@ -124,7 +124,7 @@ def username_is_valid_email(username):
     regex_file.close()
     regex_line = ''
     for x in lines:
-        if (x != ''):
+        if x != '':
             regex_line = x
     raw_re = fr"{regex_line}"
     email_pattern = re.compile(raw_re)
@@ -685,7 +685,7 @@ class MainMenu(Resource):
                           'text': 'Get All Recipes'},
                     '2': {'url': f'/{GET_RECIPE_SUGGESTIONS}', 'method': 'get',
                           'text': 'Get Recipe Suggestions'},
-                    '3': {'url': f'/{FORMATTEXTGAME}', 'method': 'get',
+                    '3': {'url': f'/{FORMAT_TEXT_GAME}', 'method': 'get',
                           'text': 'Get the recipe format'},
                     '4': {'url': f'/{SETTINGS}', 'method': 'get',
                           'text': 'Get search and UI settings'},
@@ -1098,15 +1098,15 @@ class Login(Resource):
         username = text_strip(username)
         password = text_strip(password)
         session_token = text_strip(session_token)
-        if (not (username_is_valid_email(username))):
+        if not (username_is_valid_email(username)):
             ret["message"] = "Username is not a valid email address"
             ret["success"] = 0
             return ret
-        if (not (usermongo.user_exists(username))):
+        if not (usermongo.user_exists(username)):
             ret["message"] = "Username is not registered. Please Register"
             ret["success"] = 0
             return ret
-        if (password == ''):
+        if password == '':
             ret["message"] = "Password is blank"
             ret["success"] = 0
             return ret
@@ -1166,30 +1166,22 @@ class RegisterUser(Resource):
         """
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
-        # email = request.form.get['email']
+        email = request.form.get['email']
         username = request.form.get('username')
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
-        include_ingr_preference = request.form.get('inc_ingr_pref')
-        exclude_ingr_preference = request.form.get('exc_ingr_pref')
-        other_preferences = request.form.get('other_preferences')
-        diet = request.form.get('diet')
+
         first_name = text_strip(first_name)
         last_name = text_strip(last_name)
+        email = text_strip(email)
         username = text_strip(username)
         password = text_strip(password)
         confirm_password = text_strip(confirm_password)
-        include_ingr_preference = text_strip(include_ingr_preference)
-        exclude_ingr_preference = text_strip(exclude_ingr_preference)
-        other_preferences = text_strip(other_preferences)
-        diet = text_strip(diet)
+
         user_data = {"first_name": first_name,
                      "last_name": last_name,
+                     "email": email,
                      "username": username,
-                     "inc_ingr_pref": include_ingr_preference,
-                     "exc_ingr_pref": exclude_ingr_preference,
-                     "other_preferences": other_preferences,
-                     "diet": diet,
                      "saved_recipes": ''
                      }
         # first need to check if username already exists in database,
@@ -1201,7 +1193,7 @@ class RegisterUser(Resource):
             user_data["message"] = "Username is Blank!!!"
             user_data["success"] = 0
             return user_data
-        if (not (username_is_valid_email(username))):
+        if not (username_is_valid_email(username)):
             user_data["message"] = "Username is not a valid email address"
             user_data["success"] = 0
             return user_data
@@ -1242,12 +1234,14 @@ class UpdatePassword(Resource):
         """
         username = request.form.get('username')
         old_password = request.form.get('old_password')
-        password = request.form.get('password')
+        new_password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
+
         username = text_strip(username)
         old_password = text_strip(old_password)
-        password = text_strip(password)
+        new_password = text_strip(new_password)
         confirm_password = text_strip(confirm_password)
+
         user_data = {}
         user_data_results = {}
         user_data["username"] = username
@@ -1262,16 +1256,13 @@ class UpdatePassword(Resource):
             user_data["success"] = 0
             return user_data
         else:
-            if password == confirm_password:
+            if new_password == confirm_password:
                 user_data_results = usermongo.get_user_details(username)
                 if old_password == '':
                     user_data["message"] = "Old Password is Blank!"
                     user_data["success"] = 0
                     return user_data
-                hashed = hash_pwd(password)
-                # print(f'{user_data_results["hashed_password"]=}')
-                # print(f'{old_hashed=}')
-                # if (user_data_results["hashed_password"] == old_hashed):
+                hashed = hash_pwd(new_password)
                 db_pw_hash = user_data_results[HSHD_PWD_KEY]
                 db_pw_hash = db_pw_hash.encode('utf-8')
                 old_pwd_encoded = old_password.encode('utf-8')
