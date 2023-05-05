@@ -75,6 +75,7 @@ def test_update_user_password():
     usr_dtls = usr.get_user_details(usr.TEST_USER_NAME)
     assert (usr_dtls[usr.PASSWORD] == NEW_TEST_PASSWORD)
 
+
 def test_add_saved_recipe():
     usr.add_saved_recipe(usr.TEST_USER_NAME, TEST_RECIPE_ID)
     usr_dtls = usr.get_user_details(usr.TEST_USER_NAME)
@@ -85,7 +86,7 @@ def test_add_saved_recipe():
     for x in saved_recs_lst:
         if x == TEST_RECIPE_ID:
             saved_rec_exists = True
-    assert (saved_rec_exists)
+    assert saved_rec_exists
 
 
 def test_remove_saved_recipe():
