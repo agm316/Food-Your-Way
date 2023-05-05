@@ -47,11 +47,11 @@ TEST_USER_UPDATE_PWD = {"username": "user@name.com",
                         "new_password": 'newpassword',
                         "confirm_password": 'newpassword'}
 TEST_LOGIN_PWD_SUCCESS = {"username": "user@name.com",
-                      "new_password": 'newpassword',
-                      "session_token": '123456'}
+                          "password": 'newpassword',
+                          "session_token": '123456'}
 TEST_LOGIN_PWD_FAIL = {"username": "user@name.com",
-                   "password": 'abcdefghij',
-                   "session_token": '123456'}
+                       "password": 'abcdefghij',
+                       "session_token": '123456'}
 TEST_LOGIN_USER_NOT_EXIST = {"username": 'none@none.com',
                              "password": 'poopydoopypoop',
                              "session_token": '123456'}

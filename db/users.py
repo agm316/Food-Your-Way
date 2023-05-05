@@ -12,15 +12,12 @@ USER_KEY = 'username'
 
 FIRST_NAME = 'first_name'
 LAST_NAME = 'last_name'
+EMAIL = 'email'
 USERNAME = 'username'
 PASSWORD = 'hashed_password'
-INCLUDE_PREF = 'inc_ingr_pref'
-EXCLUDE_PREF = 'exc_ingr_pref'
-OTHER_PREFS = 'other_preferences'
-DIET = 'diet'
+
 SAVED_RECIPES = 'saved_recipes'
-REQUIRED_FIELDS = [FIRST_NAME, LAST_NAME, USERNAME, PASSWORD, INCLUDE_PREF,
-                   EXCLUDE_PREF, OTHER_PREFS, DIET, SAVED_RECIPES]
+REQUIRED_FIELDS = [FIRST_NAME, LAST_NAME, EMAIL, USERNAME, PASSWORD, SAVED_RECIPES]
 
 
 TEST_USER_NAME = 'TEST_USERNAME'
@@ -85,20 +82,20 @@ def update_user_password(username, new_password):
     user_name = ''
     ret = {}
     dbc.connect_db()
-    if (isinstance(new_password, str)):
+    if isinstance(new_password, str):
         new_pass = new_password.strip()
-    if (isinstance(username, str)):
+    if isinstance(username, str):
         user_name = username.strip()
     ret["username"] = user_name
-    if (user_name == ''):
+    if user_name == '':
         ret["success"] = 0
         ret["message"] = "Username Is Blank"
         return ret
-    if (not (user_exists(user_name.strip()))):
+    if not (user_exists(user_name.strip())):
         ret["success"] = 0
         ret["message"] = "User Does Not Exist"
         return ret
-    if (new_pass == ''):
+    if new_pass == '':
         ret["success"] = 0
         ret["message"] = "New Password is Blank"
         return ret
@@ -120,21 +117,21 @@ def add_saved_recipe(username, recipeid):
     recipe_id = ''
     ret = {}
     dbc.connect_db()
-    if (isinstance(username, str)):
+    if isinstance(username, str):
         user_name = username.strip()
-    if (isinstance(recipeid, str)):
+    if isinstance(recipeid, str):
         recipe_id = recipeid.strip()
     ret["username"] = user_name
     ret["recipe_id"] = recipe_id
-    if (user_name == ''):
+    if user_name == '':
         ret["success"] = 0
         ret["message"] = "Username Is Blank"
         return ret
-    if (not (user_exists(user_name))):
+    if not (user_exists(user_name)):
         ret["success"] = 0
         ret["message"] = "User Does Not Exist"
         return ret
-    if (recipe_id == ''):
+    if recipe_id == '':
         ret["success"] = 0
         ret["message"] = "Recipe ID is Blank"
         return ret
@@ -142,7 +139,7 @@ def add_saved_recipe(username, recipeid):
         uservals = get_user_details(user_name)
         old_saved_recipes = (uservals[SAVED_RECIPES]).strip()
         new_saved_recipes = ''
-        if (old_saved_recipes == ''):
+        if old_saved_recipes == '':
             new_saved_recipes = recipe_id + ';'
         else:
             old_recs_lst = old_saved_recipes.split(';')
@@ -178,28 +175,28 @@ def remove_saved_recipe(username, recipeid):
     recipe_id = ''
     ret = {}
     dbc.connect_db()
-    if (isinstance(username, str)):
+    if isinstance(username, str):
         user_name = username.strip()
-    if (isinstance(recipeid, str)):
+    if isinstance(recipeid, str):
         recipe_id = recipeid.strip()
     ret["username"] = user_name
     ret["recipe_id"] = recipe_id
-    if (user_name == ''):
+    if user_name == '':
         ret["success"] = 0
         ret["message"] = "Username Is Blank"
         return ret
-    if (not (user_exists(user_name))):
+    if not (user_exists(user_name)):
         ret["success"] = 0
         ret["message"] = "User Does Not Exist"
         return ret
-    if (recipe_id == ''):
+    if recipe_id == '':
         ret["success"] = 0
         ret["message"] = "Recipe ID is Blank"
         return ret
     else:
         uservals = get_user_details(user_name)
         old_saved_recipes = (uservals[SAVED_RECIPES]).strip()
-        if (old_saved_recipes == ''):
+        if old_saved_recipes == '':
             ret["message"] = "No recipes saved for this username. No Changes"
             # since that recipe was asked to be removed,
             # since it is not there, we say we were successful
@@ -243,21 +240,21 @@ def remove_all_saved_recipes(username):
     user_name = ''
     ret = {}
     dbc.connect_db()
-    if (isinstance(username, str)):
+    if isinstance(username, str):
         user_name = username.strip()
     ret["username"] = user_name
-    if (user_name == ''):
+    if user_name == '':
         ret["success"] = 0
         ret["message"] = "Username Is Blank"
         return ret
-    if (not (user_exists(user_name))):
+    if not (user_exists(user_name)):
         ret["success"] = 0
         ret["message"] = "User Does Not Exist"
         return ret
     else:
         uservals = get_user_details(user_name)
         old_saved_recipes = (uservals[SAVED_RECIPES]).strip()
-        if (old_saved_recipes == ''):
+        if old_saved_recipes == '':
             ret["message"] = "No recipes saved for this username. No changes"
             ret["success"] = 1
             return ret

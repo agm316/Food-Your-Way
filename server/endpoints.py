@@ -1095,9 +1095,11 @@ class Login(Resource):
         username = request.form.get('username')
         password = request.form.get('password')
         session_token = request.form.get('session_token')
+
         username = text_strip(username)
         password = text_strip(password)
         session_token = text_strip(session_token)
+
         if not (username_is_valid_email(username)):
             ret["message"] = "Username is not a valid email address"
             ret["success"] = 0
