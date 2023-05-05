@@ -37,17 +37,17 @@ RECIPE_DB = 'api_dev_db'
 
 TEST_USER_REGISTRATION_DATA = {"first_name": "TEST FIRST",
                                "last_name": "TEST LAST",
-                               "username": "user@name.com",
                                "email": "john@gmail.com",
+                               "username": "user@name.com",
                                "saved_recipes": '',
                                "password": 'abcdefghij',
                                "confirm_password": 'abcdefghij'}
 TEST_USER_UPDATE_PWD = {"username": "user@name.com",
                         "old_password": 'abcdefghij',
-                        "password": 'newpassword',
+                        "new_password": 'newpassword',
                         "confirm_password": 'newpassword'}
 TEST_LOGIN_PWD_SUCCESS = {"username": "user@name.com",
-                      "password": 'newpassword',
+                      "new_password": 'newpassword',
                       "session_token": '123456'}
 TEST_LOGIN_PWD_FAIL = {"username": "user@name.com",
                    "password": 'abcdefghij',
@@ -222,11 +222,11 @@ def test_format_endpoint(input_test_client):
 # @pytest.mark.skip("Can't run this test until a recipe gets deleted from the database.")
 def test_get_all():
     """
-    This test servers to test the getall() endpoint and asserts
+    This test servers to test the get_all() endpoint and asserts
     that it matches the format of a list of recipes.
     """
-    alldb = TEST_CLIENT.get(ep.GETALL).get_json()
-    assert isinstance(alldb, dict)
+    all_db = TEST_CLIENT.get(ep.GET_ALL).get_json()
+    assert isinstance(all_db, dict)
 
 
 def test_search_inc_exc():
