@@ -18,6 +18,7 @@ NEW_TEST_KEY_NAME = 'NEWTESTTESTTESTTEST'
 TEST_RECORD = {TEST_KEY: TEST_KEY_NAME}
 NEW_TEST_RECORD = {TEST_KEY: NEW_TEST_KEY_NAME}
 
+
 @pytest.fixture(scope='function')
 def temp_rec():
     dbc.connect_db()
@@ -53,9 +54,9 @@ def test_fetch_all_as_dict():
 
 
 def test_insert_one():
-    if (dbc.fetch_one(TEST_COLLECT, TEST_RECORD, TEST_DB) is not None):
+    if dbc.fetch_one(TEST_COLLECT, TEST_RECORD, TEST_DB) is not None:
         dbc.del_one(TEST_COLLECT, TEST_RECORD, TEST_DB)
-    if (dbc.fetch_one(TEST_COLLECT, TEST_RECORD, TEST_DB) is not None):
+    if dbc.fetch_one(TEST_COLLECT, TEST_RECORD, TEST_DB) is not None:
         print('test_db_connect.py:    test_insert_one: Error Deleting')
         assert False
     else:
@@ -64,10 +65,11 @@ def test_insert_one():
 
 
 def test_update_one():
-    newvals = {"$set": NEW_TEST_RECORD}
-    ret = dbc.update_one(TEST_COLLECT, TEST_RECORD, newvals, TEST_DB)
+    new_vals = {"$set": NEW_TEST_RECORD}
+    ret = dbc.update_one(TEST_COLLECT, TEST_RECORD, new_vals, TEST_DB)
     assert (dbc.fetch_one(TEST_COLLECT, NEW_TEST_RECORD, TEST_DB) is not None)
-        
+
+
 def test_delete_one():
     ret = dbc.del_one(TEST_COLLECT, NEW_TEST_RECORD, TEST_DB)
     assert ((dbc.fetch_one(TEST_COLLECT, NEW_TEST_RECORD, TEST_DB)) is None)

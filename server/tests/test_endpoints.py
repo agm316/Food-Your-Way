@@ -39,9 +39,9 @@ TEST_USER_REGISTRATION_DATA = {"first_name": "TEST FIRST",
                                "last_name": "TEST LAST",
                                "email": "john@gmail.com",
                                "username": "user@name.com",
-                               "saved_recipes": '',
                                "password": 'abcdefghij',
-                               "confirm_password": 'abcdefghij'}
+                               "confirm_password": 'abcdefghij',
+                               "saved_recipes": ''}
 TEST_USER_UPDATE_PWD = {"username": "user@name.com",
                         "old_password": 'abcdefghij',
                         "new_password": 'newpassword',
@@ -55,7 +55,8 @@ TEST_LOGIN_PWD_FAIL = {"username": "user@name.com",
 TEST_LOGIN_USER_NOT_EXIST = {"username": 'none@none.com',
                              "password": 'poopydoopypoop',
                              "session_token": '123456'}
-        
+
+
 # replaces TEST_SEARCH_QUERY
 @pytest.fixture
 def input_search_query():

@@ -944,9 +944,11 @@ class AddSavedRecipe(Resource):
         logged_in = request.form.get('logged_in')
         session_token = request.form.get('session_token')
         recipe_id = request.form.get('recipe_id')
+
         username = text_strip(username)
         session_token = text_strip(session_token)
         recipe_id = text_strip(recipe_id)
+
         if isinstance(logged_in, int):
             if logged_in == 0:
                 logged_in = False
@@ -982,11 +984,11 @@ class AddSavedRecipe(Resource):
         user_details = usermongo.get_user_details(username)
         saved_recs = user_details[usermongo.SAVED_RECIPES]
         saved_recs_lst = saved_recs.split(';')
-        checkval = False
+        check_val = False
         for x in saved_recs_lst:
             if x == recipe_id:
-                checkval = True
-        if checkval:
+                check_val = True
+        if check_val:
             ret["message"] = result["message"]
             ret["success"] = result["success"]
         return ret
@@ -1010,9 +1012,11 @@ class AddSavedRecipeByRecName(Resource):
         logged_in = request.form.get('logged_in')
         session_token = request.form.get('session_token')
         recipe_name = request.form.get('recipe_name')
+
         username = text_strip(username)
         session_token = text_strip(session_token)
         recipe_name = text_strip(recipe_name)
+
         if isinstance(logged_in, int):
             if logged_in == 0:
                 logged_in = False
@@ -1168,7 +1172,7 @@ class RegisterUser(Resource):
         """
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
-        email = request.form.get['email']
+        email = request.form.get('email')
         username = request.form.get('username')
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
