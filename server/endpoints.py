@@ -1240,7 +1240,7 @@ class UpdatePassword(Resource):
         """
         username = request.form.get('username')
         old_password = request.form.get('old_password')
-        new_password = request.form.get('password')
+        new_password = request.form.get('new_password')
         confirm_password = request.form.get('confirm_password')
 
         username = text_strip(username)
