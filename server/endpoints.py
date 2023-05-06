@@ -1280,7 +1280,7 @@ class UpdatePassword(Resource):
                     # hash_match = (user_data_results[HSHD_PWD_KEY] == hashed)
                     db_pw_hash_2 = user_data_results[HSHD_PWD_KEY]
                     db_pw_hash_2 = db_pw_hash_2.encode('utf-8')
-                    pwd_encoded = password.encode('utf-8')
+                    pwd_encoded = new_password.encode('utf-8')
                     hash_match = bcrypt.checkpw(pwd_encoded, db_pw_hash_2)
                     if hash_match and pass_upd_succ:
                         user_data["message"] = PASS_SUCCESS_MESSAGE
