@@ -22,3 +22,24 @@ waffle
 fried
 baked
 broiled
+taco
+burrito
+oat
+almond
+keto
+mediterranean
+lettuce
+salad
+lemon
+deer
+sweet potato
+milk
+chia
+yogurt
+healthy
+flatbread
+mante
+water
+coconut
+honey
+vinegar
