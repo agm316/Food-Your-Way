@@ -145,6 +145,10 @@ def text_strip(text):
         return ''
     elif type(text) == str:
         return text.strip()
+    elif type(text) == int:
+        return text
+    elif type(text) == bool:
+        return text
 
 
 def hash_pwd(password):
@@ -942,6 +946,81 @@ class SearchIncExc(Resource):
         return results
 
 
+@users.route('/remove_all_saved_recipes')
+class RemoveAllSavedRecipes(Resource):
+    """
+    Adds a recipe that the user wants to
+    save to their own personal db
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def post(self):
+        """
+        Adds a recipe to the DB based on
+        Recipe ID
+        """
+        ret = {}
+        username = request.form.get('username')
+        logged_in = request.form.get('logged_in')
+        session_token = request.form.get('session_token')
+        # recipe_id = request.form.get('recipe_id')
+
+        username = text_strip(username)
+        session_token = text_strip(session_token)
+        # recipe_id = text_strip(recipe_id)
+
+        if isinstance(logged_in, int):
+            if logged_in == 0:
+                logged_in = False
+            elif logged_in == 1:
+                logged_in = True
+            else:
+                raise ValueError("logged_in is not an expected value (int)")
+        elif isinstance(logged_in, bool):
+            pass
+        elif isinstance(logged_in, str):
+            if (logged_in == '1'):
+                logged_in = True
+            elif (logged_in == '0'):
+                logged_in = False
+            else:
+                raise ValueError("logged_in is not an expected value (str)")
+        else:
+            raise ValueError("logged_in is not an expected type")
+        ret["username"] = username
+        ret["logged_in"] = logged_in
+        ret["session_token"] = session_token
+        # ret["recipe_id"] = recipe_id
+        if logged_in is False:
+            ret["message"] = "User is not logged in. Can't add recipe"
+            ret["success"] = 0
+            return ret
+        if not (usermongo.user_exists(username)):
+            ret["message"] = "User does not Exist in the DB"
+            ret["success"] = 0
+            return ret
+        result = usermongo.remove_all_saved_recipes(username)
+        if result["success"] == 0:
+            ret["message"] = result["message"]
+            ret["success"] = result["success"]
+            return ret
+        # verify it is cleared
+        user_details = usermongo.get_user_details(username)
+        saved_recs = user_details[usermongo.SAVED_RECIPES]
+        saved_recs_lst = saved_recs.split(';')
+        check_val = False
+        if (len(saved_recs_lst) == 1):
+            if saved_recs_lst[0] == '':
+                check_val = True
+        if check_val:
+            ret["message"] = result["message"]
+            ret["success"] = result["success"]
+        else:
+            ret["message"] = 'Unexpected Value'
+            ret["success"] = 0
+        return ret
+
+
 @users.route('/add_saved_recipe')
 class AddSavedRecipe(Resource):
     """
@@ -964,17 +1043,25 @@ class AddSavedRecipe(Resource):
         username = text_strip(username)
         session_token = text_strip(session_token)
         recipe_id = text_strip(recipe_id)
-
         if isinstance(logged_in, int):
             if logged_in == 0:
                 logged_in = False
             elif logged_in == 1:
                 logged_in = True
             else:
-                raise ValueError("logged_in is not an expected value")
+                # print(f'{logged_in=}')
+                raise ValueError("logged_in is not an expected value (int)")
         elif isinstance(logged_in, bool):
             pass
+        elif isinstance(logged_in, str):
+            if (logged_in == '1'):
+                logged_in = True
+            elif (logged_in == '0'):
+                logged_in = False
+            else:
+                raise ValueError("logged_in is not an expected value (str)")
         else:
+            # print(f'{logged_in=}')
             raise ValueError("logged_in is not an expected type")
         ret["username"] = username
         ret["logged_in"] = logged_in
@@ -1039,9 +1126,16 @@ class AddSavedRecipeByRecName(Resource):
             elif logged_in == 1:
                 logged_in = True
             else:
-                raise ValueError("logged_in is not an expected value")
+                raise ValueError("logged_in is not an expected value (int)")
         elif isinstance(logged_in, bool):
             pass
+        elif isinstance(logged_in, str):
+            if (logged_in == '1'):
+                logged_in = True
+            elif (logged_in == '0'):
+                logged_in = False
+            else:
+                raise ValueError("logged_in is not an expected value (str)")
         else:
             raise ValueError("logged_in is not an expected type")
         ret["username"] = username

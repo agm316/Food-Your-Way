@@ -55,6 +55,13 @@ TEST_LOGIN_PWD_FAIL = {"username": "user@name.com",
 TEST_LOGIN_USER_NOT_EXIST = {"username": 'none@none.com',
                              "password": 'poopydoopypoop',
                              "session_token": '123456'}
+TEST_ADD_SAVED_RECIPE_BY_ID = {"username": 'user@name.com',
+                         "logged_in": 1,
+                         "session_token": '123456',
+                         "recipe_id": '64231fd4502eab40303bfde4'}
+TEST_REMOVE_ALL_SAVED_RECIPES = {"username": 'user@name.com',
+                                 "logged_in": 1,
+                                 "session_token": '123456'}
 
 
 # replaces TEST_SEARCH_QUERY
@@ -345,6 +352,30 @@ def test_login_no_user():
     print(f'{success=}')
     assert isinstance(resp1, dict)
     assert (success == 0)
+
+
+def test_add_saved_recipe_by_id():
+    resp = TEST_CLIENT.post('/users/add_saved_recipe', data=TEST_ADD_SAVED_RECIPE_BY_ID)
+    resp1 = resp.get_json()
+    message = resp1["message"]
+    success = resp1["success"]
+    print(f'test_endpoints.py    test_add_saved_recipe_by_id: RESULTS:')
+    print(f'{message=}')
+    print(f'{success=}')
+    assert isinstance(resp1, dict)
+    assert (success == 1)
+
+
+def test_remove_all_saved_recipes():
+    resp = TEST_CLIENT.post('users/remove_all_saved_recipes', data=TEST_REMOVE_ALL_SAVED_RECIPES)
+    resp1 = resp.get_json()
+    message = resp1["message"]
+    success = resp1["success"]
+    print(f'test_endpoints.py    test_remove_all_saved_recipes: RESULTS:')
+    print(f'{message=}')
+    print(f'{success=}')
+    assert isinstance(resp1, dict)
+    assert (success == 1)
 
 
 def test_delete_user():
