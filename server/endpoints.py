@@ -199,6 +199,14 @@ def search_later_pages(website):
     return link_lst
 
 
+def process_subtext(li_text, start_offset, end_offset):
+    """
+    removes a substring for scrape website
+    """
+    # li.text[1:(len(li.text)-1)]
+    return li_text[start_offset:(len(li_text)-end_offset)]
+
+
 def scrape_website_soup(soup, website):
     # Get Recipe Name
     recipe_name = ''
@@ -239,15 +247,18 @@ def scrape_website_soup(soup, website):
     ing_list_soup = soup.find(class_=INGREDIENTS_ID)
     for li in ing_list_soup.find_all("li"):
         if li.text != "":
-            ingr += (li.text[1:(len(li.text)-1)] + ", ")
+            # ingr += (li.text[1:(len(li.text)-1)] + ", ")
+            ingr += process_subtext(li.text, 1, 1) + ", "
     if ingr == '':
         raise wz.NotFound("Ingredients Not Found")
-    ingr = ingr[:(len(ingr)-2)]
+    # ingr = ingr[:(len(ingr)-2)]
+    ingr = process_subtext(ingr, 0, 2)
     # Get Directions
     directions_soup = soup.find(id=DIRECTIONS_ID)
     for li in directions_soup.find_all("li"):
         if li.text != "":
-            directions += (li.text[1:(len(li.text)-3)])
+            # directions += (li.text[1:(len(li.text)-3)])
+            directions += process_subtext(li.text, 1, 3)
     if directions == '':
         raise wz.NotFound("Directions Not Found")
     directions = directions[1:]
@@ -276,20 +287,24 @@ def scrape_website_soup(soup, website):
                 tr_list = tr.text.split()
                 for i in tr_list:
                     nutr += i + ' '
-                nutr = nutr[:(len(nutr)-1)]
+                # nutr = nutr[:(len(nutr)-1)]
+                nutr = process_subtext(nutr, 0, 1)
                 nutr += ', '
         if len(nutr) > 1:
             if nutr[-2:] == ', ':
-                nutr = nutr[:(len(nutr)-2)]
+                # nutr = nutr[:(len(nutr)-2)]
+                nutr = process_subtext(nutr, 0, 2)
     # Get Timing
     time_lb_soup = soup.find_all(class_=TIMING_LABEL)
     time_val_soup = soup.find_all(class_=TIMING_VALUE)
     for div in time_lb_soup:
         tm_label += (div.text.strip() + ',')
-    tm_label = (tm_label[:len(tm_label)-1])
+    # tm_label = (tm_label[:len(tm_label)-1])
+    tm_label = process_subtext(tm_label, 0, 1)
     for div in time_val_soup:
         tm_val += (div.text.strip() + ',')
-    tm_val = (tm_val[:len(tm_val)-1])
+    # tm_val = (tm_val[:len(tm_val)-1])
+    tm_val = process_subtext(tm_val, 0, 1)
     tm_l_lst = tm_label.split(',')
     tm_v_lst = tm_val.split(',')
     for i in range(len(tm_l_lst)):
@@ -297,7 +312,8 @@ def scrape_website_soup(soup, website):
         timing += ' '
         timing += tm_v_lst[i].strip()
         timing += ', '
-    timing = timing[:(len(timing)-2)]
+    # timing = timing[:(len(timing)-2)]
+    timing = process_subtext(timing, 0, 2)
     # Split timing into its individual components
     tm_split = timing.split(',')
     for x in range(len(tm_split)):
