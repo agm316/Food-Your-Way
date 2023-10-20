@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import patch
 from http import HTTPStatus
+from datetime import datetime
 import json
 import bson.json_util as json_util
 from urllib.parse import unquote
@@ -62,7 +63,13 @@ TEST_ADD_SAVED_RECIPE_BY_ID = {"username": 'user@name.com',
 TEST_REMOVE_ALL_SAVED_RECIPES = {"username": 'user@name.com',
                                  "logged_in": 1,
                                  "session_token": '123456'}
-
+TEST_DATA_1 = {
+        "auth_token_input": 'auth_token',
+        "site": 'Mock Site #1',
+        "requestor_id": 'MS000001',
+        "sent_date_time": datetime.now(),
+        "data_value": '0.00231'
+}
 
 # replaces TEST_SEARCH_QUERY
 @pytest.fixture
@@ -85,6 +92,17 @@ def test_hello(input_test_client):
     # assert True
     resp_json = input_test_client.get(ep.HELLO).get_json()
     assert isinstance(resp_json[ep.MESSAGE], str)
+
+
+def test_hellotest():
+  """
+
+  """
+  resp = TEST_CLIENT.post('/hellotest',
+                         data=TEST_DATA_1)
+  resp_json = resp.get_json()
+  print(f'{resp_json=}')
+  assert False
 
 
 def test_get_recipes_list():
