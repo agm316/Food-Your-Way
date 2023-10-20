@@ -473,6 +473,8 @@ class HelloTest(Resource):
         """
         result = request.get_json()
         print('{result=}')
+        if result is None:
+            print('result is None')
         return request.get_json()
 
 
