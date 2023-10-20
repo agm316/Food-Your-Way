@@ -459,6 +459,21 @@ class HelloWorld(Resource):
         return {MESSAGE: 'hello world'}
 
 
+@api.route('/hellotest')
+class HelloWorld(Resource):
+    """
+    The purpose of the HelloWorld class is to have a simple test to see if the
+    app is working at all.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    def post(self):
+        """
+        Test Post and request.get_json()
+        """
+        return request.get_json()
+
+
 # reconfigure for react
 @api.route('/searchUISettings')
 class GetSettings(Resource):
