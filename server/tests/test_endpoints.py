@@ -99,8 +99,9 @@ def test_hellotest():
 
   """
   resp = TEST_CLIENT.post('/hellotest',
-                         data=json.dumps(TEST_DATA_1, indent=4, sort_keys=True, default=str))
-  input_data = json.dumps(TEST_DATA_1, indent=4, sort_keys=True, default=str)
+                         data=json.dumps(TEST_DATA_1, indent=4, sort_keys=False, default=str))
+  input_data = json.dumps(TEST_DATA_1, sort_keys=False, default=str)
+  # input_data = json.loads(TEST_DATA_1
   resp_json = resp.get_json()
   print(f'{input_data=}')
   print(f'{resp_json=}')
