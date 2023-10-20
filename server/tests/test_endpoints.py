@@ -99,7 +99,7 @@ def test_hellotest():
 
   """
   resp = TEST_CLIENT.post('/hellotest',
-                         data=json.dumps(TEST_DATA_1))
+                         data=json.dumps(TEST_DATA_1, indent=4, sort_keys=True, default=str))
   resp_json = resp.get_json()
   print(f'{resp_json=}')
   assert False
