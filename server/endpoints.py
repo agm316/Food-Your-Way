@@ -460,7 +460,7 @@ class HelloWorld(Resource):
 
 
 @api.route('/hellotest')
-class HelloWorld(Resource):
+class HelloTest(Resource):
     """
     The purpose of the HelloWorld class is to have a simple test to see if the
     app is working at all.
