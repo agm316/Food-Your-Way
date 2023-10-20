@@ -137,18 +137,16 @@ def username_is_valid_email(username):
         return False
 
 
-def text_strip(text):
+def text_strip(value):
     """
     This function strips whitespace off ends of text
     """
-    if isinstance(text, type(None)):
+    if value is None:
         return ''
-    elif type(text) == str:
-        return text.strip()
-    elif type(text) == int:
-        return text
-    elif type(text) == bool:
-        return text
+    elif isinstance(value, str):
+        return value.strip()
+    else:
+        return value
 
 
 def hash_pwd(password):
