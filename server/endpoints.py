@@ -471,7 +471,8 @@ class HelloTest(Resource):
         """
         Test Post and request.get_json()
         """
-        print('{request.get_json()=}')
+        result = request.get_json()
+        print('{result=}')
         return request.get_json()
 
 
